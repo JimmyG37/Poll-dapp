@@ -5,7 +5,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
 !developmentChains.includes(network.name)
     ? describe.skip
     : describe("Voting Unit Tests", () => {
-          let voting, owner, user1, user2
+          let voting, owner, user1, user2, registrationPeriod, votingPeriod, title
           beforeEach(async () => {
               const accounts = await ethers.getSigners()
               owner = accounts[0]
@@ -13,37 +13,67 @@ const { developmentChains } = require("../../helper-hardhat-config")
               user2 = accounts[2]
               await deployments.fixture(["all"])
               voting = await ethers.getContract("Voting")
-          })
-          describe("createElection", () => {
               let dateInAWeek = new Date() // now
               let dateInAWeek2 = new Date()
               dateInAWeek.setDate(dateInAWeek.getDate() + 2) // add 2 days
-              dateInAWeek2.setDate(dateInAWeek.getDate() + 7)
-              const deadline = Math.floor(dateInAWeek.getTime() / 1000) // unix timestamp
-              const deadline2 = Math.floor(dateInAWeek.getTime() / 1000)
-              let title = "Who is the best?"
+              dateInAWeek2.setDate(dateInAWeek.getDate() + 7) // add 7 days
+              registrationPeriod = Math.floor(dateInAWeek.getTime() / 1000) // unix timestamp
+              votingPeriod = Math.floor(dateInAWeek.getTime() / 1000)
+              title = "Who is the best?"
+          })
+          describe("createElection", () => {
               it("Reverts when regristration or voting period is too low", async () => {
-                  await expect(voting.createElection(title, 0, deadline2)).to.be.revertedWith(
+                  await expect(voting.createElection(title, 0, votingPeriod)).to.be.revertedWith(
                       "Voting__AdjustRegistrationPeriod"
                   )
-                  await expect(voting.createElection(title, deadline, 0)).to.be.revertedWith(
-                      "Voting__AdjustVotingPeriod"
-                  )
+                  await expect(
+                      voting.createElection(title, registrationPeriod, 0)
+                  ).to.be.revertedWith("Voting__AdjustVotingPeriod")
               })
               it("Returns the election when the election id is provided", async () => {
-                  await voting.createElection(title, deadline, deadline2)
+                  await voting.createElection(title, registrationPeriod, votingPeriod)
                   const election = await voting.getElection(1)
                   assert(election.title == title)
-                  assert(election.registrationPeriod.toString() == deadline.toString())
-                  assert(election.votingPeriod.toString() == deadline2.toString())
-                  assert(election.registrationState == 0)
-                  assert(election.voteState == 0)
+                  assert(election.registrationPeriod.toString() == registrationPeriod.toString())
+                  assert(election.votingPeriod.toString() == votingPeriod.toString())
               })
               it("Emits an event when election has been created", async () => {
-                  await expect(voting.createElection(title, deadline, deadline2)).to.emit(
-                      voting,
-                      "ElectionCreated"
+                  await expect(
+                      voting.createElection(title, registrationPeriod, votingPeriod)
+                  ).to.emit(voting, "ElectionCreated")
+              })
+          })
+
+          describe("candidateRegistration", () => {
+              let connectedUser
+              beforeEach(async () => {
+                  await voting.createElection(title, registrationPeriod, votingPeriod)
+                  await voting.candidateRegistration(1, "Alice")
+                  connectedUser = voting.connect(user1)
+              })
+              it("Reverts if a candidate is already registered for current election", async () => {
+                  await expect(voting.candidateRegistration(1, "Alice")).to.be.revertedWith(
+                      "Voting__AlreadyRegistered"
                   )
+              })
+              it("Reverts if a candidate tries to register after registration period", async () => {
+                  await network.provider.send("evm_increaseTime", [registrationPeriod])
+                  await network.provider.send("evm_mine")
+                  await expect(connectedUser.candidateRegistration(1, "Bob")).to.be.revertedWith(
+                      "Voting__RegistrationPeriodOver"
+                  )
+              })
+              it("Emits an event if a candidate successfully registered", async () => {
+                  await expect(connectedUser.candidateRegistration(1, "Bob")).to.emit(
+                      voting,
+                      "CandidateResgistered"
+                  )
+              })
+              it("Returns a registered candidate", async () => {
+                  const Alice = await voting.getCandidate(owner.address, 1)
+                  assert.equal(Alice.name, "Alice")
+                  assert.equal(Alice.isRegistered, 1)
+                  assert.equal(Alice.voteCount, 0)
               })
           })
       })
