@@ -76,4 +76,41 @@ const { developmentChains } = require("../../helper-hardhat-config")
                   assert.equal(Alice.voteCount, 0)
               })
           })
+
+          describe("vote", () => {
+              let connectedUser
+              beforeEach(async () => {
+                  await voting.createElection(title, registrationPeriod, votingPeriod)
+                  await voting.candidateRegistration(1, "Alice")
+                  connectedUser = voting.connect(user1)
+              })
+              it("Reverts when a user tries to vote after voting period", async () => {
+                  await network.provider.send("evm_increaseTime", [votingPeriod])
+                  await network.provider.send("evm_mine")
+                  await expect(connectedUser.vote(1, owner.address)).to.be.revertedWith(
+                      "Voting__VotePeriodOver"
+                  )
+              })
+              it("Reverts if picked candidate is not registered", async () => {
+                  await expect(connectedUser.vote(1, user1.address)).to.be.revertedWith(
+                      "Voting__CandidateNotRegistered"
+                  )
+              })
+              it("User should only be able to vote once per election", async () => {
+                  await connectedUser.vote(1, owner.address)
+                  await expect(connectedUser.vote(1, owner.address)).to.be.revertedWith(
+                      "Voting__AlreadyVoted"
+                  )
+              })
+              it("Emits an event for vote success", async () => {
+                  await expect(connectedUser.vote(1, owner.address)).to.emit(voting, "VoteSuccess")
+              })
+              it("Returns vote amount of a candidate", async () => {
+                  let connectedUser2 = voting.connect(user2)
+                  connectedUser2.vote(1, owner.address)
+                  connectedUser.vote(1, owner.address)
+                  const aliceVoteCount = await voting.getVoteCount(owner.address, 1)
+                  assert.equal(aliceVoteCount.toString(), "2")
+              })
+          })
       })
