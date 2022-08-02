@@ -7,6 +7,9 @@ error Voting__AdjustRegistrationPeriod();
 error Voting__AdjustVotingPeriod();
 error Voting__AlreadyRegistered();
 error Voting__RegistrationPeriodOver();
+error Voting__VotePeriodOver();
+error Voting__CandidateNotRegistered();
+error Voting__AlreadyVoted();
 
 contract Voting {
     using Counters for Counters.Counter;
@@ -29,13 +32,12 @@ contract Voting {
 
     struct Voter {
         bool hasVoted;
-        uint256 electionId;
     }
 
     Counters.Counter private s_electionIds;
     mapping(uint256 => Election) private s_elections;
     mapping(address => mapping(uint256 => Candidate)) private s_candidates;
-    mapping(address => uint256[]) private s_voterToElectionId;
+    mapping(address => mapping(uint256 => Voter)) s_voters;
 
     event ElectionCreated(
         uint256 indexed electionId,
@@ -44,6 +46,8 @@ contract Voting {
     );
 
     event CandidateResgistered(address indexed candidate, uint256 indexed electionId);
+
+    event VoteSuccess(address indexed voter, address indexed candidate, uint256 electionId);
 
     modifier timeCheck(uint256 registrationPeriod, uint256 votingPeriod) {
         if (registrationPeriod <= block.timestamp) {
@@ -71,6 +75,30 @@ contract Voting {
         _;
     }
 
+    modifier voteDeadline(uint256 electionId) {
+        Election memory election = s_elections[electionId];
+        if (block.timestamp >= election.votingPeriod) {
+            revert Voting__VotePeriodOver();
+        }
+        _;
+    }
+
+    modifier candidateList(uint256 electionId, address candidate) {
+        Candidate memory _candidate = s_candidates[candidate][electionId];
+        if (_candidate.isRegistered == Registered.NO) {
+            revert Voting__CandidateNotRegistered();
+        }
+        _;
+    }
+
+    modifier _hasVoted(address voter, uint256 electionId) {
+        Voter memory _voter = s_voters[voter][electionId];
+        if (_voter.hasVoted) {
+            revert Voting__AlreadyVoted();
+        }
+        _;
+    }
+
     function createElection(
         string memory _title,
         uint256 _registrationPeriod,
@@ -89,6 +117,21 @@ contract Voting {
     {
         s_candidates[msg.sender][electionId] = Candidate(_name, Registered.YES, 0);
         emit CandidateResgistered(msg.sender, electionId);
+    }
+
+    function vote(uint256 electionId, address candidate)
+        external
+        voteDeadline(electionId)
+        candidateList(electionId, candidate)
+        _hasVoted(msg.sender, electionId)
+    {
+        s_candidates[candidate][electionId].voteCount += 1;
+        s_voters[msg.sender][electionId] = Voter(true);
+        emit VoteSuccess(msg.sender, candidate, electionId);
+    }
+
+    function getVoteCount(address candidate, uint256 electionId) external view returns (uint256) {
+        return s_candidates[candidate][electionId].voteCount;
     }
 
     function getCandidate(address candidate, uint256 electionId)
