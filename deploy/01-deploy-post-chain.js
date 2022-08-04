@@ -7,7 +7,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deployer } = await getNamedAccounts()
 
     const args = []
-    const pollChain = await deploy("PollChain", {
+    const postChain = await deploy("PostChain", {
         from: deployer,
         args: args,
         log: true,
@@ -16,9 +16,9 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
     if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
         log("Verifying...")
-        await verify(pollChain.address, args)
+        await verify(postChain.address, args)
     }
     log("--------------------------------------")
 }
 
-module.exports.tags = ["all", "pollChain"]
+module.exports.tags = ["all", "postChain"]
