@@ -12,6 +12,13 @@ error PostChain__LikeDeadline(uint256 likeDeadline);
 error PostChain__CommentNotFound();
 error PostChain__OneLikePerPost();
 
+/** @title A contract for posts, comments and likes happening on chain
+ *  @author Jimmy Garcia
+ *  @notice Anyone can make a post with a comment deadline and a like deadline
+ *  @notice Users can write one comment per post, within deadline
+ *  @notice Users can like one comment per post, within deadline
+ *  @dev This implements counters to identify posts and comments
+ */
 contract PostChain {
     using Counters for Counters.Counter;
 
@@ -115,6 +122,13 @@ contract PostChain {
         _;
     }
 
+    /*
+     * @notice Users can create a post with a comment deadline and a like deadline
+     * @dev A new id is created to identify Post struct
+     * @param post: user written string
+     * @param commentDeadline: deadline for users to comment on post
+     * @param likeDeadline: deadline for users to like a comment on post
+     */
     function createPost(
         string memory post,
         uint256 commentDeadline,
@@ -135,6 +149,13 @@ contract PostChain {
         emit PostCreated(msg.sender, newPostId);
     }
 
+    /*
+     * @notice Users can only comment once per post within deadline
+     * @dev A new id is created to identify Comment struct
+     * @dev Increments the total number of comments in current post
+     * @param postId: identifier for current post
+     * @param comment: string reply to post
+     */
     function replyToPost(uint256 postId, string memory comment)
         external
         commented(msg.sender, postId)
@@ -155,6 +176,14 @@ contract PostChain {
         emit RepliedToPost(msg.sender, postId, newCommentId);
     }
 
+    /*
+     * @notice Users can like only one comment per post, within likeDeadline of current post
+     * @dev a new Like struct created with: if user has liked a comment, current post, current comment
+     * @dev Increments number of likes of current comment
+     * @dev Increments total number of likes given in current post
+     * @param postId: identifier for current post
+     * @param commentId: identifier for current comment
+     */
     function likeComment(uint256 postId, uint256 commentId)
         external
         hasLiked(msg.sender, postId, commentId)
