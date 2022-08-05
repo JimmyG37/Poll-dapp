@@ -60,7 +60,11 @@ contract PostChain {
     mapping(uint256 => Comment) private s_comments;
     mapping(address => mapping(uint256 => Like)) private s_userToLikes;
 
-    event PostCreated(address indexed creator, uint256 indexed postId);
+    event PostCreated(
+        address indexed creator,
+        uint256 indexed postId,
+        uint256 indexed likeDeadline
+    );
 
     event RepliedToPost(
         address indexed commenter,
@@ -146,7 +150,7 @@ contract PostChain {
             0,
             0
         );
-        emit PostCreated(msg.sender, newPostId);
+        emit PostCreated(msg.sender, newPostId, likeDeadline);
     }
 
     /*
