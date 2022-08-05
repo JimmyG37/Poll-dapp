@@ -145,14 +145,15 @@ const { developmentChains } = require("../../helper-hardhat-config")
               })
           })
 
-          describe("verifyCommentToPost", () => {
-              it("Verifies if a specific user has commented on a specific post", async () => {
-                  await postChain.createPost(post, commentDeadline, likeDeadline)
-                  await postChain.replyToPost(1, "Bread and butter")
-                  let verify = await postChain.verifyCommentToPost(1, 1)
-                  assert.equal(verify, true)
-                  verify = await postChain.verifyCommentToPost(1, 2)
-                  assert.equal(verify, false)
-              })
-          })
+          /* Change verifyCommentToPost function visibility to public to test */
+          //   describe("verifyCommentToPost", () => {
+          //       it("Verifies if a specific user has commented on a specific post", async () => {
+          //           await postChain.createPost(post, commentDeadline, likeDeadline)
+          //           await postChain.replyToPost(1, "Bread and butter")
+          //           let verify = await postChain.verifyCommentToPost(1, 1)
+          //           assert.equal(verify, true)
+          //           verify = await postChain.verifyCommentToPost(1, 2)
+          //           assert.equal(verify, false)
+          //       })
+          //   })
       })
