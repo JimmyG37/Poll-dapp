@@ -6,7 +6,6 @@ require("hardhat-gas-reporter")
 require("hardhat-contract-sizer")
 require("dotenv").config()
 
-const MAINNET_RPC_URL = process.env.MAINNET_RPC_URL
 const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL
 const GOERLI_RPC_URL = process.env.GOERLI_RPC_URL
 
@@ -40,13 +39,6 @@ module.exports = {
             accounts: [PRIVATE_KEY],
             saveDeployments: true,
             chainId: 5,
-            blockConfirmations: 6,
-        },
-        mainnet: {
-            url: MAINNET_RPC_URL,
-            accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
-            saveDeployments: true,
-            chainId: 1,
             blockConfirmations: 6,
         },
         polygon: {

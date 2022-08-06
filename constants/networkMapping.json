@@ -1,3 +1,5 @@
 {
-    "5": { "PostChain": ["0xB3353b5c6a661331d5b9f8A734035D9F324d179c"] }
+    "4": { "PostChain": ["0xA0B30A7C9e8bedfeE1343473D5e617998fF38042"] },
+    "5": { "PostChain": ["0xB3353b5c6a661331d5b9f8A734035D9F324d179c"] },
+    "31337": { "PostChain": ["0x5FbDB2315678afecb367f032d93F642f64180aa3"] }
 }
