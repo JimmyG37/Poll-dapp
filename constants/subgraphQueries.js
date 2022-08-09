@@ -30,4 +30,4 @@ const GET_LIKES = gql`
         }
     }
 `
-export { GET_POSTS, GET_COMMENTS, GET_LIKES }
+export default GET_POSTS
