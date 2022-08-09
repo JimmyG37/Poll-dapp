@@ -5,7 +5,7 @@ import Feed from "../components/Feed"
 
 export default function Home() {
     return (
-        <div>
+        <div className=" min-h-screen flex max-w-[1500px] mx-auto">
             <Feed />
         </div>
     )
