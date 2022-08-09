@@ -11,13 +11,15 @@ const client = new ApolloClient({
 
 function MyApp({ Component, pageProps }) {
     return (
-        <MoralisProvider initializeOnMount={false}>
-            <ApolloProvider client={client}>
-                <Header />
-                <Sidebar />
-                <Component {...pageProps} />
-            </ApolloProvider>
-        </MoralisProvider>
+        <div>
+            <MoralisProvider initializeOnMount={false}>
+                <ApolloProvider client={client}>
+                    <Header />
+                    <Sidebar />
+                    <Component {...pageProps} />
+                </ApolloProvider>
+            </MoralisProvider>
+        </div>
     )
 }
 
