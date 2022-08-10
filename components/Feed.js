@@ -1,9 +1,11 @@
-import { useQuery } from "@apollo/client"
-import { useMoralis, useWeb3Contract } from "react-moralis"
-import GET_POSTS from "../constants/subgraphQueries"
 import Post from "./Post"
-import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
+import GET_POSTS from "../constants/subgraphQueries"
+import CreatePost from "./CreatePost"
+import { useQuery } from "@apollo/client"
+import { SparklesIcon } from "@heroicons/react/outline"
+import { useMoralis, useWeb3Contract } from "react-moralis"
 import networkMapping from "../constants/networkMapping.json"
+import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 
 export default function Feed() {
     const { chainId, account, isWeb3Enabled } = useMoralis()
@@ -13,13 +15,20 @@ export default function Feed() {
 
     return (
         <div className="flex-grow border-l border-r border-slate-50 max-w-2xl sm:ml-[73px] xl:ml-[370px]">
+            <div className="text-black flex items-center sm:justify-between py-2 px-3 sticky top-0 z-50 bg-slate-50 ">
+                <h2 className="text-lg sm:text-xl font-bold">Home</h2>
+                <div className="hoverAnimation w-9 h-9 flex items-center justify-center xl:px-0 ml-auto">
+                    <SparklesIcon className="h-5 text-black" />
+                </div>
+            </div>
             {isWeb3Enabled ? (
                 loading || !createdPosts ? (
                     <div>Loading...</div>
                 ) : (
                     <div className="pb-72">
+                        <CreatePost />
                         {createdPosts.posts.map((post) => {
-                            return <Post key={post.id} postIdentifier={post.postId} />
+                            return <Post id={post.id} postIdentifier={post.postId} />
                         })}
                     </div>
                 )
