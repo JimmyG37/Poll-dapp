@@ -1,9 +1,12 @@
+import Moment from "react-moment"
+import moment from "moment"
+import networkMapping from "../constants/networkMapping.json"
+import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
+import { Tooltip } from "web3uikit"
+import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { useEffect, useState } from "react"
 import { useMoralis, useWeb3Contract } from "react-moralis"
-import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
-import networkMapping from "../constants/networkMapping.json"
-import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
-import Moment from "react-moment"
+import { CountdownCircleTimer } from "react-countdown-circle-timer"
 import { HeartIcon as HeartIconFilled, ChatIcon as ChatIconFilled } from "@heroicons/react/solid"
 
 const truncateStr = (fullStr, strLen) => {
@@ -35,6 +38,8 @@ export default function Post({ postIdentifier }) {
     const [dateCreated, setDateCreated] = useState(0)
     const [totalComments, setTotalComments] = useState(0)
     const [totalLikes, setTotalLikes] = useState(0)
+    const [commentSeconds, setCommentSeconds] = useState(0)
+    const [likeSeconds, setLikeSeconds] = useState(0)
     const postChainAbi = PostChain.abi
     const postId = parseInt(postIdentifier)
     const { runContractFunction } = useWeb3Contract()
@@ -60,18 +65,44 @@ export default function Post({ postIdentifier }) {
             setDateCreated(createdDate)
             setTotalComments(parseInt(returnedPost.totalComments))
             setTotalLikes(parseInt(returnedPost.totalLikes))
+            unixToSeconds(commentDeadline, likeDeadline)
         }
     }
+
+    const unixToSeconds = (comment, like) => {
+        let commentDate = new Date(comment * 1000)
+        let currentCommentDate = new Date()
+        let likeDate = new Date(like * 1000)
+        let currentLikeDate = new Date()
+
+        let commentDateDiff = commentDate.getTime() - currentCommentDate.getTime()
+        let likeDateDiff = likeDate.getTime() - currentLikeDate.getTime()
+
+        let commentSecDiff = commentDateDiff / 1000
+        let likeSecDiff = likeDateDiff / 1000
+        var newCommentSeconds = Math.abs(commentSecDiff)
+        var newLikeSeconds = Math.abs(likeSecDiff)
+        setCommentSeconds(newCommentSeconds)
+        setLikeSeconds(newLikeSeconds)
+    }
+
+    const timeRemaining = (remainingTime) => {
+        const hours = Math.floor(remainingTime / 3600)
+        const minutes = Math.floor((remainingTime % 3600) / 60)
+        const seconds = remainingTime % 60
+
+        return `${hours}hrs:${minutes}mins:${seconds}secs`
+    }
+
     useEffect(() => {
         if (isWeb3Enabled) {
             handlePost()
         }
-    }, [chainId, account, isWeb3Enabled])
+    }, [chainId, account, isWeb3Enabled, commentSeconds, likeSeconds])
 
     const formattedAddress = truncateStr(postCreator || "", 15)
-
     return (
-        <div className="p-3 flex cursor-pointer border-b border-gray-700">
+        <div className="p-3 flex cursor-pointer border-b border-gray-200">
             <div className="flex justify-between">
                 <div className="h-11 w-11 rounded-full mr-4">
                     <Jazzicon diameter={40} seed={jsNumberForAddress("" + postCreator)} />
@@ -91,10 +122,50 @@ export default function Post({ postIdentifier }) {
                     <p className="text-black text-[15px] sm:text-base mt-0.5">{postText}</p>
                     <div className="flex justify-between w-8/12 ml-1">
                         <div className="icon">
-                            <HeartIconFilled className="h-5 text-green-400" />
+                            <CountdownCircleTimer
+                                isPlaying
+                                duration={likeSeconds}
+                                colors="#90EE90"
+                                colorsTime={[1, 1, 2, 0]}
+                                strokeWidth={5}
+                                size={36}
+                            >
+                                {({ remainingTime }) => (
+                                    <div>
+                                        <Tooltip
+                                            content={`${timeRemaining(
+                                                remainingTime
+                                            )} to like a comment`}
+                                            position="left"
+                                        >
+                                            <HeartIconFilled className="h-5 text-green-400" />
+                                        </Tooltip>
+                                    </div>
+                                )}
+                            </CountdownCircleTimer>
                         </div>
                         <div className="icon">
-                            <ChatIconFilled className="h-5 text-green-400" />
+                            <CountdownCircleTimer
+                                isPlaying
+                                duration={commentSeconds}
+                                colors="#90EE90"
+                                colorsTime={[7, 5, 2, 0]}
+                                strokeWidth={5}
+                                size={36}
+                            >
+                                {({ remainingTime }) => (
+                                    <div>
+                                        <Tooltip
+                                            content={`${timeRemaining(
+                                                remainingTime
+                                            )} to reply to post`}
+                                            position="right"
+                                        >
+                                            <ChatIconFilled className="h-5 text-green-400" />
+                                        </Tooltip>
+                                    </div>
+                                )}
+                            </CountdownCircleTimer>
                         </div>
                     </div>
                 </div>
