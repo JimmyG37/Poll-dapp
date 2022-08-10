@@ -5,6 +5,7 @@ import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 import { Tooltip } from "web3uikit"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/router"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import { CountdownCircleTimer } from "react-countdown-circle-timer"
 import { HeartIcon as HeartIconFilled, ChatIcon as ChatIconFilled } from "@heroicons/react/solid"
@@ -27,7 +28,7 @@ const unixToDate = (u) => {
     return newDate
 }
 
-export default function Post({ postIdentifier }) {
+export default function Post({ id, postPage }) {
     const { chainId, account, isWeb3Enabled } = useMoralis()
     const chainString = chainId ? parseInt(chainId).toString() : "31337"
     const postChainAddress = networkMapping[chainString].PostChain[0]
@@ -41,7 +42,8 @@ export default function Post({ postIdentifier }) {
     const [commentSeconds, setCommentSeconds] = useState(0)
     const [likeSeconds, setLikeSeconds] = useState(0)
     const postChainAbi = PostChain.abi
-    const postId = parseInt(postIdentifier)
+    const postId = parseInt(id)
+    const router = useRouter()
     const { runContractFunction } = useWeb3Contract()
 
     async function handlePost() {
@@ -98,11 +100,14 @@ export default function Post({ postIdentifier }) {
         if (isWeb3Enabled) {
             handlePost()
         }
-    }, [chainId, account, isWeb3Enabled, commentSeconds, likeSeconds])
+    }, [chainId, account, isWeb3Enabled, id, commentSeconds, likeSeconds])
 
     const formattedAddress = truncateStr(postCreator || "", 15)
     return (
-        <div className="p-3 flex cursor-pointer border-b border-gray-200">
+        <div
+            className="p-3 flex cursor-pointer border-b border-gray-200"
+            onClick={() => router.push(`/${id}`)}
+        >
             <div className="flex justify-between">
                 <div className="h-11 w-11 rounded-full mr-4">
                     <Jazzicon diameter={40} seed={jsNumberForAddress("" + postCreator)} />
