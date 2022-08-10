@@ -2,12 +2,24 @@ import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import Sidebar from "../components/Sidebar"
 import Post from "../components/Post"
+import GET_COMMENTS from "../constants/queryComments"
+import Comment from "../components/Comment"
 import { ArrowLeftIcon } from "@heroicons/react/solid"
 import Header from "../components/Header"
+import { gql, useQuery } from "@apollo/client"
+import networkMapping from "../constants/networkMapping.json"
+import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
+import { useMoralis, useWeb3Contract } from "react-moralis"
 
 export default function PostPage() {
+    const { chainId, account, isWeb3Enabled } = useMoralis()
+    const chainString = chainId ? parseInt(chainId).toString() : "31337"
+    const postChainAddress = networkMapping[chainString].PostChain[0]
+    const postChainAbi = PostChain.abi
     const router = useRouter()
     const { id } = router.query
+
+    const { loading, error, data } = useQuery(GET_COMMENTS)
 
     return (
         <div>
@@ -24,8 +36,28 @@ export default function PostPage() {
                         </div>
                         Post
                     </div>
-
                     <Post id={id} postPage />
+                    {isWeb3Enabled ? (
+                        loading || !data ? (
+                            <div>Loading...</div>
+                        ) : (
+                            <div className="pb-72">
+                                {data.comments.length > 0 &&
+                                    data.comments.map((comment) => {
+                                        if (comment.postId == id) {
+                                            return (
+                                                <Comment
+                                                    key={`${comment.id}${comment.commentId}`}
+                                                    id={comment.commentId}
+                                                />
+                                            )
+                                        }
+                                    })}
+                            </div>
+                        )
+                    ) : (
+                        <div>Web3 Not Enabled</div>
+                    )}
                 </div>
             </div>
         </div>
