@@ -1,5 +1,5 @@
 import Post from "./Post"
-import GET_POSTS from "../constants/subgraphQueries"
+import GET_POSTS from "../constants/queryPosts"
 import CreatePost from "./CreatePost"
 import { useQuery } from "@apollo/client"
 import { SparklesIcon } from "@heroicons/react/outline"
