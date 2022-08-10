@@ -32,6 +32,7 @@ export default function Post({ id, postPage }) {
     const { chainId, account, isWeb3Enabled } = useMoralis()
     const chainString = chainId ? parseInt(chainId).toString() : "31337"
     const postChainAddress = networkMapping[chainString].PostChain[0]
+    const postChainAbi = PostChain.abi
     const [postCreator, setPostCreator] = useState(null)
     const [postText, setPostText] = useState("")
     const [commentDeadline, setCommentDeadline] = useState(0)
@@ -41,7 +42,6 @@ export default function Post({ id, postPage }) {
     const [totalLikes, setTotalLikes] = useState(0)
     const [commentSeconds, setCommentSeconds] = useState(0)
     const [likeSeconds, setLikeSeconds] = useState(0)
-    const postChainAbi = PostChain.abi
     const postId = parseInt(id)
     const router = useRouter()
     const { runContractFunction } = useWeb3Contract()
@@ -100,7 +100,7 @@ export default function Post({ id, postPage }) {
         if (isWeb3Enabled) {
             handlePost()
         }
-    }, [chainId, account, isWeb3Enabled, id, commentSeconds, likeSeconds])
+    }, [chainId, account, isWeb3Enabled, commentSeconds, likeSeconds])
 
     const formattedAddress = truncateStr(postCreator || "", 15)
     return (
@@ -118,9 +118,9 @@ export default function Post({ id, postPage }) {
                             <h4 className="font-bold text-[13px] sm:text-base text-black group-hover:underline inline-block">
                                 {formattedAddress}
                             </h4>
-                        </div>
+                        </div>{" "}
                         ·{" "}
-                        <span className="hover:underline text-sm sm:text-[15px]">
+                        <span className="text-sm sm:text-[15px]">
                             <Moment fromNow>{dateCreated}</Moment>
                         </span>
                     </div>
