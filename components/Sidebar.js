@@ -23,6 +23,7 @@ export default function Sidebar() {
                 {menuItems.map(({ href, title }) => (
                     <div
                         className={`text-black flex items-center justify-center xl:justify-start text-xl space-x-3 hoverAnimation`}
+                        key={`${href}${title}`}
                     >
                         <Link href={href}>
                             <a>{title}</a>
