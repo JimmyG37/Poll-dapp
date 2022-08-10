@@ -10,16 +10,6 @@ const GET_POSTS = gql`
         }
     }
 `
-const GET_COMMENTS = gql`
-    {
-        comments(first: 5) {
-            id
-            commenter
-            postId
-            commentId
-        }
-    }
-`
 
 const GET_LIKES = gql`
     {
