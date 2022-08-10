@@ -14,9 +14,9 @@ export default function Feed() {
     const { loading, error, data: createdPosts } = useQuery(GET_POSTS)
 
     return (
-        <div className="flex-grow border-l border-r border-slate-50 max-w-2xl sm:ml-[73px] xl:ml-[370px]">
-            <div className="text-black flex items-center sm:justify-between py-2 px-3 sticky top-0 z-50 bg-slate-50 ">
-                <h2 className="text-lg sm:text-xl font-bold">Home</h2>
+        <div className="flex-grow border-l border-r border-gray-200 max-w-2xl sm:ml-[73px] xl:ml-[370px]">
+            <div className="text-black flex items-center sm:justify-between py-2 px-3 sticky top-0 z-50 border-gray-200 ">
+                <h2 className="text-lg sm:text-xl font-bold ">Home</h2>
                 <div className="hoverAnimation w-9 h-9 flex items-center justify-center xl:px-0 ml-auto">
                     <SparklesIcon className="h-5 text-black" />
                 </div>
@@ -28,7 +28,7 @@ export default function Feed() {
                     <div className="pb-72">
                         <CreatePost />
                         {createdPosts.posts.map((post) => {
-                            return <Post id={post.id} postIdentifier={post.postId} />
+                            return <Post id={post.postId} key={`${post.id}${post.postId}`} />
                         })}
                     </div>
                 )
