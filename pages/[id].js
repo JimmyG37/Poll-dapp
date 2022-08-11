@@ -10,6 +10,7 @@ import { gql, useQuery } from "@apollo/client"
 import networkMapping from "../constants/networkMapping.json"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 import { useMoralis, useWeb3Contract } from "react-moralis"
+import ReplyToPost from "../components/ReplyToPost"
 
 export default function PostPage() {
     const { chainId, account, isWeb3Enabled } = useMoralis()
@@ -18,8 +19,33 @@ export default function PostPage() {
     const postChainAbi = PostChain.abi
     const router = useRouter()
     const { id } = router.query
-
+    const [totalLikes, setTotalLikes] = useState(0)
+    const { runContractFunction } = useWeb3Contract()
     const { loading, error, data } = useQuery(GET_COMMENTS)
+    let postId = parseInt(id)
+
+    async function handlePost() {
+        const returnedPost = await runContractFunction({
+            params: {
+                abi: PostChain.abi,
+                contractAddress: postChainAddress,
+                functionName: "getPost",
+                params: {
+                    postId: postId,
+                },
+            },
+            onError: (error) => console.log(error),
+        })
+        if (returnedPost) {
+            setTotalLikes(parseInt(returnedPost.totalLikes))
+        }
+    }
+
+    useEffect(() => {
+        if (isWeb3Enabled) {
+            handlePost()
+        }
+    }, [isWeb3Enabled])
 
     return (
         <div>
@@ -37,11 +63,20 @@ export default function PostPage() {
                         Post
                     </div>
                     <Post id={id} postPage />
+                    <div className="flex items-center px-1.5 py-2 border-b border-gray-200 text-[#62676b] gap-x-1 sticky top-0 z-50 bg-slate-50">
+                        <span className="ml-5 text-sm sm:text-[14px]">{totalLikes}</span>{" "}
+                        {totalLikes > 2 || totalLikes == 0 ? (
+                            <span className=" text-sm sm:text-[13px] text-[#6e767d]">Likes</span>
+                        ) : (
+                            <span className=" text-sm sm:text-[13px] text-[#595b5f]">Like</span>
+                        )}
+                    </div>
                     {isWeb3Enabled ? (
                         loading || !data ? (
                             <div>Loading...</div>
                         ) : (
                             <div className="pb-72">
+                                {/* <ReplyToPost id={id} /> */}
                                 {data.comments.length > 0 &&
                                     data.comments.map((comment) => {
                                         if (comment.postId == id) {
