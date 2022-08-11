@@ -17,7 +17,8 @@ export default function CreatePost() {
 
     const { runContractFunction } = useWeb3Contract()
 
-    const createPost = async () => {
+    const createPost = async (e) => {
+        e.preventDefault()
         const postOptions = {
             abi: postChainAbi,
             contractAddress: postChainAddress,
@@ -36,6 +37,7 @@ export default function CreatePost() {
                 console.log(error)
             },
         })
+        setPostText("")
     }
 
     const handlePostSuccess = async (tx) => {
@@ -46,7 +48,6 @@ export default function CreatePost() {
             title: "Success",
             position: "topR",
         })
-        setPostText("")
     }
 
     const handleLikeDeadline = ({ date }) => {
@@ -82,7 +83,7 @@ export default function CreatePost() {
                     />
                     <button
                         className="bg-[#1d9bf0] text-slate-50 rounded-full px-14 py-2 font-bold shadow-md hover:bg-[#1a8cd8] disabled:hover:bg-[#1d9bf0] disabled:opacity-50 disabled:cursor-default"
-                        onClick={createPost}
+                        onClick={(e) => createPost(e)}
                     >
                         Post
                     </button>
