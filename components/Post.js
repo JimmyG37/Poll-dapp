@@ -23,11 +23,6 @@ const truncateStr = (fullStr, strLen) => {
     )
 }
 
-const unixToDate = (u) => {
-    let newDate = new Date(u * 1000)
-    return newDate
-}
-
 export default function Post({ id, postPage }) {
     const { chainId, account, isWeb3Enabled } = useMoralis()
     const chainString = chainId ? parseInt(chainId).toString() : "31337"
@@ -42,6 +37,7 @@ export default function Post({ id, postPage }) {
     const [totalLikes, setTotalLikes] = useState(0)
     const [commentSeconds, setCommentSeconds] = useState(0)
     const [likeSeconds, setLikeSeconds] = useState(0)
+    const [postPageDate, setPostPageDate] = useState(null)
     const postId = parseInt(id)
     const router = useRouter()
     const { runContractFunction } = useWeb3Contract()
@@ -88,6 +84,12 @@ export default function Post({ id, postPage }) {
         setLikeSeconds(newLikeSeconds)
     }
 
+    const unixToDate = (u) => {
+        let newDate = new Date(u * 1000)
+        setPostPageDate(newDate)
+        return newDate
+    }
+
     const timeRemaining = (remainingTime) => {
         const hours = Math.floor(remainingTime / 3600)
         const minutes = Math.floor((remainingTime % 3600) / 60)
@@ -105,13 +107,13 @@ export default function Post({ id, postPage }) {
     const formattedAddress = truncateStr(postCreator || "", 15)
     return (
         <div
-            className="p-3 flex cursor-pointer border-b border-gray-200"
+            className="p-2 flex cursor-pointer border-b border-gray-200"
             onClick={() => router.push(`/${id}`)}
         >
+            <div className="h-11 w-11 rounded-full mr-4">
+                <Jazzicon diameter={40} seed={jsNumberForAddress("" + postCreator)} />
+            </div>
             <div className="flex justify-between">
-                <div className="h-11 w-11 rounded-full mr-4">
-                    <Jazzicon diameter={40} seed={jsNumberForAddress("" + postCreator)} />
-                </div>
                 <div className="flex flex-col space-y-2 w-full">
                     <div className="text-[#6e767d]">
                         <div className="inline-block group">
@@ -119,60 +121,69 @@ export default function Post({ id, postPage }) {
                                 {formattedAddress}
                             </h4>
                         </div>{" "}
-                        ·{" "}
-                        <span className="text-sm sm:text-[15px]">
-                            <Moment fromNow>{dateCreated}</Moment>
-                        </span>
+                        {!postPage && (
+                            <span className="text-sm sm:text-[15px]">
+                                · <Moment fromNow>{dateCreated}</Moment>
+                            </span>
+                        )}
                     </div>
                     <p className="text-black text-[15px] sm:text-base mt-0.5">{postText}</p>
-                    <div className="flex justify-between w-8/12 ml-1">
-                        <div className="icon">
-                            <CountdownCircleTimer
-                                isPlaying
-                                duration={likeSeconds}
-                                colors="#90EE90"
-                                colorsTime={[1, 1, 2, 0]}
-                                strokeWidth={5}
-                                size={36}
-                            >
-                                {({ remainingTime }) => (
-                                    <div>
-                                        <Tooltip
-                                            content={`${timeRemaining(
-                                                remainingTime
-                                            )} to like a comment`}
-                                            position="left"
-                                        >
-                                            <HeartIconFilled className="h-5 text-green-400" />
-                                        </Tooltip>
-                                    </div>
-                                )}
-                            </CountdownCircleTimer>
+                    {!postPage && (
+                        <div className="flex justify-between w-8/12 ml-1">
+                            <div className="icon">
+                                <CountdownCircleTimer
+                                    isPlaying
+                                    duration={likeSeconds}
+                                    colors="#90EE90"
+                                    colorsTime={[1, 1, 2, 0]}
+                                    strokeWidth={5}
+                                    size={36}
+                                >
+                                    {({ remainingTime }) => (
+                                        <div>
+                                            <Tooltip
+                                                content={`${timeRemaining(
+                                                    remainingTime
+                                                )} to like a comment`}
+                                                position="left"
+                                            >
+                                                <HeartIconFilled className="h-5 text-green-400" />
+                                            </Tooltip>
+                                        </div>
+                                    )}
+                                </CountdownCircleTimer>
+                            </div>
+                            <div className="icon">
+                                <CountdownCircleTimer
+                                    isPlaying
+                                    duration={commentSeconds}
+                                    colors="#90EE90"
+                                    colorsTime={[7, 5, 2, 0]}
+                                    strokeWidth={5}
+                                    size={36}
+                                >
+                                    {({ remainingTime }) => (
+                                        <div>
+                                            <Tooltip
+                                                content={`${timeRemaining(
+                                                    remainingTime
+                                                )} to reply to post`}
+                                                position="right"
+                                            >
+                                                <ChatIconFilled className="h-5 text-green-400" />
+                                            </Tooltip>
+                                        </div>
+                                    )}
+                                </CountdownCircleTimer>
+                            </div>
                         </div>
-                        <div className="icon">
-                            <CountdownCircleTimer
-                                isPlaying
-                                duration={commentSeconds}
-                                colors="#90EE90"
-                                colorsTime={[7, 5, 2, 0]}
-                                strokeWidth={5}
-                                size={36}
-                            >
-                                {({ remainingTime }) => (
-                                    <div>
-                                        <Tooltip
-                                            content={`${timeRemaining(
-                                                remainingTime
-                                            )} to reply to post`}
-                                            position="right"
-                                        >
-                                            <ChatIconFilled className="h-5 text-green-400" />
-                                        </Tooltip>
-                                    </div>
-                                )}
-                            </CountdownCircleTimer>
-                        </div>
-                    </div>
+                    )}
+                    {postPage && (
+                        <span className="text-sm sm:text-[15px] text-[#6e767d]">
+                            <Moment format="h:mm A">{postPageDate}</Moment> ·{" "}
+                            <Moment format="MMM DD, YY">{postPageDate}</Moment>
+                        </span>
+                    )}
                 </div>
             </div>
         </div>
