@@ -6,26 +6,19 @@ import "hardhat/console.sol";
 
 error PostChain__AdjustCommentDeadline();
 error PostChain__AdjustLikeDeadline();
-error PostChain__OneCommentPerPost();
 error PostChain__CommentDeadline(uint256 commentDeadline);
 error PostChain__LikeDeadline(uint256 likeDeadline);
-error PostChain__CommentNotFound();
-error PostChain__OneLikePerPost();
+error PostChain__AlreadyLiked();
 
 /** @title A contract for posts, comments and likes happening on chain
  *  @author Jimmy Garcia
  *  @notice Anyone can make a post with a comment deadline and a like deadline
- *  @notice Users can write one comment per post, within deadline
- *  @notice Users can like one comment per post, within deadline
+ *  @notice Users can write comment, within comment deadline
+ *  @notice Users can like comments, within like deadline
  *  @dev This implements counters to identify posts and comments
  */
 contract PostChain {
     using Counters for Counters.Counter;
-
-    enum Commented {
-        NO,
-        YES
-    }
 
     struct Post {
         address creator;
@@ -45,7 +38,6 @@ contract PostChain {
         string comment;
         uint256 timeCreated;
         uint256 likes;
-        Commented hasCommented;
     }
 
     struct Like {
@@ -84,19 +76,6 @@ contract PostChain {
         _;
     }
 
-    modifier commented(address _commenter, uint256 postId) {
-        uint256 commentIds = s_commentIds.current();
-        for (uint256 i = 0; i < commentIds; i++) {
-            Comment memory comment = s_comments[i + 1];
-            if (comment.commenter == _commenter) {
-                if (comment.hasCommented == Commented.YES) {
-                    revert PostChain__OneCommentPerPost();
-                }
-            }
-        }
-        _;
-    }
-
     modifier replyDeadLine(uint256 postId) {
         Post memory post = s_posts[postId];
         if (block.timestamp >= post.commentDeadline) {
@@ -121,7 +100,7 @@ contract PostChain {
         Like memory like = s_userToLikes[user][postId];
         bool correctPost = verifyCommentToPost(commentId, postId);
         if (correctPost && like.liked) {
-            revert PostChain__OneLikePerPost();
+            revert PostChain__AlreadyLiked();
         }
         _;
     }
@@ -154,17 +133,13 @@ contract PostChain {
     }
 
     /*
-     * @notice Users can only comment once per post within deadline
+     * @notice Users can reply to a post within deadline
      * @dev A new id is created to identify Comment struct
      * @dev Increments the total number of comments in current post
      * @param postId: identifier for current post
      * @param comment: string reply to post
      */
-    function replyToPost(uint256 postId, string memory comment)
-        external
-        commented(msg.sender, postId)
-        replyDeadLine(postId)
-    {
+    function replyToPost(uint256 postId, string memory comment) external replyDeadLine(postId) {
         s_commentIds.increment();
         uint256 newCommentId = s_commentIds.current();
         s_comments[newCommentId] = Comment(
@@ -173,15 +148,14 @@ contract PostChain {
             newCommentId,
             comment,
             block.timestamp,
-            0,
-            Commented.YES
+            0
         );
         s_posts[postId].totalComments += 1;
         emit RepliedToPost(msg.sender, postId, newCommentId);
     }
 
     /*
-     * @notice Users can like only one comment per post, within likeDeadline of current post
+     * @notice Users can like comments in a post, within likeDeadline of current post
      * @dev a new Like struct created with: if user has liked a comment, current post, current comment
      * @dev Increments number of likes of current comment
      * @dev Increments total number of likes given in current post

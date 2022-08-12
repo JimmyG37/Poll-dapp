@@ -60,11 +60,6 @@ const { developmentChains } = require("../../helper-hardhat-config")
                   await postChain.replyToPost(1, "Me, I'm the best")
                   connectedUser = postChain.connect(user1)
               })
-              it("Users can submit one comment per Post", async () => {
-                  await expect(postChain.replyToPost(1, "Me again")).to.be.revertedWith(
-                      "PostChain__OneCommentPerPost"
-                  )
-              })
               it("Reverts when users submit a comment after comment deadline", async () => {
                   await network.provider.send("evm_increaseTime", [commentDeadline])
                   await network.provider.send("evm_mine")
@@ -90,7 +85,6 @@ const { developmentChains } = require("../../helper-hardhat-config")
                   assert.equal(selectedComment.comment, "Dogs")
                   assert.equal(selectedComment.timeCreated.toString(), timestamp.toString())
                   assert.equal(selectedComment.likes, 0)
-                  assert.equal(selectedComment.hasCommented, 1)
               })
               it("Total amount of comments in a post increases from new comments", async () => {
                   let returnedPost = await postChain.getPost(1)
@@ -116,10 +110,10 @@ const { developmentChains } = require("../../helper-hardhat-config")
                       "PostChain__LikeDeadline"
                   )
               })
-              it("Users can like one comment per post", async () => {
+              it("Users can't like same comment more than once", async () => {
                   await connectedUser.likeComment(1, 1)
                   await expect(connectedUser.likeComment(1, 1)).to.be.revertedWith(
-                      "PostChain__OneLikePerPost"
+                      "PostChain__AlreadyLiked"
                   )
               })
               it("Emits an event when a comment is liked", async () => {
