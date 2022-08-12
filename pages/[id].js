@@ -71,12 +71,13 @@ export default function PostPage() {
                             <span className=" text-sm sm:text-[13px] text-[#595b5f]">Like</span>
                         )}
                     </div>
+
                     {isWeb3Enabled ? (
                         loading || !data ? (
                             <div>Loading...</div>
                         ) : (
                             <div className="pb-72">
-                                {/* <ReplyToPost id={id} /> */}
+                                <ReplyToPost id={id} />
                                 {data.comments.length > 0 &&
                                     data.comments.map((comment) => {
                                         if (comment.postId == id) {
