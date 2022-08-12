@@ -2,7 +2,7 @@ const { ethers, network } = require("hardhat")
 
 async function replyToPost() {
     const postChain = await ethers.getContract("PostChain")
-    const replyTx = await postChain.replyToPost(1, "hi")
+    const replyTx = await postChain.replyToPost(3, "Ramen!")
     const replyTxReceipt = await replyTx.wait(1)
     const postId = replyTxReceipt.events[0].args.postId
     const commentId = replyTxReceipt.events[0].args.commentId
