@@ -62,11 +62,11 @@ export default function Comment({ id }) {
         if (isWeb3Enabled) {
             handleComment()
         }
-    }, [isWeb3Enabled])
+    }, [isWeb3Enabled, commentId])
 
     return (
-        <div className="p-3 flex cursor-pointer border-b border-gray-200">
-            <div className="h-11 w-11 rounded-full mr-4">
+        <div className="p-3 flex border-b border-gray-200">
+            <div className="h-11 w-11 rounded-full mr-5">
                 <Jazzicon diameter={40} seed={jsNumberForAddress("" + commenter)} />
             </div>
             <div className="flex flex-col space-y-2 w-full">
