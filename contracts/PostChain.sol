@@ -4,11 +4,13 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "hardhat/console.sol";
 
-error PostChain__AdjustCommentDeadline();
-error PostChain__AdjustLikeDeadline();
-error PostChain__CommentDeadline(uint256 commentDeadline);
-error PostChain__LikeDeadline(uint256 likeDeadline);
+error PostChain__AdjustDeadline();
+error PostChain__Deadline(uint256 deadline);
 error PostChain__AlreadyLiked();
+error PostChain__TipAmountNotMet(uint256 tipAmount);
+error PostChain__YouAreNotTheOwner();
+error PostChain__EmptyBalance();
+error PostChain_WithdrawFailed();
 
 /** @title A contract for posts, comments and likes happening on chain
  *  @author Jimmy Garcia
@@ -25,8 +27,7 @@ contract PostChain {
         string post;
         uint256 postId;
         uint256 dateCreated;
-        uint256 commentDeadline;
-        uint256 likeDeadline;
+        uint256 likeAndCommentDeadline;
         uint256 totalComments;
         uint256 totalLikes;
     }
@@ -46,17 +47,16 @@ contract PostChain {
         uint256 commentId;
     }
 
+    uint256 private tipAmount = 0.001 ether;
+    address private immutable i_owner;
     Counters.Counter private s_postIds;
     Counters.Counter private s_commentIds;
+    mapping(address => uint256) private s_proceeds;
     mapping(uint256 => Post) private s_posts;
     mapping(uint256 => Comment) private s_comments;
     mapping(address => mapping(uint256 => Like)) private s_userToLikes;
 
-    event PostCreated(
-        address indexed creator,
-        uint256 indexed postId,
-        uint256 indexed likeDeadline
-    );
+    event PostCreated(address indexed creator, uint256 indexed postId, uint256 indexed deadline);
 
     event RepliedToPost(
         address indexed commenter,
@@ -66,28 +66,23 @@ contract PostChain {
 
     event CommentLiked(address indexed user, uint256 indexed commentId, uint256 indexed postId);
 
-    modifier isEnoughTime(uint256 commentDeadline, uint256 likeDeadline) {
-        if (commentDeadline <= block.timestamp) {
-            revert PostChain__AdjustCommentDeadline();
-        }
-        if (likeDeadline <= block.timestamp) {
-            revert PostChain__AdjustLikeDeadline();
+    event UserTipped(address tipper, address user, uint256 tip);
+
+    constructor() {
+        i_owner = msg.sender;
+    }
+
+    modifier isEnoughTime(uint256 _deadline) {
+        if (_deadline <= block.timestamp) {
+            revert PostChain__AdjustDeadline();
         }
         _;
     }
 
-    modifier replyDeadLine(uint256 postId) {
+    modifier checkDeadline(uint256 postId) {
         Post memory post = s_posts[postId];
-        if (block.timestamp >= post.commentDeadline) {
-            revert PostChain__CommentDeadline(post.commentDeadline);
-        }
-        _;
-    }
-
-    modifier _likeDeadline(uint256 postId) {
-        Post memory post = s_posts[postId];
-        if (block.timestamp >= post.likeDeadline) {
-            revert PostChain__LikeDeadline(post.likeDeadline);
+        if (block.timestamp >= post.likeAndCommentDeadline) {
+            revert PostChain__Deadline(post.likeAndCommentDeadline);
         }
         _;
     }
@@ -105,18 +100,23 @@ contract PostChain {
         _;
     }
 
+    function updateTipAmount(uint256 newTipAmount) public payable {
+        if (i_owner != msg.sender) {
+            revert PostChain__YouAreNotTheOwner();
+        }
+        tipAmount = newTipAmount;
+    }
+
     /*
-     * @notice Users can create a post with a comment deadline and a like deadline
+     * @notice Users can create a post with a deadline to like and comment
      * @dev A new id is created to identify Post struct
      * @param post: user written string
-     * @param commentDeadline: deadline for users to comment on post
-     * @param likeDeadline: deadline for users to like a comment on post
+     * @param likeAndCommentDeadline: deadline for users to like comments and comment on the post
      */
-    function createPost(
-        string memory post,
-        uint256 commentDeadline,
-        uint256 likeDeadline
-    ) public isEnoughTime(commentDeadline, likeDeadline) {
+    function createPost(string memory post, uint256 likeAndCommentDeadline)
+        public
+        isEnoughTime(likeAndCommentDeadline)
+    {
         s_postIds.increment();
         uint256 newPostId = s_postIds.current();
         s_posts[newPostId] = Post(
@@ -124,12 +124,11 @@ contract PostChain {
             post,
             newPostId,
             block.timestamp,
-            commentDeadline,
-            likeDeadline,
+            likeAndCommentDeadline,
             0,
             0
         );
-        emit PostCreated(msg.sender, newPostId, likeDeadline);
+        emit PostCreated(msg.sender, newPostId, likeAndCommentDeadline);
     }
 
     /*
@@ -139,7 +138,7 @@ contract PostChain {
      * @param postId: identifier for current post
      * @param comment: string reply to post
      */
-    function replyToPost(uint256 postId, string memory comment) external replyDeadLine(postId) {
+    function replyToPost(uint256 postId, string memory comment) external checkDeadline(postId) {
         s_commentIds.increment();
         uint256 newCommentId = s_commentIds.current();
         s_comments[newCommentId] = Comment(
@@ -155,7 +154,7 @@ contract PostChain {
     }
 
     /*
-     * @notice Users can like comments in a post, within likeDeadline of current post
+     * @notice Users can like comments in a post, within deadline of current post
      * @dev a new Like struct created with: if user has liked a comment, current post, current comment
      * @dev Increments number of likes of current comment
      * @dev Increments total number of likes given in current post
@@ -165,12 +164,32 @@ contract PostChain {
     function likeComment(uint256 postId, uint256 commentId)
         external
         hasLiked(msg.sender, postId, commentId)
-        _likeDeadline(postId)
+        checkDeadline(postId)
     {
         s_userToLikes[msg.sender][postId] = Like(true, postId, commentId);
         incrementCommentLikes(commentId);
         incrementPostLikes(postId);
         emit CommentLiked(msg.sender, commentId, postId);
+    }
+
+    function tipUser(address userAddress) external payable {
+        if (msg.value < tipAmount) {
+            revert PostChain__TipAmountNotMet(tipAmount);
+        }
+        s_proceeds[userAddress] += msg.value;
+        emit UserTipped(msg.sender, userAddress, msg.value);
+    }
+
+    function withdrawBalances() external {
+        uint256 balance = s_proceeds[msg.sender];
+        if (balance <= 0) {
+            revert PostChain__EmptyBalance();
+        }
+        s_proceeds[msg.sender] = 0;
+        (bool success, ) = payable(msg.sender).call{value: balance}("");
+        if (!success) {
+            revert PostChain_WithdrawFailed();
+        }
     }
 
     function incrementPostLikes(uint256 postId) private {
@@ -182,12 +201,9 @@ contract PostChain {
         s_comments[commentId].likes += 1;
     }
 
-    function verifyCommentToPost(uint256 commentId, uint256 postId) private view returns (bool) {
+    function verifyCommentToPost(uint256 commentId, uint256 postId) public view returns (bool) {
         Comment memory comment = s_comments[commentId];
-        if (comment.postId == postId) {
-            return true;
-        }
-        return false;
+        return (comment.postId == postId);
     }
 
     function getPost(uint256 postId) external view returns (Post memory) {
@@ -200,5 +216,13 @@ contract PostChain {
 
     function getUserLike(address user, uint256 postId) external view returns (Like memory) {
         return s_userToLikes[user][postId];
+    }
+
+    function getTipAmount() public view returns (uint256) {
+        return tipAmount;
+    }
+
+    function getProceeds(address user) public view returns (uint256) {
+        return s_proceeds[user];
     }
 }

@@ -5,7 +5,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
 !developmentChains.includes(network.name)
     ? describe.skip
     : describe("PostChain Unit Tests", () => {
-          let postChain, owner, user1, user2, commentDeadline, likeDeadline, post
+          let postChain, owner, user1, user2, deadline, post, tip
           beforeEach(async () => {
               const accounts = await ethers.getSigners()
               owner = accounts[0]
@@ -14,30 +14,25 @@ const { developmentChains } = require("../../helper-hardhat-config")
               await deployments.fixture(["all"])
               postChain = await ethers.getContract("PostChain")
               let dateInAWeek = new Date() // now
-              let dateInAWeek2 = new Date()
-              dateInAWeek.setDate(dateInAWeek.getDate() + 2) // add 2 days
-              dateInAWeek2.setDate(dateInAWeek2.getDate() + 7) // add 7 days
-              commentDeadline = Math.floor(dateInAWeek.getTime() / 1000) // unix timestamp
-              likeDeadline = Math.floor(dateInAWeek2.getTime() / 1000)
+              dateInAWeek.setDate(dateInAWeek.getDate() + 7) // add 7 days
+              deadline = Math.floor(dateInAWeek.getTime() / 1000) // unix timestamp
               post = "Who is the best?"
+              tip = ethers.utils.parseEther("0.001")
           })
           describe("createPost", () => {
-              it("Reverts when comment deadline or like deadline is too low", async () => {
-                  await expect(postChain.createPost(post, 0, likeDeadline)).to.be.revertedWith(
-                      "PostChain__AdjustCommentDeadline"
-                  )
-                  await expect(postChain.createPost(post, commentDeadline, 0)).to.be.revertedWith(
-                      "PostChain__AdjustLikeDeadline"
+              it("Reverts when set deadline is too low", async () => {
+                  await expect(postChain.createPost(post, 0)).to.be.revertedWith(
+                      "PostChain__AdjustDeadline"
                   )
               })
               it("Emits an event when a Post has been created", async () => {
-                  await expect(postChain.createPost(post, commentDeadline, likeDeadline)).to.emit(
+                  await expect(postChain.createPost(post, deadline)).to.emit(
                       postChain,
                       "PostCreated"
                   )
               })
               it("Returns a post", async () => {
-                  await postChain.createPost(post, commentDeadline, likeDeadline)
+                  await postChain.createPost(post, deadline)
                   const blockNum = await ethers.provider.getBlockNumber()
                   const block = await ethers.provider.getBlock(blockNum)
                   const timestamp = block.timestamp
@@ -46,8 +41,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
                   assert.equal(returnedPost.post, post)
                   assert.equal(returnedPost.postId, 1)
                   assert.equal(returnedPost.dateCreated.toString(), timestamp.toString())
-                  assert.equal(returnedPost.commentDeadline, commentDeadline)
-                  assert.equal(returnedPost.likeDeadline, likeDeadline)
+                  assert.equal(returnedPost.likeAndCommentDeadline, deadline)
                   assert.equal(returnedPost.totalComments, 0)
                   assert.equal(returnedPost.totalLikes, 0)
               })
@@ -56,16 +50,16 @@ const { developmentChains } = require("../../helper-hardhat-config")
           describe("replyToPost", () => {
               let connectedUser
               beforeEach(async () => {
-                  await postChain.createPost(post, commentDeadline, likeDeadline)
+                  await postChain.createPost(post, deadline)
                   await postChain.replyToPost(1, "Me, I'm the best")
                   connectedUser = postChain.connect(user1)
               })
-              it("Reverts when users submit a comment after comment deadline", async () => {
-                  await network.provider.send("evm_increaseTime", [commentDeadline])
+              it("Reverts when users submit a comment after deadline", async () => {
+                  await network.provider.send("evm_increaseTime", [deadline])
                   await network.provider.send("evm_mine")
                   await expect(
                       connectedUser.replyToPost(1, "Am I late to the party?")
-                  ).to.be.revertedWith("PostChain__CommentDeadline")
+                  ).to.be.revertedWith("PostChain__Deadline")
               })
               it("Emits an event when users comment on a post", async () => {
                   await expect(connectedUser.replyToPost(1, "People on time are the best")).to.emit(
@@ -98,19 +92,19 @@ const { developmentChains } = require("../../helper-hardhat-config")
           describe("likeComment", () => {
               let connectedUser, conntectedUser2
               beforeEach(async () => {
-                  await postChain.createPost(post, commentDeadline, likeDeadline)
+                  await postChain.createPost(post, deadline)
                   await postChain.replyToPost(1, "You are")
                   connectedUser = postChain.connect(user1)
                   conntectedUser2 = postChain.connect(user2)
               })
-              it("Reverts when a user tries to like a comment after like deadline", async () => {
-                  await network.provider.send("evm_increaseTime", [likeDeadline])
+              it("Reverts when a user tries to like a comment after deadline", async () => {
+                  await network.provider.send("evm_increaseTime", [deadline])
                   await network.provider.send("evm_mine")
                   await expect(connectedUser.likeComment(1, 1)).to.be.revertedWith(
-                      "PostChain__LikeDeadline"
+                      "PostChain__Deadline"
                   )
               })
-              it("Users can't like same comment more than once", async () => {
+              it("Users can't like the same comment more than once", async () => {
                   await connectedUser.likeComment(1, 1)
                   await expect(connectedUser.likeComment(1, 1)).to.be.revertedWith(
                       "PostChain__AlreadyLiked"
@@ -139,15 +133,74 @@ const { developmentChains } = require("../../helper-hardhat-config")
               })
           })
 
-          /* Change verifyCommentToPost function visibility to public to test */
-          //   describe("verifyCommentToPost", () => {
-          //       it("Verifies if a specific user has commented on a specific post", async () => {
-          //           await postChain.createPost(post, commentDeadline, likeDeadline)
-          //           await postChain.replyToPost(1, "Bread and butter")
-          //           let verify = await postChain.verifyCommentToPost(1, 1)
-          //           assert.equal(verify, true)
-          //           verify = await postChain.verifyCommentToPost(1, 2)
-          //           assert.equal(verify, false)
-          //       })
-          //   })
+          describe("Tip and Withdraw", () => {
+              let connectedUser, conntectedUser2, updatedTipAmount
+              beforeEach(async () => {
+                  await postChain.createPost(post, deadline)
+                  connectedUser = postChain.connect(user1)
+                  conntectedUser2 = postChain.connect(user2)
+                  connectedUser.replyToPost(1, "You are")
+                  updatedTipAmount = ethers.utils.parseEther("1")
+              })
+              it("Reverts when tip amount is too low", async () => {
+                  await expect(
+                      connectedUser.tipUser(owner.address, { value: 0 })
+                  ).to.be.revertedWith("PostChain__TipAmountNotMet")
+              })
+              it("Tips a post and a comment", async () => {
+                  await connectedUser.tipUser(owner.address, { value: tip })
+                  await conntectedUser2.tipUser(connectedUser.signer.address, { value: tip })
+                  const postCreatorBalance = await postChain.getProceeds(owner.address)
+                  const commenterBalace = await connectedUser.getProceeds(
+                      connectedUser.signer.address
+                  )
+                  assert.equal(postCreatorBalance.toString(), tip.toString())
+                  assert.equal(commenterBalace.toString(), tip.toString())
+              })
+              it("Emits an event when a user tips", async () => {
+                  await expect(connectedUser.tipUser(owner.address, { value: tip })).to.emit(
+                      postChain,
+                      "UserTipped"
+                  )
+              })
+              it("Reverts when a user tries to withdraw an empty balance", async () => {
+                  await expect(connectedUser.withdrawBalances()).to.be.revertedWith(
+                      "PostChain__EmptyBalance"
+                  )
+              })
+              it("Withdraws user balance", async () => {
+                  await connectedUser.tipUser(owner.address, { value: tip })
+                  const ownerProceeds = await postChain.getProceeds(owner.address)
+                  const ownerBalanceBefore = await owner.getBalance()
+                  const txReponse = await postChain.withdrawBalances()
+                  const txReceipt = await txReponse.wait(1)
+                  const { gasUsed, effectiveGasPrice } = txReceipt
+                  const gasCost = gasUsed.mul(effectiveGasPrice)
+                  const ownerBalanceAfter = await owner.getBalance()
+                  assert(
+                      ownerBalanceAfter.add(gasCost).toString() ==
+                          ownerProceeds.add(ownerBalanceBefore).toString()
+                  )
+              })
+              it("Only owner can update tip amount", async () => {
+                  await expect(
+                      conntectedUser2.updateTipAmount(updatedTipAmount)
+                  ).to.be.revertedWith("PostChain__YouAreNotTheOwner")
+
+                  await postChain.updateTipAmount(updatedTipAmount)
+                  const newTipAmount = await postChain.getTipAmount()
+                  assert.equal(newTipAmount.toString(), updatedTipAmount.toString())
+              })
+          })
+
+          describe("verifyCommentToPost", () => {
+              it("Verifies if a specific user has commented on a specific post", async () => {
+                  await postChain.createPost(post, deadline)
+                  await postChain.replyToPost(1, "Bread and butter")
+                  let verify = await postChain.verifyCommentToPost(1, 1)
+                  assert.equal(verify, true)
+                  verify = await postChain.verifyCommentToPost(1, 2)
+                  assert.equal(verify, false)
+              })
+          })
       })
