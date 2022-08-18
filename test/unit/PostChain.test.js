@@ -1,6 +1,7 @@
 const { assert, expect } = require("chai")
 const { network, deployments, ethers, getNamedAccounts } = require("hardhat")
 const { developmentChains } = require("../../helper-hardhat-config")
+const { smileURI, glassesURI, sunglassesURI } = require("../../tokenURI")
 
 !developmentChains.includes(network.name)
     ? describe.skip
@@ -150,10 +151,8 @@ const { developmentChains } = require("../../helper-hardhat-config")
               it("Tips a post and a comment", async () => {
                   await connectedUser.tipUser(owner.address, { value: tip })
                   await conntectedUser2.tipUser(connectedUser.signer.address, { value: tip })
-                  const postCreatorBalance = await postChain.getProceeds(owner.address)
-                  const commenterBalace = await connectedUser.getProceeds(
-                      connectedUser.signer.address
-                  )
+                  const postCreatorBalance = await postChain.getTips(owner.address)
+                  const commenterBalace = await connectedUser.getTips(connectedUser.signer.address)
                   assert.equal(postCreatorBalance.toString(), tip.toString())
                   assert.equal(commenterBalace.toString(), tip.toString())
               })
@@ -170,7 +169,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
               })
               it("Withdraws user balance", async () => {
                   await connectedUser.tipUser(owner.address, { value: tip })
-                  const ownerProceeds = await postChain.getProceeds(owner.address)
+                  const ownerTips = await postChain.getTips(owner.address)
                   const ownerBalanceBefore = await owner.getBalance()
                   const txReponse = await postChain.withdrawBalances()
                   const txReceipt = await txReponse.wait(1)
@@ -179,7 +178,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
                   const ownerBalanceAfter = await owner.getBalance()
                   assert(
                       ownerBalanceAfter.add(gasCost).toString() ==
-                          ownerProceeds.add(ownerBalanceBefore).toString()
+                          ownerTips.add(ownerBalanceBefore).toString()
                   )
               })
               it("Only owner can update tip amount", async () => {
@@ -201,6 +200,58 @@ const { developmentChains } = require("../../helper-hardhat-config")
                   assert.equal(verify, true)
                   verify = await postChain.verifyCommentToPost(1, 2)
                   assert.equal(verify, false)
+              })
+          })
+
+          describe("PostChain Nft", () => {
+              let longPost =
+                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolor"
+              let connectedUser, conntectedUser2
+              beforeEach(async () => {
+                  await postChain.createPost(longPost, deadline)
+                  connectedUser = postChain.connect(user1)
+                  conntectedUser2 = postChain.connect(user2)
+                  connectedUser.replyToPost(1, "ok")
+              })
+              it("Reverts when a user tries to mint an nft before the deadline", async () => {
+                  await expect(postChain.mintNft(1)).to.be.revertedWith("PostChain__NoMint")
+              })
+              it("Reverts when a user who is not the creator of the post tries to mint an nft", async () => {
+                  await network.provider.send("evm_increaseTime", [deadline])
+                  await network.provider.send("evm_mine")
+                  await expect(conntectedUser2.mintNft(1)).to.be.revertedWith("PostChain__NoMint")
+              })
+              it("Emits an event when a user mints an nft", async () => {
+                  await network.provider.send("evm_increaseTime", [deadline])
+                  await network.provider.send("evm_mine")
+                  await expect(postChain.mintNft(1)).to.emit(postChain, "NFTMinted")
+              })
+              it("Mints a smile nft when a post has less than 5 comments", async () => {
+                  await network.provider.send("evm_increaseTime", [deadline])
+                  await network.provider.send("evm_mine")
+                  await postChain.mintNft(1)
+                  const smilePFP = await postChain.tokenURI(1)
+                  assert.equal(smilePFP, smileURI)
+              })
+              it("Mints a smile with glasses nft when a post has more than 5 comments", async () => {
+                  for (let i = 0; i < 6; i++) {
+                      await connectedUser.replyToPost(1, "Hello World")
+                  }
+                  await network.provider.send("evm_increaseTime", [deadline])
+                  await network.provider.send("evm_mine")
+                  await postChain.mintNft(1)
+                  const glassesPFP = await postChain.tokenURI(1)
+                  assert.equal(glassesPFP, glassesURI)
+              })
+              it("Mints a smile with sunglasses nft when a post has more than 10 comments", async () => {
+                  for (let i = 0; i < 11; i++) {
+                      await connectedUser.replyToPost(1, "Hello World")
+                  }
+                  await network.provider.send("evm_increaseTime", [deadline])
+                  await network.provider.send("evm_mine")
+                  await postChain.mintNft(1)
+                  const sunglassesPFP = await postChain.tokenURI(1)
+                  assert.equal(sunglassesPFP, sunglassesURI)
               })
           })
       })

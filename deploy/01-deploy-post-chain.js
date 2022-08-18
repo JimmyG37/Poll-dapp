@@ -1,12 +1,16 @@
 const { network } = require("hardhat")
 const { developmentChains } = require("../helper-hardhat-config")
 const { verify } = require("../utils/verify")
+const fs = require("fs")
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy, log } = deployments
     const { deployer } = await getNamedAccounts()
 
-    const args = []
+    const smileSVG = await fs.readFileSync("./images/smile.svg", { encoding: "utf8" })
+    const glassesSVG = await fs.readFileSync("./images/glasses.svg", { encoding: "utf8" })
+    const sunglassesSVG = await fs.readFileSync("./images/sunglasses.svg", { encoding: "utf8" })
+    const args = [smileSVG, glassesSVG, sunglassesSVG]
     const postChain = await deploy("PostChain", {
         from: deployer,
         args: args,
