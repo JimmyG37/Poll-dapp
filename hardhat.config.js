@@ -23,6 +23,9 @@ module.exports = {
     networks: {
         hardhat: {
             chainId: 31337,
+            allowUnlimitedContractSize: true,
+            blockGasLimit: 0x1fffffffffffff,
+            gas: 52000000,
         },
         localhost: {
             chainId: 31337,
@@ -94,6 +97,12 @@ module.exports = {
                 version: "0.4.24",
             },
         ],
+        settings: {
+            optimizer: {
+                enabled: true,
+                runs: 200,
+            },
+        },
     },
     mocha: {
         timeout: 200000, // 200 seconds max for running tests
