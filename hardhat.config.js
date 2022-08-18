@@ -62,7 +62,7 @@ module.exports = {
     etherscan: {
         apiKey: {
             rinkeby: ETHERSCAN_API_KEY,
-            polygon: POLYGONSCAN_API_KEY,
+            polygonMumbai: POLYGONSCAN_API_KEY,
             goerli: ETHERSCAN_API_KEY,
         },
     },
