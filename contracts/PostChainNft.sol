@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
 import "base64-sol/base64.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/common/ERC2981.sol";
 
 error PostChain__NoMint();
 
@@ -21,7 +22,7 @@ interface IPostChain {
     function getPost(uint256 postId) external view returns (Post memory);
 }
 
-contract PostChainNft is ERC721 {
+contract PostChainNft is ERC721, ERC2981 {
     using Strings for uint256;
 
     address private i_postChainAddress;
@@ -54,7 +55,17 @@ contract PostChainNft is ERC721 {
             revert PostChain__NoMint();
         }
         _safeMint(msg.sender, postId);
+        _setTokenRoyalty(postId, msg.sender, 250);
         emit NFTMinted(postId);
+    }
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, ERC2981)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
