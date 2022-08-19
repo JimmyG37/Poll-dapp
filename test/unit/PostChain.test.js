@@ -6,7 +6,7 @@ const { smileURI, glassesURI, sunglassesURI } = require("../../tokenURI")
 !developmentChains.includes(network.name)
     ? describe.skip
     : describe("PostChain Unit Tests", () => {
-          let postChain, owner, user1, user2, deadline, post, tip
+          let postChain, postChainNft, owner, user1, user2, deadline, post, tip
           beforeEach(async () => {
               const accounts = await ethers.getSigners()
               owner = accounts[0]
@@ -14,6 +14,7 @@ const { smileURI, glassesURI, sunglassesURI } = require("../../tokenURI")
               user2 = accounts[2]
               await deployments.fixture(["all"])
               postChain = await ethers.getContract("PostChain")
+              postChainNft = await ethers.getContract("PostChainNft")
               let dateInAWeek = new Date() // now
               dateInAWeek.setDate(dateInAWeek.getDate() + 7) // add 7 days
               deadline = Math.floor(dateInAWeek.getTime() / 1000) // unix timestamp
@@ -203,18 +204,18 @@ const { smileURI, glassesURI, sunglassesURI } = require("../../tokenURI")
               })
           })
 
-          describe("PostChain Nft", () => {
+          describe("PostChainNft Unit Tests", () => {
               let longPost =
                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolor"
               let connectedUser, conntectedUser2
               beforeEach(async () => {
                   await postChain.createPost(longPost, deadline)
                   connectedUser = postChain.connect(user1)
-                  conntectedUser2 = postChain.connect(user2)
+                  conntectedUser2 = postChainNft.connect(user2)
                   connectedUser.replyToPost(1, "ok")
               })
               it("Reverts when a user tries to mint an nft before the deadline", async () => {
-                  await expect(postChain.mintNft(1)).to.be.revertedWith("PostChain__NoMint")
+                  await expect(postChainNft.mintNft(1)).to.be.revertedWith("PostChain__NoMint")
               })
               it("Reverts when a user who is not the creator of the post tries to mint an nft", async () => {
                   await network.provider.send("evm_increaseTime", [deadline])
@@ -224,13 +225,13 @@ const { smileURI, glassesURI, sunglassesURI } = require("../../tokenURI")
               it("Emits an event when a user mints an nft", async () => {
                   await network.provider.send("evm_increaseTime", [deadline])
                   await network.provider.send("evm_mine")
-                  await expect(postChain.mintNft(1)).to.emit(postChain, "NFTMinted")
+                  await expect(postChainNft.mintNft(1)).to.emit(postChainNft, "NFTMinted")
               })
               it("Mints a smile nft when a post has less than 5 comments", async () => {
                   await network.provider.send("evm_increaseTime", [deadline])
                   await network.provider.send("evm_mine")
-                  await postChain.mintNft(1)
-                  const smilePFP = await postChain.tokenURI(1)
+                  await postChainNft.mintNft(1)
+                  const smilePFP = await postChainNft.tokenURI(1)
                   assert.equal(smilePFP, smileURI)
               })
               it("Mints a smile with glasses nft when a post has more than 5 comments", async () => {
@@ -239,8 +240,8 @@ const { smileURI, glassesURI, sunglassesURI } = require("../../tokenURI")
                   }
                   await network.provider.send("evm_increaseTime", [deadline])
                   await network.provider.send("evm_mine")
-                  await postChain.mintNft(1)
-                  const glassesPFP = await postChain.tokenURI(1)
+                  await postChainNft.mintNft(1)
+                  const glassesPFP = await postChainNft.tokenURI(1)
                   assert.equal(glassesPFP, glassesURI)
               })
               it("Mints a smile with sunglasses nft when a post has more than 10 comments", async () => {
@@ -249,8 +250,8 @@ const { smileURI, glassesURI, sunglassesURI } = require("../../tokenURI")
                   }
                   await network.provider.send("evm_increaseTime", [deadline])
                   await network.provider.send("evm_mine")
-                  await postChain.mintNft(1)
-                  const sunglassesPFP = await postChain.tokenURI(1)
+                  await postChainNft.mintNft(1)
+                  const sunglassesPFP = await postChainNft.tokenURI(1)
                   assert.equal(sunglassesPFP, sunglassesURI)
               })
           })
