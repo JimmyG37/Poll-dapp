@@ -55,7 +55,7 @@ contract PostChainNft is ERC721, ERC2981 {
             revert PostChain__NoMint();
         }
         _safeMint(msg.sender, postId);
-        _setTokenRoyalty(postId, msg.sender, 250);
+        _setTokenRoyalty(postId, msg.sender, 250); // 2.50% royalty
         emit NFTMinted(postId);
     }
 
