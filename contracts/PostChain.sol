@@ -13,9 +13,9 @@ error PostChain_WithdrawFailed();
 
 /** @title A contract for posts, comments and likes happening on chain
  *  @author Jimmy Garcia
- *  @notice Anyone can make a post with a comment deadline and a like deadline
- *  @notice Users can write comment, within comment deadline
- *  @notice Users can like comments, within like deadline
+ *  @notice Anyone can create a post with a deadline
+ *  @notice Users can write comments, within post deadline
+ *  @notice Users can like comments, within post deadline
  *  @dev This implements counters to identify posts and comments
  */
 contract PostChain {
@@ -100,6 +100,10 @@ contract PostChain {
         _;
     }
 
+    /*
+     * @notice Method for contract owner to update tip amount
+     * @param newTipAmount: Updated tip amount
+     */
     function updateTipAmount(uint256 newTipAmount) public payable {
         if (i_owner != msg.sender) {
             revert PostChain__YouAreNotTheOwner();
@@ -108,10 +112,10 @@ contract PostChain {
     }
 
     /*
-     * @notice Users can create a post with a deadline to like and comment
-     * @dev A new id is created to identify Post struct
-     * @param post: user written string
-     * @param likeAndCommentDeadline: deadline for users to like comments and comment on the post
+     * @notice Method to create a post with a deadline
+     * @dev A new id is created to identify a post
+     * @param post: User written string
+     * @param likeAndCommentDeadline: Deadline for users to like comments and comment on the post
      */
     function createPost(string memory post, uint256 likeAndCommentDeadline)
         public
@@ -132,11 +136,11 @@ contract PostChain {
     }
 
     /*
-     * @notice Users can reply to a post within deadline
-     * @dev A new id is created to identify Comment struct
+     * @notice Method to reply to a post within deadline
+     * @dev A new id is created to identify a comment
      * @dev Increments the total number of comments in current post
-     * @param postId: identifier for current post
-     * @param comment: string reply to post
+     * @param postId: Identifier for current post
+     * @param comment: String reply to post
      */
     function replyToPost(uint256 postId, string memory comment) external checkDeadline(postId) {
         s_commentIds.increment();
@@ -154,12 +158,11 @@ contract PostChain {
     }
 
     /*
-     * @notice Users can like comments in a post, within deadline of current post
-     * @dev a new Like struct created with: if user has liked a comment, current post, current comment
+     * @notice Method to like comments within post deadline
      * @dev Increments number of likes of current comment
      * @dev Increments total number of likes given in current post
-     * @param postId: identifier for current post
-     * @param commentId: identifier for current comment
+     * @param postId: Identifier for post
+     * @param commentId: Identifier for comment
      */
     function likeComment(uint256 postId, uint256 commentId)
         external
@@ -172,6 +175,10 @@ contract PostChain {
         emit CommentLiked(msg.sender, commentId, postId);
     }
 
+    /*
+     * @notice Method to tip a user
+     * @param userAddress: User address to tip
+     */
     function tipUser(address userAddress) external payable {
         if (msg.value < tipAmount) {
             revert PostChain__TipAmountNotMet(tipAmount);
@@ -180,6 +187,9 @@ contract PostChain {
         emit UserTipped(msg.sender, userAddress, msg.value);
     }
 
+    /*
+     * @notice Method for withdrawing tips
+     */
     function withdrawBalances() external {
         uint256 balance = s_tips[msg.sender];
         if (balance <= 0) {
@@ -192,20 +202,34 @@ contract PostChain {
         }
     }
 
+    /*
+     * @notice Method for incrementing total number of likes in a post
+     * @param postId: Post identifier
+     */
     function incrementPostLikes(uint256 postId) private {
         Post storage post = s_posts[postId];
         post.totalLikes += 1;
     }
 
+    /*
+     * @notice Method for incrementing number of likes for a comment
+     * @param commentId: Comment identifier
+     */
     function incrementCommentLikes(uint256 commentId) private {
         s_comments[commentId].likes += 1;
     }
 
+    /*
+     * @notice Method to verify if a user commented on a specific post
+     * @param postId: Post identifier
+     * @param commentId: Comment identifier
+     */
     function verifyCommentToPost(uint256 commentId, uint256 postId) public view returns (bool) {
         Comment memory comment = s_comments[commentId];
         return (comment.postId == postId);
     }
 
+    // Getter Functions
     function getPost(uint256 postId) external view returns (Post memory) {
         return s_posts[postId];
     }
