@@ -2,6 +2,7 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@ensdomains/ens-contracts/contracts/ethregistrar/StringUtils.sol";
 
 error PostChain__AdjustDeadline();
 error PostChain__Deadline(uint256 deadline);
@@ -10,6 +11,7 @@ error PostChain__TipAmountNotMet(uint256 tipAmount);
 error PostChain__YouAreNotTheOwner();
 error PostChain__EmptyBalance();
 error PostChain_WithdrawFailed();
+error PostChain__CharacterlimitExceeded();
 
 /** @title A contract for posts, comments and likes happening on chain
  *  @author Jimmy Garcia
@@ -20,6 +22,7 @@ error PostChain_WithdrawFailed();
  */
 contract PostChain {
     using Counters for Counters.Counter;
+    using StringUtils for string;
 
     struct Post {
         address creator;
@@ -79,6 +82,14 @@ contract PostChain {
         _;
     }
 
+    modifier characterLimit(string memory post) {
+        uint256 postLength = post.strlen();
+        if (postLength > 130) {
+            revert PostChain__CharacterlimitExceeded();
+        }
+        _;
+    }
+
     modifier checkDeadline(uint256 postId) {
         Post memory post = s_posts[postId];
         if (block.timestamp >= post.likeAndCommentDeadline) {
@@ -119,6 +130,7 @@ contract PostChain {
      */
     function createPost(string memory post, uint256 likeAndCommentDeadline)
         public
+        characterLimit(post)
         isEnoughTime(likeAndCommentDeadline)
     {
         s_postIds.increment();
