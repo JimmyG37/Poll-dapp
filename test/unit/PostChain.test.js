@@ -1,7 +1,7 @@
 const { assert, expect } = require("chai")
 const { network, deployments, ethers, getNamedAccounts } = require("hardhat")
 const { developmentChains } = require("../../helper-hardhat-config")
-const { smileURI, glassesURI, sunglassesURI } = require("../../tokenURI")
+const { smileURI, glassesURI, hatURI } = require("../../tokenURI")
 
 !developmentChains.includes(network.name)
     ? describe.skip
@@ -25,6 +25,13 @@ const { smileURI, glassesURI, sunglassesURI } = require("../../tokenURI")
               it("Reverts when set deadline is too low", async () => {
                   await expect(postChain.createPost(post, 0)).to.be.revertedWith(
                       "PostChain__AdjustDeadline"
+                  )
+              })
+              it("Reverts when post is greater than 130 characters", async () => {
+                  let longPost =
+                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolor"
+                  await expect(postChain.createPost(longPost, 0)).to.be.revertedWith(
+                      "PostChain__CharacterlimitExceeded"
                   )
               })
               it("Emits an event when a Post has been created", async () => {
@@ -205,11 +212,9 @@ const { smileURI, glassesURI, sunglassesURI } = require("../../tokenURI")
           })
 
           describe("PostChainNft Unit Tests", () => {
-              let longPost =
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolor"
               let connectedUser, conntectedUser2
               beforeEach(async () => {
-                  await postChain.createPost(longPost, deadline)
+                  await postChain.createPost(post, deadline)
                   connectedUser = postChain.connect(user1)
                   conntectedUser2 = postChainNft.connect(user2)
                   connectedUser.replyToPost(1, "ok")
@@ -244,15 +249,15 @@ const { smileURI, glassesURI, sunglassesURI } = require("../../tokenURI")
                   const glassesPFP = await postChainNft.tokenURI(1)
                   assert.equal(glassesPFP, glassesURI)
               })
-              it("Mints a smile with sunglasses nft when a post has more than 10 comments", async () => {
+              it("Mints a smile with a hat nft when a post has more than 10 comments", async () => {
                   for (let i = 0; i < 11; i++) {
                       await connectedUser.replyToPost(1, "Hello World")
                   }
                   await network.provider.send("evm_increaseTime", [deadline])
                   await network.provider.send("evm_mine")
                   await postChainNft.mintNft(1)
-                  const sunglassesPFP = await postChainNft.tokenURI(1)
-                  assert.equal(sunglassesPFP, sunglassesURI)
+                  const hatPFP = await postChainNft.tokenURI(1)
+                  assert.equal(hatPFP, hatURI)
               })
           })
       })
