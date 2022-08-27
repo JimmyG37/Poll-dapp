@@ -1,0 +1,14 @@
+  <g class="hat">
+  <path d="M 18 24 q 19 -32 48 2" stroke="black" stroke-width="2" fill="blue" />
+  <path d="M 29 26 q 15 -12 45 -3 L16 25" stroke="black" stroke-width="2" fill="blue" />
+  <path d="M 32 23 q -15 12 36 -1 " stroke="black" stroke-width="2" fill="blue" />
+  <path d="M 72 23 q 6 9 -14 2" stroke="black" stroke-width="2" fill="blue" />
+    <g class="logo">
+     <circle cx="40" cy="15" fill="yellow" r="4" stroke="black" stroke-width="1"/>
+ 		 <g class="eyes">
+    	<circle cx="39" cy="14" r="1"/>
+    	<circle cx="41.3" cy="14" r="1"/>
+  		</g>
+     <path d="M 38.5 16 q 1.4 2 3 0" style="fill:none; stroke: black; stroke-width: 1;" />
+   </g>
+  </g>
