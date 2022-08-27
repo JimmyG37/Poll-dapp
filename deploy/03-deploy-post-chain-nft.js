@@ -9,10 +9,10 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
     const postChain = await ethers.getContract("PostChain")
     const postChainAddress = postChain.address
-    const smileSVG = await fs.readFileSync("./images/smile.svg", { encoding: "utf8" })
-    const glassesSVG = await fs.readFileSync("./images/glasses.svg", { encoding: "utf8" })
     const sunglassesSVG = await fs.readFileSync("./images/sunglasses.svg", { encoding: "utf8" })
-    const args = [smileSVG, glassesSVG, sunglassesSVG, postChainAddress]
+    const hatSVG = await fs.readFileSync("./images/hat.svg", { encoding: "utf8" })
+
+    const args = [sunglassesSVG, hatSVG, postChainAddress]
     const postChainNft = await deploy("PostChainNft", {
         from: deployer,
         args: args,
