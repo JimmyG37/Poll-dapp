@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/common/ERC2981.sol";
 
+import "./PostChainSvg.sol";
+
 error PostChain__NoMint();
 
 interface IPostChain {
@@ -22,27 +24,20 @@ interface IPostChain {
     function getPost(uint256 postId) external view returns (Post memory);
 }
 
-contract PostChainNft is ERC721, ERC2981 {
+contract PostChainNft is ERC721, ERC2981, PostChainSvg {
     using Strings for uint256;
 
     address private i_postChainAddress;
     address private immutable i_owner;
-    string private i_smileSVG;
-    string private i_glassesSVG;
-    string private i_sunglassesSVG;
 
     event NFTMinted(uint256 tokenId);
 
     constructor(
-        string memory smileSVG,
-        string memory glassesSVG,
         string memory sunglassesSVG,
+        string memory hatSVG,
         address postChainAddress
-    ) ERC721("PostChain", "PC") {
+    ) ERC721("PostChain", "PC") PostChainSvg(sunglassesSVG, hatSVG) {
         i_owner = msg.sender;
-        i_smileSVG = smileSVG;
-        i_glassesSVG = glassesSVG;
-        i_sunglassesSVG = sunglassesSVG;
         i_postChainAddress = postChainAddress;
     }
 
@@ -96,41 +91,7 @@ contract PostChainNft is ERC721, ERC2981 {
 
     function generateSVGofTokenById(uint256 tokenId) internal view returns (string memory) {
         IPostChain.Post memory post = IPostChain(i_postChainAddress).getPost(tokenId);
-        string memory creatorAddress = Strings.toHexString(uint256(uint160(post.creator)), 20);
-        string memory profilePicture = i_smileSVG;
-        if (post.totalComments >= 5) {
-            profilePicture = i_glassesSVG;
-        }
-        if (post.totalComments >= 10) {
-            profilePicture = i_sunglassesSVG;
-        }
-
-        string memory svg = string(
-            abi.encodePacked(
-                '<svg width="400" height="150" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">',
-                "<defs>",
-                '<path id="path1" d="M10,65 H290 M10,80 H270 M15,96 H270 M20,115"></path>'
-                "</defs>",
-                '<rect width="300" height="200" style="fill:Lavender;stroke-width:4;stroke:rgb(229, 231, 235);" />',
-                profilePicture,
-                '<use xlink:href="#path1" x="0" y="50" />',
-                '<text transform="translate(0,10)" font-size="15">',
-                '<textPath  xlink:href="#path1">',
-                post.post,
-                "</textPath>",
-                "</text>",
-                '<text x="220" y="32" style="fill:rgb(110, 118, 125)" font-size="14">',
-                "postchain:",
-                tokenId.toString(),
-                "</text>",
-                '<text x="5" y="140" style="fill:rgb(110, 118, 125)" font-size="12">',
-                "@",
-                creatorAddress,
-                "</text>",
-                "</svg>"
-            )
-        );
-
+        string memory svg = generateSVG(tokenId, post.creator, post.post, post.totalComments);
         return svg;
     }
 }
