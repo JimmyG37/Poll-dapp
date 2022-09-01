@@ -12,8 +12,7 @@ export default function CreatePost() {
     const postChainAbi = PostChain.abi
     const dispatch = useNotification()
     const [postText, setPostText] = useState("")
-    const [likeDeadline, setLikeDeadline] = useState(0)
-    const [commentDeadline, setCommentDeadline] = useState(0)
+    const [deadline, setDeadline] = useState(0)
 
     const { runContractFunction } = useWeb3Contract()
 
@@ -25,8 +24,7 @@ export default function CreatePost() {
             functionName: "createPost",
             params: {
                 post: postText,
-                commentDeadline: commentDeadline,
-                likeDeadline: likeDeadline,
+                likeAndCommentDeadline: deadline,
             },
         }
 
@@ -50,14 +48,11 @@ export default function CreatePost() {
         })
     }
 
-    const handleLikeDeadline = ({ date }) => {
-        const dateToUnix = Math.floor(new Date(date).getTime() / 1000)
-        setLikeDeadline(dateToUnix)
-    }
-
-    const handleCommentDeadline = ({ date }) => {
-        const dateToUnix = Math.floor(new Date(date).getTime() / 1000)
-        setCommentDeadline(dateToUnix)
+    const handleDeadline = ({ event }) => {
+        const date = event.target.value
+        const formattedDate = new Date(date.replace(/-/g, "/"))
+        const dateToUnix = Math.floor(new Date(formattedDate).getTime() / 1000)
+        setDeadline(dateToUnix)
     }
 
     return (
@@ -75,11 +70,13 @@ export default function CreatePost() {
                         className="bg-transparent outline-none text-black text-lg placeholder-gray-500 tracking-wide w-full min-h-[50px]"
                     />
                 </div>
-                <div className="flex items-center justify-between pt-2.5">
+                <div className="flex space-x-3 pt-2.5">
                     <DatePicker
                         id="date-picker"
-                        label="Like Dealine"
-                        onChange={(data) => handleLikeDeadline(data)}
+                        label="Set Dealine"
+                        onChange={(data) => handleDeadline(data)}
+                        value=""
+                        type="date"
                     />
                     <button
                         className="bg-[#1d9bf0] text-slate-50 rounded-full px-14 py-2 font-bold shadow-md hover:bg-[#1a8cd8] disabled:hover:bg-[#1d9bf0] disabled:opacity-50 disabled:cursor-default"
@@ -87,11 +84,6 @@ export default function CreatePost() {
                     >
                         Post
                     </button>
-                    <DatePicker
-                        id="date-picker"
-                        label="Comment Dealine"
-                        onChange={(data) => handleCommentDeadline(data)}
-                    />
                 </div>
             </div>
         </div>
