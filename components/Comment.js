@@ -33,11 +33,12 @@ export default function Comment({ id }) {
     const [comment, setComment] = useState("")
     const [timeCreated, setTimeCreated] = useState(0)
     const [commentLikes, setCommentLikes] = useState(0)
+    const [postId, setPostId] = useState(0)
     const commentId = parseInt(id)
     const { runContractFunction } = useWeb3Contract()
     const formattedAddress = truncateStr(commenter || "", 15)
 
-    async function handleComment() {
+    const handleComment = async () => {
         const returnedComment = await runContractFunction({
             params: {
                 abi: PostChain.abi,
@@ -55,7 +56,38 @@ export default function Comment({ id }) {
             setComment(returnedComment.comment)
             setTimeCreated(createdDate)
             setCommentLikes(parseInt(returnedComment.likes))
+            setPostId(returnedComment.postId.toNumber())
         }
+    }
+
+    const likeComment = async (postId, commentId) => {
+        const likeOptions = {
+            abi: postChainAbi,
+            contractAddress: postChainAddress,
+            functionName: "likeComment",
+            params: {
+                postId: postId,
+                commentId: commentId,
+            },
+        }
+
+        await runContractFunction({
+            params: likeOptions,
+            onSuccess: () => handleLikeSuccess,
+            onError: (error) => {
+                console.log(error)
+            },
+        })
+    }
+
+    const handleLikeSuccess = async (tx) => {
+        await tx.wait(1)
+        dispatch({
+            type: "success",
+            message: "Comment Liked!",
+            title: "Success",
+            position: "topR",
+        })
     }
 
     useEffect(() => {
@@ -86,7 +118,10 @@ export default function Comment({ id }) {
                         </p>
                     </div>
                 </div>
-                <div className="flex items-center space-x-1 group">
+                <div
+                    className="flex items-center space-x-1 group"
+                    onClick={() => likeComment(postId, commentId)}
+                >
                     <div className="icon group-hover:bg-slate-50">
                         <HeartIcon className="h-4 group-hover:text-red-600" />
                     </div>
