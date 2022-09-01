@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
-    "@heroicons/react": "^1.0.6",
+    "@heroicons/react": "^2.0.10",
+    "@web3uikit/icons": "^0.1.5",
     "graphql": "^16.5.0",
     "moment": "^2.29.4",
     "moralis": "^1.10.1",
@@ -21,7 +22,7 @@
     "react-jazzicon": "^1.0.4",
     "react-moment": "^1.1.2",
     "react-moralis": "^1.4.0",
-    "web3uikit": "^0.1.170"
+    "web3uikit": "^0.1.4"
   },
   "devDependencies": {
     "@chainlink/contracts": "^0.4.2",
