@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { CountdownCircleTimer } from "react-countdown-circle-timer"
+import Tip from "./Tip"
 
 const minuteSeconds = 60
 const hourSeconds = 3600
@@ -18,7 +19,7 @@ const renderTime = (time) => {
     )
 }
 
-export default function Timer({ deadline }) {
+export default function Timer({ deadline, postCreator, tipAmount }) {
     let deadlineDate = new Date(deadline * 1000)
     let currentDate = new Date()
     let dateDiff = deadlineDate.getTime() - currentDate.getTime()
@@ -33,14 +34,14 @@ export default function Timer({ deadline }) {
     let minutesDuration = minutes * minuteSeconds
 
     return (
-        <div className="flex justify-between w-8/12 ml-1">
+        <div className="flex justify-between w-8/12 ">
             <CountdownCircleTimer
                 isPlaying
                 duration={daysDuration}
                 initialRemainingTime={timeRemaining}
                 colors="#7E2E84"
-                strokeWidth={3}
-                size={30}
+                strokeWidth={2}
+                size={25}
             >
                 {({ elapsedTime, color }) => (
                     <span style={{ color }}>
@@ -53,8 +54,8 @@ export default function Timer({ deadline }) {
                 isPlaying
                 colors="#D14081"
                 duration={hoursDuration}
-                strokeWidth={3}
-                size={30}
+                strokeWidth={2}
+                size={25}
                 onComplete={(totalElapsedTime) => ({
                     shouldRepeat: timeRemaining - totalElapsedTime > hourSeconds,
                 })}
@@ -70,8 +71,8 @@ export default function Timer({ deadline }) {
                 isPlaying
                 colors="#EF798A"
                 duration={minutesDuration}
-                strokeWidth={3}
-                size={30}
+                strokeWidth={2}
+                size={25}
                 onComplete={(totalElapsedTime) => ({
                     shouldRepeat: timeRemaining - totalElapsedTime > minuteSeconds,
                 })}
@@ -83,6 +84,7 @@ export default function Timer({ deadline }) {
                 )}
             </CountdownCircleTimer>
             <div className="ml-3 mr-5 mt-0.5 text-[#6e767d] text-sm sm:text-[15px]">minutes</div>
+            <Tip postCreator={postCreator} tipAmount={tipAmount} />
         </div>
     )
 }
