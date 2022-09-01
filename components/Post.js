@@ -8,6 +8,7 @@ import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import { useMoralis, useWeb3Contract } from "react-moralis"
+import { ChatBubbleOvalLeftIcon } from "@heroicons/react/24/outline"
 
 const truncateStr = (fullStr, strLen) => {
     if (fullStr.length <= strLen) return fullStr
@@ -33,11 +34,12 @@ export default function Post({ id, postPage }) {
     const [dateCreated, setDateCreated] = useState(0)
     const [totalComments, setTotalComments] = useState(0)
     const [totalLikes, setTotalLikes] = useState(0)
+    const [tipAmount, setTipAmount] = useState(null)
     const postId = parseInt(id)
     const router = useRouter()
     const { runContractFunction } = useWeb3Contract()
 
-    async function handlePost() {
+    const handlePost = async () => {
         const returnedPost = await runContractFunction({
             params: {
                 abi: PostChain.abi,
@@ -60,6 +62,21 @@ export default function Post({ id, postPage }) {
         }
     }
 
+    const handleTipAmount = async () => {
+        const returnedAmount = await runContractFunction({
+            params: {
+                abi: PostChain.abi,
+                contractAddress: postChainAddress,
+                functionName: "getTipAmount",
+            },
+            onError: (error) => console.log(error),
+        })
+
+        if (returnedAmount) {
+            setTipAmount(returnedAmount.toNumber())
+        }
+    }
+
     const unixToDate = (u) => {
         let newDate = new Date(u * 1000)
         return newDate
@@ -68,15 +85,13 @@ export default function Post({ id, postPage }) {
     useEffect(() => {
         if (isWeb3Enabled) {
             handlePost()
+            handleTipAmount()
         }
     }, [chainId, account, isWeb3Enabled, id])
 
     const formattedAddress = truncateStr(postCreator || "", 15)
     return (
-        <div
-            className="p-2 flex cursor-pointer border-b border-gray-200"
-            onClick={() => router.push(`/${id}`)}
-        >
+        <div className="p-2 flex  border-b border-gray-200">
             <div className="h-11 w-11 rounded-full mr-4">
                 <Jazzicon diameter={40} seed={jsNumberForAddress("" + postCreator)} />
             </div>
@@ -95,7 +110,19 @@ export default function Post({ id, postPage }) {
                         )}
                     </div>
                     <p className="text-black text-[15px] sm:text-base mt-0.5">{postText}</p>
-                    {!postPage && <Timer deadline={deadline} />}
+                    {!postPage && (
+                        <div className="flex justify-between w-7/12 pt-5">
+                            <ChatBubbleOvalLeftIcon
+                                className="h-12 pb-5 text-green-600 cursor-pointer"
+                                onClick={() => router.push(`/${id}`)}
+                            />
+                            <Timer
+                                deadline={deadline}
+                                postCreator={postCreator}
+                                tipAmount={tipAmount}
+                            />
+                        </div>
+                    )}
                     {postPage && (
                         <span className="text-sm sm:text-[15px] text-[#6e767d]">
                             <Moment format="h:mm A">{dateCreated}</Moment> ·{" "}
