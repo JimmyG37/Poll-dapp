@@ -37,6 +37,7 @@ export default function Comment({ id }) {
     const commentId = parseInt(id)
     const { runContractFunction } = useWeb3Contract()
     const formattedAddress = truncateStr(commenter || "", 15)
+    const dispatch = useNotification()
 
     const handleComment = async () => {
         const returnedComment = await runContractFunction({
