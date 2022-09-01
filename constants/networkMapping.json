@@ -1,5 +1,12 @@
 {
-    "4": { "PostChain": ["0xA0B30A7C9e8bedfeE1343473D5e617998fF38042"] },
-    "5": { "PostChain": ["0xB3353b5c6a661331d5b9f8A734035D9F324d179c"] },
-    "31337": { "PostChain": ["0x5FbDB2315678afecb367f032d93F642f64180aa3"] }
+    "80001": {
+        "PostChain": ["0xc06F3D908aaFdf95C147395971C375087c3df522"],
+        "PostChainNft": ["0x7bd22C7c3AB3C753eBf5D46b305d41D0070f3791"],
+        "PostChainMarket": ["0x5dcf5b1b4F8CFc461E64D753B75ac1A755273641"]
+    },
+    "31337": {
+        "PostChain": ["0x5FbDB2315678afecb367f032d93F642f64180aa3"],
+        "PostChainNft": ["0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"],
+        "PostChainMarket": ["0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"]
+    }
 }
