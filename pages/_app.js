@@ -4,7 +4,7 @@ import { NotificationProvider } from "web3uikit"
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client"
 
 const client = new ApolloClient({
-    uri: "https://api.studio.thegraph.com/query/31431/postchain/v0.01",
+    uri: "https://api.thegraph.com/subgraphs/name/jimmyg37/postchainv2",
     cache: new InMemoryCache(),
 })
 

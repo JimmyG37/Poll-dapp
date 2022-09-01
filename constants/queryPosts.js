@@ -6,7 +6,7 @@ const GET_POSTS = gql`
             id
             creator
             postId
-            likeDeadline
+            deadline
         }
     }
 `

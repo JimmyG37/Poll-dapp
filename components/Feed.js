@@ -12,7 +12,6 @@ export default function Feed() {
     const chainString = chainId ? parseInt(chainId).toString() : "31337"
     const postChainAddress = networkMapping[chainString].PostChain[0]
     const { loading, error, data: createdPosts } = useQuery(GET_POSTS)
-
     return (
         <div className="flex-grow border-l border-r border-gray-200 max-w-2xl sm:ml-[73px] xl:ml-[370px]">
             <div className="text-black flex items-center sm:justify-between py-2 px-3 sticky top-0 z-50 border-gray-200 ">
