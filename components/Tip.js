@@ -44,12 +44,9 @@ export default function Tip({ postCreator, tipAmount }) {
     }
 
     return (
-        <div
-            className="flex justify-between w-8/12 cursor-pointer"
-            onClick={() => handleTip(postCreator)}
-        >
-            <CurrencyDollarIcon className="pl-5 pr-5 pb-5  h-12 text-[#218380]" />
-            <span className=" text-[#6e767d] pt-0.5 text-sm sm:text-[15px]">Tip</span>
+        <div className="flex cursor-pointer" onClick={() => handleTip(postCreator)}>
+            <CurrencyDollarIcon className="h-7 pl-5 pb-1.4 pr-4 text-[#218380]" />
+            <div className="text-[#6e767d] text-sm sm:text-[14px] pt-0.5">Tip</div>
         </div>
     )
 }
