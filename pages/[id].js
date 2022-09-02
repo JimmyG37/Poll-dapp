@@ -3,6 +3,8 @@ import { useEffect, useState } from "react"
 import Sidebar from "../components/Sidebar"
 import Post from "../components/Post"
 import GET_COMMENTS from "../constants/queryComments"
+import Timer from "../components/Timer"
+import Tip from "../components/Tip"
 import Comment from "../components/Comment"
 import { ArrowLeftIcon } from "@heroicons/react/24/solid"
 import Header from "../components/Header"
@@ -20,6 +22,9 @@ export default function PostPage() {
     const router = useRouter()
     const { id } = router.query
     const [totalLikes, setTotalLikes] = useState(0)
+    const [tipAmount, setTipAmount] = useState(null)
+    const [deadline, setDeadline] = useState(0)
+    const [postCreator, setPostCreator] = useState(null)
     const { runContractFunction } = useWeb3Contract()
     const { loading, error, data } = useQuery(GET_COMMENTS)
     let postId = parseInt(id)
@@ -38,12 +43,30 @@ export default function PostPage() {
         })
         if (returnedPost) {
             setTotalLikes(parseInt(returnedPost.totalLikes))
+            setDeadline(parseInt(returnedPost.likeAndCommentDeadline))
+            setPostCreator(returnedPost.creator)
+        }
+    }
+
+    const handleTipAmount = async () => {
+        const returnedAmount = await runContractFunction({
+            params: {
+                abi: PostChain.abi,
+                contractAddress: postChainAddress,
+                functionName: "getTipAmount",
+            },
+            onError: (error) => console.log(error),
+        })
+
+        if (returnedAmount) {
+            setTipAmount(returnedAmount.toNumber())
         }
     }
 
     useEffect(() => {
         if (isWeb3Enabled) {
             handlePost()
+            handleTipAmount()
         }
     }, [isWeb3Enabled])
 
@@ -70,8 +93,13 @@ export default function PostPage() {
                         ) : (
                             <span className=" text-sm sm:text-[13px] text-[#595b5f]">Like</span>
                         )}
+                        <div className="ml-10">
+                            <Tip postCreator={postCreator} tipAmount={tipAmount} />
+                        </div>
+                        <div className="ml-10">
+                            <Timer deadline={deadline} />
+                        </div>
                     </div>
-
                     {isWeb3Enabled ? (
                         loading || !data ? (
                             <div>Loading...</div>
@@ -85,6 +113,7 @@ export default function PostPage() {
                                                 <Comment
                                                     key={`${comment.id}${comment.commentId}`}
                                                     id={comment.commentId}
+                                                    tipAmount={tipAmount}
                                                 />
                                             )
                                         }

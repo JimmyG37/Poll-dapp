@@ -3,6 +3,7 @@ import moment from "moment"
 import networkMapping from "../constants/networkMapping.json"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 import Timer from "./Timer"
+import Tip from "./Tip"
 import { Tooltip } from "web3uikit"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { useEffect, useState } from "react"
@@ -40,6 +41,9 @@ export default function Post({ id, postPage }) {
     const { runContractFunction } = useWeb3Contract()
 
     const handlePost = async () => {
+        if (typeof postId !== "number") {
+            postId = parseInt(postId)
+        }
         const returnedPost = await runContractFunction({
             params: {
                 abi: PostChain.abi,
@@ -111,22 +115,22 @@ export default function Post({ id, postPage }) {
                     </div>
                     <p className="text-black text-[15px] sm:text-base mt-0.5">{postText}</p>
                     {!postPage && (
-                        <div className="flex justify-between w-7/12 pt-5">
-                            <ChatBubbleOvalLeftIcon
-                                className="h-12 pb-5 text-green-600 cursor-pointer"
-                                onClick={() => router.push(`/${id}`)}
-                            />
-                            <Timer
-                                deadline={deadline}
-                                postCreator={postCreator}
-                                tipAmount={tipAmount}
-                            />
+                        <div className="flex  pt-5">
+                            <div className="pb-4 pr-12">
+                                <ChatBubbleOvalLeftIcon
+                                    className="h-7 text-green-600 cursor-pointer"
+                                    onClick={() => router.push(`/${id}`)}
+                                />
+                            </div>
+
+                            <Timer deadline={deadline} />
+                            <Tip postCreator={postCreator} tipAmount={tipAmount} />
                         </div>
                     )}
                     {postPage && (
-                        <span className="text-sm sm:text-[15px] text-[#6e767d]">
+                        <span className="text-sm sm:text-[15px] text-[#6e767d] pt-3">
                             <Moment format="h:mm A">{dateCreated}</Moment> ·{" "}
-                            <Moment format="MMM DD, YY">{dateCreated}</Moment>
+                            <Moment format="MMM DD, YY">{dateCreated}</Moment> · <span>Web3</span>
                         </span>
                     )}
                 </div>

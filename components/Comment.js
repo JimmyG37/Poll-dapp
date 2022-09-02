@@ -1,10 +1,12 @@
+import Tip from "../components/Tip"
 import Moment from "react-moment"
 import networkMapping from "../constants/networkMapping.json"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
+import { useNotification } from "web3uikit"
 import { useEffect, useState } from "react"
 import { useMoralis, useWeb3Contract } from "react-moralis"
-import { HeartIcon } from "@heroicons/react/outline"
+import { HeartIcon } from "@heroicons/react/24/outline"
 
 const truncateStr = (fullStr, strLen) => {
     if (fullStr.length <= strLen) return fullStr
@@ -24,7 +26,7 @@ const unixToDate = (u) => {
     return newDate
 }
 
-export default function Comment({ id }) {
+export default function Comment({ id, tipAmount }) {
     const { chainId, account, isWeb3Enabled } = useMoralis()
     const chainString = chainId ? parseInt(chainId).toString() : "31337"
     const postChainAddress = networkMapping[chainString].PostChain[0]
@@ -119,12 +121,12 @@ export default function Comment({ id }) {
                         </p>
                     </div>
                 </div>
-                <div
-                    className="flex items-center space-x-1 group"
-                    onClick={() => likeComment(postId, commentId)}
-                >
-                    <div className="icon group-hover:bg-slate-50">
-                        <HeartIcon className="h-4 group-hover:text-red-600" />
+                <div className="flex items-center space-x-1 group">
+                    <div onClick={() => likeComment(postId, commentId)}>
+                        <HeartIcon className="h-4 cursor-pointer hover:text-red-600" />
+                    </div>
+                    <div className="ml-10">
+                        <Tip postCreator={commenter} tipAmount={tipAmount} />
                     </div>
                 </div>
             </div>
