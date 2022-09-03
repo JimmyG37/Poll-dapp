@@ -1,6 +1,7 @@
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import Sidebar from "../components/Sidebar"
+import Balances from "../components/Balances"
 import Post from "../components/Post"
 import GET_COMMENTS from "../constants/queryComments"
 import Timer from "../components/Timer"
@@ -13,6 +14,7 @@ import networkMapping from "../constants/networkMapping.json"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import ReplyToPost from "../components/ReplyToPost"
+import { Tooltip } from "web3uikit"
 
 export default function PostPage() {
     const { chainId, account, isWeb3Enabled } = useMoralis()
@@ -85,6 +87,12 @@ export default function PostPage() {
                         </div>
                         Post
                     </div>
+                    {/*
+                    <div className="flex-shrink-0 ml-auto text-[#6e767d]">
+                        <Tooltip content="Tip" position="left">
+                            <Tip postCreator={postCreator} tipAmount={tipAmount} />
+                        </Tooltip>
+                    </div> */}
                     <Post id={id} postPage />
                     <div className="flex items-center px-1.5 py-2 border-b border-gray-200 text-[#62676b] gap-x-1 sticky top-0 z-50 bg-slate-50">
                         <span className="ml-5 text-sm sm:text-[14px]">{totalLikes}</span>{" "}
@@ -93,9 +101,6 @@ export default function PostPage() {
                         ) : (
                             <span className=" text-sm sm:text-[13px] text-[#595b5f]">Like</span>
                         )}
-                        <div className="ml-10">
-                            <Tip postCreator={postCreator} tipAmount={tipAmount} />
-                        </div>
                         <div className="ml-10">
                             <Timer deadline={deadline} />
                         </div>
@@ -124,6 +129,7 @@ export default function PostPage() {
                         <div>Web3 Not Enabled</div>
                     )}
                 </div>
+                <Balances />
             </div>
         </div>
     )

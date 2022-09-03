@@ -95,7 +95,7 @@ export default function Post({ id, postPage }) {
 
     const formattedAddress = truncateStr(postCreator || "", 15)
     return (
-        <div className="p-2 flex  border-b border-gray-200">
+        <div className="p-2 flex border-b border-gray-200">
             <div className="h-11 w-11 rounded-full mr-4">
                 <Jazzicon diameter={40} seed={jsNumberForAddress("" + postCreator)} />
             </div>
@@ -113,9 +113,10 @@ export default function Post({ id, postPage }) {
                             </span>
                         )}
                     </div>
+
                     <p className="text-black text-[15px] sm:text-base mt-0.5">{postText}</p>
                     {!postPage && (
-                        <div className="flex  pt-5">
+                        <div className="flex pt-5">
                             <div className="pb-4 pr-12">
                                 <ChatBubbleOvalLeftIcon
                                     className="h-7 text-green-600 cursor-pointer"
@@ -124,16 +125,25 @@ export default function Post({ id, postPage }) {
                             </div>
 
                             <Timer deadline={deadline} />
-                            <Tip postCreator={postCreator} tipAmount={tipAmount} />
                         </div>
                     )}
                     {postPage && (
-                        <span className="text-sm sm:text-[15px] text-[#6e767d] pt-3">
+                        <span className="flex text-sm sm:text-[15px] text-[#6e767d] pt-3">
                             <Moment format="h:mm A">{dateCreated}</Moment> ·{" "}
-                            <Moment format="MMM DD, YY">{dateCreated}</Moment> · <span>Web3</span>
+                            <Moment format="MMM DD, YY">{dateCreated}</Moment>·{" "}
+                            <Tooltip content="Tip" position="right">
+                                <Tip postCreator={postCreator} tipAmount={tipAmount} />
+                            </Tooltip>
                         </span>
                     )}
                 </div>
+                {!postPage && (
+                    <div className="flex-shrink-0 ml-auto text-[#6e767d]">
+                        <Tooltip content="Tip" position="left">
+                            <Tip postCreator={postCreator} tipAmount={tipAmount} />
+                        </Tooltip>
+                    </div>
+                )}
             </div>
         </div>
     )

@@ -125,9 +125,7 @@ export default function Comment({ id, tipAmount }) {
                     <div onClick={() => likeComment(postId, commentId)}>
                         <HeartIcon className="h-4 cursor-pointer hover:text-red-600" />
                     </div>
-                    <div className="ml-10">
-                        <Tip postCreator={commenter} tipAmount={tipAmount} />
-                    </div>
+                    <Tip postCreator={commenter} tipAmount={tipAmount} />
                 </div>
             </div>
         </div>

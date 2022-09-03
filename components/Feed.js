@@ -13,7 +13,7 @@ export default function Feed() {
     const postChainAddress = networkMapping[chainString].PostChain[0]
     const { loading, error, data: createdPosts } = useQuery(GET_POSTS)
     return (
-        <div className="flex-grow border-l border-r border-gray-200 max-w-2xl sm:ml-[73px] xl:ml-[370px]">
+        <div className="flex-grow border-l border-r border-gray-200 max-w-2xl ">
             <div className="text-black flex items-center sm:justify-between py-2 px-3 sticky top-0 z-50 border-gray-200 ">
                 <h2 className="text-lg sm:text-xl font-bold ">Home</h2>
                 <div className="hoverAnimation w-9 h-9 flex items-center justify-center xl:px-0 ml-auto">
@@ -24,11 +24,13 @@ export default function Feed() {
                 loading || !createdPosts ? (
                     <div>Loading...</div>
                 ) : (
-                    <div className="pb-72">
+                    <div>
                         <CreatePost />
-                        {createdPosts.posts.map((post) => {
-                            return <Post id={post.postId} key={`${post.id}${post.postId}`} />
-                        })}
+                        <div className="pb-72">
+                            {createdPosts.posts.map((post) => {
+                                return <Post id={post.postId} key={`${post.id}${post.postId}`} />
+                            })}
+                        </div>
                     </div>
                 )
             ) : (
