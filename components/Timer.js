@@ -37,14 +37,16 @@ export default function Timer({ deadline }) {
             <CountdownCircleTimer
                 isPlaying
                 duration={daysDuration}
-                initialRemainingTime={timeRemaining}
                 colors="#7E2E84"
                 strokeWidth={1.8}
                 size={24.5}
+                onComplete={() => ({
+                    shouldRepeat: false,
+                })}
             >
                 {({ elapsedTime, color }) => (
                     <span style={{ color }}>
-                        {renderTime(getTimeDays(daysDuration - elapsedTime))}
+                        {renderTime(getTimeDays(timeRemaining - elapsedTime))}
                     </span>
                 )}
             </CountdownCircleTimer>
