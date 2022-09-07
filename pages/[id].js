@@ -14,7 +14,6 @@ import networkMapping from "../constants/networkMapping.json"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import ReplyToPost from "../components/ReplyToPost"
-import { Tooltip } from "web3uikit"
 
 export default function PostPage() {
     const { chainId, account, isWeb3Enabled } = useMoralis()
@@ -27,9 +26,9 @@ export default function PostPage() {
     const [tipAmount, setTipAmount] = useState(null)
     const [deadline, setDeadline] = useState(0)
     const [postCreator, setPostCreator] = useState(null)
+    const [postId, setPostId] = useState(0)
     const { runContractFunction } = useWeb3Contract()
     const { loading, error, data } = useQuery(GET_COMMENTS)
-    let postId = parseInt(id)
 
     async function handlePost() {
         const returnedPost = await runContractFunction({
@@ -49,7 +48,6 @@ export default function PostPage() {
             setPostCreator(returnedPost.creator)
         }
     }
-
     const handleTipAmount = async () => {
         const returnedAmount = await runContractFunction({
             params: {
@@ -66,11 +64,12 @@ export default function PostPage() {
     }
 
     useEffect(() => {
-        if (isWeb3Enabled) {
+        if (isWeb3Enabled && id) {
+            setPostId(parseInt(id))
             handlePost()
             handleTipAmount()
         }
-    }, [isWeb3Enabled])
+    }, [isWeb3Enabled, id, postId, totalLikes])
 
     return (
         <div>
@@ -87,13 +86,7 @@ export default function PostPage() {
                         </div>
                         Post
                     </div>
-                    {/*
-                    <div className="flex-shrink-0 ml-auto text-[#6e767d]">
-                        <Tooltip content="Tip" position="left">
-                            <Tip postCreator={postCreator} tipAmount={tipAmount} />
-                        </Tooltip>
-                    </div> */}
-                    <Post id={id} postPage />
+                    <Post postId={id} postPage />
                     <div className="flex items-center px-1.5 py-2 border-b border-gray-200 text-[#62676b] gap-x-1 sticky top-0 z-50 bg-slate-50">
                         <span className="ml-5 text-sm sm:text-[14px]">{totalLikes}</span>{" "}
                         {totalLikes > 2 || totalLikes == 0 ? (
@@ -110,7 +103,7 @@ export default function PostPage() {
                             <div>Loading...</div>
                         ) : (
                             <div className="pb-72">
-                                <ReplyToPost id={id} />
+                                <ReplyToPost postId={postId} />
                                 {data.comments.length > 0 &&
                                     data.comments.map((comment) => {
                                         if (comment.postId == id) {
@@ -119,6 +112,7 @@ export default function PostPage() {
                                                     key={`${comment.id}${comment.commentId}`}
                                                     id={comment.commentId}
                                                     tipAmount={tipAmount}
+                                                    totalLikes={totalLikes}
                                                 />
                                             )
                                         }
