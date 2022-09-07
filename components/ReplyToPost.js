@@ -5,14 +5,13 @@ import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import networkMapping from "../constants/networkMapping.json"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 
-export default function ReplyToPost({ id }) {
+export default function ReplyToPost({ postId }) {
     const { chainId, account, isWeb3Enabled } = useMoralis()
     const chainString = chainId ? parseInt(chainId).toString() : "31337"
     const postChainAddress = networkMapping[chainString].PostChain[0]
     const postChainAbi = PostChain.abi
     const dispatch = useNotification()
     const [commentText, setCommentText] = useState("")
-    let postId = parseInt(id)
     const { runContractFunction } = useWeb3Contract()
 
     const handleComment = async (e) => {
