@@ -44,8 +44,8 @@ export default function Tip({ postCreator, tipAmount }) {
     }
 
     return (
-        <div className="flex cursor-pointer pl-1" onClick={() => handleTip(postCreator)}>
-            <CurrencyDollarIcon className="h-6 text-[#218380]" />
+        <div className="cursor-pointer" onClick={() => handleTip(postCreator)}>
+            <CurrencyDollarIcon className="w-6 h-6 text-[#218380]" />
         </div>
     )
 }
