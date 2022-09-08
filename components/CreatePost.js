@@ -73,7 +73,7 @@ export default function CreatePost() {
                 <div className="flex space-x-3 pt-2.5">
                     <DatePicker
                         id="date-picker"
-                        label="Set Dealine"
+                        label="Set Deadline"
                         onChange={(data) => handleDeadline(data)}
                         value=""
                         type="date"
