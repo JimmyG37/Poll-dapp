@@ -2,6 +2,7 @@ import Moment from "react-moment"
 import networkMapping from "../constants/networkMapping.json"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 import Timer from "./Timer"
+import Mint from "./Mint"
 import { ethers } from "ethers"
 import Tip from "./Tip"
 import { Tooltip } from "web3uikit"
@@ -74,7 +75,7 @@ export default function Post({ postId, postPage }) {
             handlePost()
             handleTipAmount()
         }
-    }, [isWeb3Enabled, postId])
+    }, [isWeb3Enabled, postId, postCreator])
 
     const formattedAddress = truncateStr(postCreator || "", 15)
     return (
@@ -83,7 +84,7 @@ export default function Post({ postId, postPage }) {
                 <Jazzicon diameter={40} seed={jsNumberForAddress("" + postCreator)} />
             </div>
             <div className="flex justify-between">
-                <div className="flex flex-col space-y-2 w-full">
+                <div className="flex flex-col space-y-2 w-auto">
                     <div className="text-[#6e767d]">
                         <div className="inline-block group">
                             <h4 className="font-bold text-[13px] sm:text-base text-black group-hover:underline inline-block">
@@ -91,7 +92,7 @@ export default function Post({ postId, postPage }) {
                             </h4>
                         </div>{" "}
                         {!postPage && (
-                            <span className="text-sm sm:text-[15px]">
+                            <span className=" text-sm sm:text-[15px]">
                                 · <Moment fromNow>{dateCreated}</Moment>
                             </span>
                         )}
@@ -121,10 +122,15 @@ export default function Post({ postId, postPage }) {
                     )}
                 </div>
                 {!postPage && (
-                    <div className="flex-shrink-0 ml-auto text-[#6e767d]">
-                        <Tooltip content="Tip" position="left">
-                            <Tip postCreator={postCreator} tipAmount={tipAmount} />
-                        </Tooltip>
+                    <div className="flex text-[#6e767d]">
+                        <div className="rounded-[25px] bg-[#f8fafc] w-7 h-7 pl-0.5 pt-0.5 font-bold shadow-md hover:shadow-lg">
+                            <Tooltip content="Tip" position="left">
+                                <Tip postCreator={postCreator} tipAmount={tipAmount} />
+                            </Tooltip>
+                            {dateCreated < new Date() ? (
+                                <Mint postId={postId} postCreator={postCreator} />
+                            ) : null}
+                        </div>
                     </div>
                 )}
             </div>
