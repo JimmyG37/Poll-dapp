@@ -12,13 +12,13 @@ export default function Sidebar() {
             title: "Profile",
         },
         {
-            href: "/post-chained",
-            title: "Post Chained",
+            href: "/market",
+            title: "Market",
         },
     ]
 
     return (
-        <div className="flex-col lg:inline ml-8 xl:w-[450px] py-3 space-y-5 sticky">
+        <div className="flex-col ml-8 xl:w-[450px] py-3 space-y-5 sticky">
             <div className="space-y-2.5 mt-4 mb-2.5 xl:ml-24">
                 {menuItems.map(({ href, title }) => (
                     <div
