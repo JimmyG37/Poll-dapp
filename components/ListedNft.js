@@ -8,7 +8,7 @@ import { Card, useNotification } from "web3uikit"
 import { ethers } from "ethers"
 import { truncateStr } from "../helpers/truncateString"
 
-export default function ListedNfts({ price, nftAddress, postId, marketAddress, seller }) {
+export default function ListedNft({ price, nftAddress, postId, marketAddress, seller }) {
     const { isWeb3Enabled, account } = useMoralis()
     const postChainMarketAbi = PostChainMarket.abi
     const postChainNftAbi = PostChainNft.abi
@@ -84,13 +84,13 @@ export default function ListedNfts({ price, nftAddress, postId, marketAddress, s
         <div>
             <div>
                 {imageURI ? (
-                    <div>
+                    <div className="postContainer">
                         <Card
                             title={tokenName}
                             description={tokenDescription}
                             onClick={handleCardClick}
                         >
-                            <div className="p-2">
+                            <div>
                                 <div className="flex flex-col items-center gap-2">
                                     <div>#{postId}</div>
                                     <div className="italic text-sm">
