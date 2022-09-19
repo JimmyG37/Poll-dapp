@@ -8,7 +8,6 @@ import Timer from "../components/Timer"
 import Tip from "../components/Tip"
 import Comment from "../components/Comment"
 import { ArrowLeftIcon } from "@heroicons/react/24/solid"
-import Header from "../components/Header"
 import { gql, useQuery } from "@apollo/client"
 import networkMapping from "../constants/networkMapping.json"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
@@ -73,11 +72,10 @@ export default function PostPage() {
 
     return (
         <div>
-            <Header />
-            <div className="bg-slate-50 min-h-screen flex max-w-[1500px] mx-auto">
+            <div className="screen">
                 <Sidebar />
-                <div className="flex-grow border-l border-r border-gray-200 max-w-2xl sm:ml-[73px] xl:ml-[370px]">
-                    <div className="flex items-center px-1.5 py-2 border-b border-gray-200 text-black font-semibold text-xl gap-x-4 sticky top-0 z-50 bg-slate-50">
+                <div className="feedContainer">
+                    <div className="flex items-center px-1.5 py-2 border-b border-gray-200 text-black font-semibold text-xl gap-x-4 sticky top-0 z-50 ">
                         <div
                             className="hoverAnimation w-9 h-9 flex items-center justify-center xl:px-0"
                             onClick={() => router.push("/")}
@@ -87,7 +85,7 @@ export default function PostPage() {
                         Post
                     </div>
                     <Post postId={id} postPage />
-                    <div className="flex items-center px-1.5 py-2 border-b border-gray-200 text-[#62676b] gap-x-1 sticky top-0 z-50 bg-slate-50">
+                    <div className="flex items-center px-1.5 py-2 border-b border-gray-200 text-[#62676b] gap-x-1 sticky top-0 z-50 ">
                         <span className="ml-5 text-sm sm:text-[14px]">{totalLikes}</span>{" "}
                         {totalLikes > 2 || totalLikes == 0 ? (
                             <span className=" text-sm sm:text-[13px] text-[#6e767d]">Likes</span>

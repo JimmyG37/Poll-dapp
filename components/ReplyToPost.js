@@ -47,7 +47,7 @@ export default function ReplyToPost({ postId }) {
     }
 
     return (
-        <div className=" bg-slate-50 border-b border-gray-200 overflow-hidden">
+        <div className="border-b border-gray-200 overflow-hidden">
             <div className="flex px-4 pt-5 pb-2.5 ">
                 <div className="w-full">
                     <div className="text-[#6e767d] flex flex-row ">

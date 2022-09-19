@@ -17,10 +17,10 @@ export default function Feed() {
     useEffect(() => {}, [isWeb3Enabled, account, createdPosts])
 
     return (
-        <div className="flex-grow border-l border-r border-gray-200 max-w-2xl ">
+        <div className="feedContainer">
             <div className="text-black flex items-center sm:justify-between py-2 px-3 sticky top-0 z-50 border-gray-200 ">
-                <h2 className="text-lg sm:text-xl font-bold ">Home</h2>
-                <div className="hoverAnimation w-9 h-9 flex items-center justify-center xl:px-0 ml-auto">
+                <h2 className="text-lg sm:text-xl font-bold sticky">Home</h2>
+                <div className="hoverAnimation w-9 h-9 flex items-center justify-center xl:px-0 ml-auto sticky">
                     <SparklesIcon className="h-5 text-black" />
                 </div>
             </div>

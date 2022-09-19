@@ -79,7 +79,7 @@ export default function Post({ postId, postPage }) {
 
     const formattedAddress = truncateStr(postCreator || "", 15)
     return (
-        <div className="p-2 flex border-b border-gray-200">
+        <div className="postContainer">
             <div className="h-11 w-11 rounded-full mr-4">
                 <Jazzicon diameter={40} seed={jsNumberForAddress("" + postCreator)} />
             </div>

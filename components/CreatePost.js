@@ -60,7 +60,7 @@ export default function CreatePost() {
             <div className="h-11 w-11 rounded-full mr-4">
                 <Jazzicon diameter={40} seed={jsNumberForAddress("" + account)} />
             </div>
-            <div className="  w-full">
+            <div className="w-full">
                 <div className="pb-7 space-y-2.5">
                     <textarea
                         value={postText}
@@ -78,10 +78,7 @@ export default function CreatePost() {
                         value=""
                         type="date"
                     />
-                    <button
-                        className="bg-[#1d9bf0] text-slate-50 rounded-full px-14 py-2 font-bold shadow-md hover:bg-[#1a8cd8] disabled:hover:bg-[#1d9bf0] disabled:opacity-50 disabled:cursor-default"
-                        onClick={(e) => createPost(e)}
-                    >
+                    <button className="submitButton" onClick={(e) => createPost(e)}>
                         Post
                     </button>
                 </div>
