@@ -4,6 +4,7 @@ import { useMoralis, useWeb3Contract, useChain } from "react-moralis"
 import { ethers } from "ethers"
 import networkMapping from "../constants/networkMapping.json"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
+import PostChainMarket from "../artifacts/contracts/PostChainMarket.sol/PostChainMarket.json"
 
 export default function Balances() {
     const { chainId, account, isWeb3Enabled } = useMoralis()
@@ -11,9 +12,13 @@ export default function Balances() {
     const chainString = chainId ? parseInt(chainId).toString() : "31337"
     const postChainAddress = networkMapping[chainString].PostChain[0]
     const postChainAbi = PostChain.abi
+    const marketAddress = networkMapping[chainString].PostChainMarket[0]
+    const postChainMarketAbi = PostChainMarket.abi
     const { runContractFunction } = useWeb3Contract()
     const dispatch = useNotification()
-    const [tipBalance, setTipBalance] = useState(0)
+    const [tipBalance, setTipBalance] = useState(0.0)
+    const [proceedsBalance, setProceedsBalance] = useState(0.0)
+    const [royaltyBalance, setRoyaltyBalance] = useState(0.0)
     const [chainName, setChainName] = useState("")
 
     const handleTipBalance = async () => {
@@ -36,30 +41,105 @@ export default function Balances() {
         await tx.wait(1)
         dispatch({
             type: "success",
-            message: "Withdrawing proceeds",
+            message: "Withdrawing funds",
             position: "topR",
         })
     }
 
+    const handleProceedsBalance = async () => {
+        const returnedProceedsBalance = await runContractFunction({
+            params: {
+                abi: PostChainMarket.abi,
+                contractAddress: marketAddress,
+                functionName: "getProceeds",
+                params: {
+                    seller: account,
+                },
+            },
+            onError: (error) => console.log(error),
+        })
+        if (returnedProceedsBalance) {
+            setProceedsBalance(ethers.utils.formatEther(returnedProceedsBalance))
+        }
+    }
+
+    const handleRoyaltyBalance = async () => {
+        const returnedRoyaltyBalance = await runContractFunction({
+            params: {
+                abi: PostChainMarket.abi,
+                contractAddress: marketAddress,
+                functionName: "getRoyalties",
+                params: {
+                    nftCreator: account,
+                },
+            },
+            onError: (error) => console.log(error),
+        })
+        if (returnedRoyaltyBalance) {
+            setRoyaltyBalance(ethers.utils.formatEther(returnedRoyaltyBalance))
+        }
+    }
+
     useEffect(() => {
-        if (chain) {
+        if (chain && isWeb3Enabled) {
             handleTipBalance()
             setChainName(chain.name)
         }
-    }, [chain, account, tipBalance])
+    }, [isWeb3Enabled, chain, account, tipBalance])
+
+    useEffect(() => {
+        if (isWeb3Enabled) {
+            handleProceedsBalance()
+            handleRoyaltyBalance()
+        }
+    }, [isWeb3Enabled, proceedsBalance, royaltyBalance])
 
     return (
         <div className="lg:inline ml-8 xl:w-[450px] py-3 space-y-5 sticky">
             <div className="text-[#d9d9d9] space-y-3 bg-[#15181c] pt-2 rounded-xl w-11/12 xl:w-9/12">
-                <h4 className="font-bold text-xl px-4">Balances</h4>
-                <div className=" px-4 py-2  flex items-center">
-                    <div className="ml-4 leading-5 flex">
-                        <h4 className="mr-2">Tips:</h4>
-                        <h5 className="text-[15px]">{tipBalance}</h5>
+                <div className="fundsContainer">
+                    <h4 className="font-bold text-xl px-4">Balances</h4>
+                    <div className="relative flex ml-auto py-1.5 px-3.5">
+                        {tipBalance != "0.0" ? (
+                            <div className="animate-spinning">
+                                <div className="coinContainer animate-bounce">
+                                    <div className="innerCoinContainer">
+                                        <div className="coinCenter"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null}
+
+                        {proceedsBalance != "0.0" ? (
+                            <div className="animate-spinning px-1">
+                                <div className="coinContainer animate-bounce">
+                                    <div className="innerCoinContainer">
+                                        <div className="coinCenter"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null}
+
+                        {royaltyBalance != "0.0" ? (
+                            <div className="animate-spinning">
+                                <div className="coinContainer animate-bounce">
+                                    <div className="innerCoinContainer">
+                                        <div className="coinCenter"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null}
                     </div>
-                    {tipBalance != "0.0" ? (
+                </div>
+
+                {tipBalance != "0.0" ? (
+                    <div className="fundsContainer">
+                        <div className="ml-4 leading-5 flex">
+                            <h4 className="mr-2">Tips:</h4>
+                            <h5 className="text-[15px]">{tipBalance}</h5>
+                        </div>
                         <button
-                            className="ml-auto bg-white text-black rounded font-bold text-sm py-1.5 px-3.5"
+                            className="withdrawButton"
                             onClick={() => {
                                 runContractFunction({
                                     params: {
@@ -75,8 +155,85 @@ export default function Balances() {
                         >
                             Withdraw
                         </button>
-                    ) : null}
-                </div>
+                    </div>
+                ) : (
+                    <div className="text-[#848D94] fundsContainer">
+                        <div className="ml-4 leading-5 flex ">
+                            <h4 className="mr-2">Tips:</h4>
+                            <h5 className="text-[15px]">{tipBalance}</h5>
+                        </div>
+                        <div className="grayedOutWithdraw">Withdraw</div>
+                    </div>
+                )}
+
+                {proceedsBalance != "0.0" ? (
+                    <div className="fundsContainer">
+                        <div className="ml-4 leading-5 flex">
+                            <h4 className="mr-2">Proceeds:</h4>
+                            <h5 className="text-[15px]">{proceedsBalance}</h5>
+                        </div>
+                        <button
+                            className="withdrawButton"
+                            onClick={() => {
+                                runContractFunction({
+                                    params: {
+                                        abi: PostChainMarket.abi,
+                                        contractAddress: marketAddress,
+                                        functionName: "withdrawProceeds",
+                                        params: {},
+                                    },
+                                    onError: (error) => console.log(error),
+                                    onSuccess: handleWithdrawSuccess,
+                                })
+                            }}
+                        >
+                            Withdraw
+                        </button>
+                    </div>
+                ) : (
+                    <div className="text-[#848D94] fundsContainer">
+                        <div className="ml-4 leading-5 flex">
+                            <h4 className="mr-2">Proceeds:</h4>
+                            <h5 className="text-[15px]">{proceedsBalance}</h5>
+                        </div>
+                        <div className="grayedOutWithdraw">Withdraw</div>
+                    </div>
+                )}
+
+                {royaltyBalance != "0.0" ? (
+                    <div className="fundsContainer">
+                        <div className="ml-4 leading-5 flex">
+                            <h4 className="mr-2">Royalties:</h4>
+                            <h5 className="text-[15px]">{royaltyBalance}</h5>
+                        </div>
+                        <button
+                            className="withdrawButton"
+                            onClick={() => {
+                                runContractFunction({
+                                    params: {
+                                        abi: PostChainMarket.abi,
+                                        contractAddress: marketAddress,
+                                        functionName: "withdrawRoyalties",
+                                        params: {},
+                                    },
+                                    onError: (error) => console.log(error),
+                                    onSuccess: handleWithdrawSuccess,
+                                })
+                            }}
+                        >
+                            Withdraw
+                        </button>
+                    </div>
+                ) : (
+                    <div className="text-[#848D94] fundsContainer">
+                        <div className="ml-4 leading-5 flex">
+                            <h4 className="mr-2">Royalties:</h4>
+                            <h5 className="text-[15px]">{royaltyBalance}</h5>
+                        </div>
+                        <div className="grayedOutWithdraw">Withdraw</div>
+                    </div>
+                )}
+
                 <h4 className="text-[#6e767d] px-4">{chainName}</h4>
             </div>
         </div>
