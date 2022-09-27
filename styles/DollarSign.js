@@ -1,7 +1,7 @@
 import * as React from "react"
 
 const DollarSign = ({ size = 12, strokeWidth = 3.5, color = "#1d9bf0", ...props }) => (
-    <div className="border-2 border-[#1d9bf0] h-4 w-4 px-0 items-center bg-slate-50">
+    <div>
         <svg
             width={size}
             height={size}

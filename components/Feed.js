@@ -9,17 +9,13 @@ import networkMapping from "../constants/networkMapping.json"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 
 export default function Feed() {
-    const { chainId, account, isWeb3Enabled } = useMoralis()
-    const chainString = chainId ? parseInt(chainId).toString() : "31337"
-    const postChainAddress = networkMapping[chainString].PostChain[0]
+    const { isWeb3Enabled } = useMoralis()
     const { loading, error, data: createdPosts } = useQuery(GET_POSTS)
-
-    useEffect(() => {}, [isWeb3Enabled, account, createdPosts])
 
     return (
         <div className="feedContainer">
-            <div className="text-black flex items-center sm:justify-between py-2 px-3 sticky top-0 z-50 border-gray-200 ">
-                <h2 className="text-lg sm:text-xl font-bold sticky">Home</h2>
+            <div className="text-black flex items-center sm:justify-between py-2 px-3 top-0 z-50 border-gray-200 ">
+                <h2 className="text-lg sm:text-xl font-bold">Home</h2>
                 <div className="hoverAnimation w-9 h-9 flex items-center justify-center xl:px-0 ml-auto sticky">
                     <SparklesIcon className="h-5 text-black" />
                 </div>

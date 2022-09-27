@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar"
 import Balances from "../components/Balances"
 import Post from "../components/Post"
 import GET_COMMENTS from "../constants/queryComments"
-import Timer from "../components/Timer"
+import CountdownTimer from "../components/CountdownTimer"
 import Tip from "../components/Tip"
 import Comment from "../components/Comment"
 import { ArrowLeftIcon } from "@heroicons/react/24/solid"
@@ -23,13 +23,12 @@ export default function PostPage() {
     const { id } = router.query
     const [totalLikes, setTotalLikes] = useState(0)
     const [tipAmount, setTipAmount] = useState(null)
-    const [deadline, setDeadline] = useState(0)
-    const [postCreator, setPostCreator] = useState(null)
     const [postId, setPostId] = useState(0)
+    const [isLoading, setIsLoading] = useState(false)
     const { runContractFunction } = useWeb3Contract()
     const { loading, error, data } = useQuery(GET_COMMENTS)
 
-    async function handlePost() {
+    const handlePost = async () => {
         const returnedPost = await runContractFunction({
             params: {
                 abi: PostChain.abi,
@@ -43,10 +42,9 @@ export default function PostPage() {
         })
         if (returnedPost) {
             setTotalLikes(parseInt(returnedPost.totalLikes))
-            setDeadline(parseInt(returnedPost.likeAndCommentDeadline))
-            setPostCreator(returnedPost.creator)
         }
     }
+
     const handleTipAmount = async () => {
         const returnedAmount = await runContractFunction({
             params: {
@@ -63,12 +61,12 @@ export default function PostPage() {
     }
 
     useEffect(() => {
-        if (isWeb3Enabled && id) {
+        if (router.isReady && isWeb3Enabled) {
             setPostId(parseInt(id))
             handlePost()
             handleTipAmount()
         }
-    }, [isWeb3Enabled, id, postId, totalLikes])
+    }, [isWeb3Enabled, router.isReady, router, postId, totalLikes, tipAmount])
 
     return (
         <div>
@@ -84,18 +82,7 @@ export default function PostPage() {
                         </div>
                         Post
                     </div>
-                    <Post postId={id} postPage />
-                    <div className="flex items-center px-1.5 py-2 border-b border-gray-200 text-[#62676b] gap-x-1 sticky top-0 z-50 ">
-                        <span className="ml-5 text-sm sm:text-[14px]">{totalLikes}</span>{" "}
-                        {totalLikes > 2 || totalLikes == 0 ? (
-                            <span className=" text-sm sm:text-[13px] text-[#6e767d]">Likes</span>
-                        ) : (
-                            <span className=" text-sm sm:text-[13px] text-[#595b5f]">Like</span>
-                        )}
-                        <div className="ml-10">
-                            <Timer deadline={deadline} />
-                        </div>
-                    </div>
+                    <Post postId={postId} postPage />
                     {isWeb3Enabled ? (
                         loading || !data ? (
                             <div>Loading...</div>
@@ -104,7 +91,7 @@ export default function PostPage() {
                                 <ReplyToPost postId={postId} />
                                 {data.comments.length > 0 &&
                                     data.comments.map((comment) => {
-                                        if (comment.postId == id) {
+                                        if (comment.postId == postId) {
                                             return (
                                                 <Comment
                                                     key={`${comment.id}${comment.commentId}`}
@@ -121,7 +108,7 @@ export default function PostPage() {
                         <div>Web3 Not Enabled</div>
                     )}
                 </div>
-                <Balances />
+                {/* {!id ? null : <Balances />} */}
             </div>
         </div>
     )
