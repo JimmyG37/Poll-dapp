@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useNotification } from "web3uikit"
+import { useNotification } from "@web3uikit/core"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import networkMapping from "../constants/networkMapping.json"

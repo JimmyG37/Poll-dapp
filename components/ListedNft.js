@@ -4,7 +4,7 @@ import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 import PostChainMarket from "../artifacts/contracts/PostChainMarket.sol/PostChainMarket.json"
 import PostChainNft from "../artifacts/contracts/PostChainNft.sol/PostChainNft.json"
 import Image from "next/image"
-import { Card, useNotification } from "web3uikit"
+import { Card, useNotification } from "@web3uikit/core"
 import { ethers } from "ethers"
 import { truncateStr } from "../helpers/truncateString"
 

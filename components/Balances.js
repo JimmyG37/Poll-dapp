@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useNotification } from "web3uikit"
+import { useNotification } from "@web3uikit/core"
 import { useMoralis, useWeb3Contract, useChain } from "react-moralis"
 import { ethers } from "ethers"
 import networkMapping from "../constants/networkMapping.json"
@@ -42,11 +42,11 @@ export default function Balances() {
     }
 
     useEffect(() => {
-        if (isWeb3Enabled) {
+        if (chain) {
             handleTipBalance()
             setChainName(chain.name)
         }
-    }, [isWeb3Enabled, account, tipBalance, dispatch])
+    }, [chain, account, tipBalance])
 
     return (
         <div className="lg:inline ml-8 xl:w-[450px] py-3 space-y-5 sticky">

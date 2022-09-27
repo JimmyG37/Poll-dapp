@@ -1,4 +1,4 @@
-import { Form, useNotification } from "web3uikit"
+import { Form, useNotification } from "@web3uikit/core"
 import { ethers } from "ethers"
 import { Label, TextInput } from "flowbite-react"
 import PostChainMarket from "../artifacts/contracts/PostChainMarket.sol/PostChainMarket.json"

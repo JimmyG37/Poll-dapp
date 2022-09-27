@@ -1,7 +1,7 @@
 import "../styles/globals.css"
 import Header from "../components/Header"
 import { MoralisProvider } from "react-moralis"
-import { NotificationProvider } from "web3uikit"
+import { NotificationProvider } from "@web3uikit/core"
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client"
 
 const client = new ApolloClient({

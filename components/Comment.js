@@ -4,13 +4,13 @@ import BarGraph from "./BarGraph"
 import networkMapping from "../constants/networkMapping.json"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
-import { useNotification } from "web3uikit"
+import { useNotification, Tooltip } from "@web3uikit/core"
 import { useEffect, useState } from "react"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import { HeartIcon } from "@heroicons/react/24/outline"
 import { truncateStr } from "../helpers/truncateString"
 import { unixToDate } from "../helpers/unixToDate"
-import { Tooltip } from "web3uikit"
+// import { Tooltip } from "web3uikit"
 
 export default function Comment({ id, tipAmount, totalLikes }) {
     const { chainId, account, isWeb3Enabled } = useMoralis()

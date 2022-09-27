@@ -1,4 +1,4 @@
-import { TabList, Button } from "web3uikit"
+import { TabList, Button } from "@web3uikit/web3"
 import Link from "next/link"
 
 export default function Sidebar() {
