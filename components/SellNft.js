@@ -1,6 +1,5 @@
 import { Form, useNotification } from "@web3uikit/core"
 import { ethers } from "ethers"
-import { Label, TextInput } from "flowbite-react"
 import PostChainMarket from "../artifacts/contracts/PostChainMarket.sol/PostChainMarket.json"
 import PostChainNft from "../artifacts/contracts/PostChainNft.sol/PostChainNft.json"
 import networkMapping from "../constants/networkMapping.json"
@@ -76,8 +75,8 @@ export default function SellNft() {
     useEffect(() => {}, [account, isWeb3Enabled, chainId])
 
     return (
-        <div className="border-b border-gray-200 p-3 flex space-x-3">
-            {/* <Form
+        <div className="border-b border-gray-200">
+            <Form
                 onSubmit={approveAndList}
                 data={[
                     {
@@ -95,32 +94,7 @@ export default function SellNft() {
                 ]}
                 title="List your NFT!"
                 id="Main Form"
-            /> */}
-            <form className="flex flex-col gap-4 w-full">
-                <div>
-                    <div className="mb-2 block">
-                        <Label htmlFor="postId" value="Your Post ID" />
-                    </div>
-                    <TextInput id="postId" type="number" placeholder="Post ID" required={true} />
-                </div>
-                <div>
-                    <div className="mb-2 block">
-                        <Label htmlFor="price" value="Set Price" />
-                    </div>
-                    <TextInput
-                        id="price"
-                        type="number"
-                        placeholder="Price (in ETH)"
-                        required={true}
-                    />
-                </div>
-                <button
-                    className="submitButton"
-                    // onClick={(e) => createPost(e)}
-                >
-                    List
-                </button>
-            </form>
+            />
         </div>
     )
 }
