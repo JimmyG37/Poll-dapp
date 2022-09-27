@@ -3,6 +3,7 @@ import { useWeb3Contract, useMoralis } from "react-moralis"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 import PostChainMarket from "../artifacts/contracts/PostChainMarket.sol/PostChainMarket.json"
 import PostChainNft from "../artifacts/contracts/PostChainNft.sol/PostChainNft.json"
+import UpdateListingModal from "./UpdateListingModal"
 import Image from "next/image"
 import { Card, useNotification } from "@web3uikit/core"
 import { ethers } from "ethers"
@@ -85,6 +86,13 @@ export default function ListedNft({ price, nftAddress, postId, marketAddress, se
             <div>
                 {imageURI ? (
                     <div className="postContainer">
+                        <UpdateListingModal
+                            isVisible={showModal}
+                            tokenId={postId}
+                            marketAddress={marketAddress}
+                            nftAddress={nftAddress}
+                            onClose={hideModal}
+                        />
                         <Card
                             title={tokenName}
                             description={tokenDescription}
