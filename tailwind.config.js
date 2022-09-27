@@ -8,7 +8,7 @@ module.exports = {
                 scaling: "scaling 2.6s infinite ease-in-out",
                 flash: "flash 7s infinite",
                 shine: "shine 5s infinite",
-                spinning: "spinning 1s linear infinite",
+                spinning: "spinning 2s linear infinite",
             },
             keyframes: {
                 flip: {
@@ -16,11 +16,11 @@ module.exports = {
                     to: { transform: "rotateX(180deg)", transformOrigin: "50% bottom " },
                 },
                 bounce: {
-                    "10%": {
+                    "20%": {
                         transition: "easeout",
                         transform: "translateY(-6px)",
                     },
-                    "30%": {
+                    "50%": {
                         transition: "easeout",
                         transform: "translateY(-8px)",
                     },
