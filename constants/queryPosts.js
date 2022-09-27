@@ -2,7 +2,7 @@ import { gql } from "@apollo/client"
 
 const GET_POSTS = gql`
     {
-        posts(orderDirection: desc) {
+        posts(first: 6) {
             id
             creator
             postId
@@ -13,7 +13,7 @@ const GET_POSTS = gql`
 
 const GET_LIKES = gql`
     {
-        likes(first: 5) {
+        likes(first: 6) {
             user
             postId
             commentId
