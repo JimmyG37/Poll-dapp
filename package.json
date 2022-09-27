@@ -11,23 +11,25 @@
   "dependencies": {
     "@apollo/client": "^3.6.9",
     "@heroicons/react": "^2.0.10",
+    "@walletconnect/web3-provider": "^1.8.0",
+    "@web3auth/web3auth": "^2.1.2",
+    "@web3uikit/core": "^0.1.10",
     "@web3uikit/icons": "^0.1.5",
+    "@web3uikit/web3": "^0.1.5",
     "chart.js": "^3.9.1",
-    "flowbite": "^1.5.3",
-    "flowbite-react": "^0.1.11",
     "graphql": "^16.5.0",
+    "magic-sdk": "^8.1.1",
     "moment": "^2.29.4",
-    "moralis": "^1.10.1",
-    "next": "12.2.4",
+    "moralis-v1": "1.11.0",
+    "next": "^12.3.1",
     "react": "18.2.0",
     "react-chartjs-2": "^4.3.1",
-    "react-countdown-circle-timer": "^3.0.9",
     "react-dom": "18.2.0",
     "react-jazzicon": "^1.0.4",
     "react-moment": "^1.1.2",
-    "react-moralis": "^1.4.0",
+    "react-moralis": "1.4.0",
     "tailwind-scrollbar-hide": "^1.1.7",
-    "web3uikit": "^0.1.4"
+    "web3uikit": "^1.0.4"
   },
   "devDependencies": {
     "@chainlink/contracts": "^0.4.2",
@@ -54,6 +56,6 @@
     "solhint": "^3.3.7",
     "solidity-coverage": "^0.7.21",
     "tailwind-scrollbar": "^2.0.1",
-    "tailwindcss": "^3.1.6"
+    "tailwindcss": "^3.1.8"
   }
 }
