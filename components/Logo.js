@@ -12,51 +12,64 @@ export default function Logo() {
     const [nMinutes, setNMinutes] = useState("")
     const [nSeconds, setNSeconds] = useState("")
 
-    const clock = () => {
-        let date = new Date()
+    useEffect(() => {
+        const date = new Date()
+        const interval = setInterval(() => {
+            let hh = date.getHours() * 30,
+                mm = date.getMinutes() * 6,
+                ss = date.getSeconds() * 6
 
-        let hh = date.getHours() * 30,
-            mm = date.getMinutes() * 6,
-            ss = date.getSeconds() * 6
+            setHour(`rotateZ(${hh + mm / 12}deg)`)
+            setMinutes(`rotateZ(${mm}deg)`)
+            setSeconds(`rotateZ(${ss}deg)`)
 
-        setHour(`rotateZ(${hh + mm / 12}deg)`)
-        setMinutes(`rotateZ(${mm}deg)`)
-        setSeconds(`rotateZ(${ss}deg)`)
+            setNHour(`rotateZ(-${hh + mm / 12}deg)`)
+            setNMinutes(`rotateZ(-${mm}deg)`)
+            setNSeconds(`rotateZ(-${ss}deg)`)
+        }, 1000)
 
-        setNHour(`rotateZ(-${hh + mm / 12}deg)`)
-        setNMinutes(`rotateZ(-${mm}deg)`)
-        setNSeconds(`rotateZ(-${ss}deg)`)
-    }
-    setInterval(clock, 1000)
+        return () => clearInterval(interval)
+    }, [hour, minutes, seconds, nHour, nMinutes, nSeconds])
 
     return (
-        <div className="flex">
-            <div className="relative w-[90px] h-[90px]  rounded-[50%] justify-center flex items-center transition duration-150">
+        <div>
+            <div className="relative w-[80px] h-[80px]  rounded-[50%] justify-center flex items-center transition duration-150">
                 <div
-                    className="absolute flex justify-center w-[105px] h-[90px] before:content-[''] before:absolute  before:w-[0.135rem] before:h-[3.5rem] before:rounded-[0.75rem] before:z-[1] before:bg-[#1d9bf0]"
+                    className={
+                        "absolute flex justify-center w-[105px] h-[60px] before:content-[''] before:absolute  before:w-[0.135rem] before:h-[3.5rem] before:rounded-[0.75rem] before:z-[1] "
+                    }
                     style={{ transform: hour }}
                 >
-                    <div className="absolute -top-4" style={{ transform: nHour }}>
+                    <div
+                        className="absolute -top-4 border-2 border-[#1d9bf0]"
+                        style={{ transform: nHour }}
+                    >
                         <ChatBubble />
                     </div>
                 </div>
-                <div className="border-2 border-solid border-[#1d9bf0] z-[10]">
+                <div className="w-11 border-2 border-[#1d9bf0] bg-white h-6">
                     <PostSkeleton />
                 </div>
 
                 <div
-                    className="absolute flex justify-center w-[136px] h-[90px] before:content-['']  before:absolute  before:w-[0.135rem] before:h-[3.5rem] before:rounded-[0.75rem] before:z-[1] before:bg-[#1d9bf0]"
+                    className="absolute flex justify-center w-[136px] h-[52px] before:content-['']  before:absolute  before:w-[0.135rem] before:h-[3.5rem] before:rounded-[0.75rem] before:z-[1]"
                     style={{ transform: minutes }}
                 >
-                    <div className="absolute -top-4" style={{ transform: nMinutes }}>
+                    <div
+                        className="absolute -top-4 border-2 border-[#1d9bf0]"
+                        style={{ transform: nMinutes }}
+                    >
                         <Heart />
                     </div>
                 </div>
                 <div
-                    className="absolute  flex justify-center w-[130px] h-[90px] before:content-[''] before:w-[0.135rem] before:h-[3.5rem] before:rounded-[0.75rem] before:z-[1] origin-center before:bg-[#1d9bf0]"
+                    className="absolute flex justify-center w-[130px] h-[58px] before:content-[''] before:w-[0.135rem] before:h-[2.5rem] before:rounded-[0.75rem] before:z-[1] origin-center "
                     style={{ transform: seconds }}
                 >
-                    <div className="absolute -top-4" style={{ transform: nSeconds }}>
+                    <div
+                        className="absolute -top-4 border-2 border-[#1d9bf0] bg-white"
+                        style={{ transform: nSeconds }}
+                    >
                         <DollarSign />
                     </div>
                 </div>
