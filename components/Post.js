@@ -12,6 +12,7 @@ import { truncateStr } from "../helpers/truncateString"
 import { unixToDate } from "../helpers/unixToDate"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import ChatBubble from "../styles/ChatBubble"
+import Calendar from "../styles/Calendar"
 import CountdownTimer from "./CountdownTimer"
 
 export default function Post({ postId, postPage }) {
@@ -128,6 +129,7 @@ export default function Post({ postId, postPage }) {
                         ) : null}
                     </div>
                 )} */}
+                    <Calendar deadline={deadline} />
                 </div>
                 {postPage && (
                     <div className="flex items-center justify-center  py-2 border-b border-gray-200">
