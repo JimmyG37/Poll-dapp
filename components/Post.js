@@ -8,12 +8,13 @@ import { Tooltip } from "@web3uikit/core"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
-import { truncateStr } from "../helpers/truncateString"
-import { unixToDate } from "../helpers/unixToDate"
+import { useTruncate } from "../hooks/useTruncate"
 import { useMoralis, useWeb3Contract } from "react-moralis"
-import ChatBubble from "../styles/ChatBubble"
-import Calendar from "../styles/Calendar"
+import Image from "next/image"
+import ChatBubble from "./ChatBubble"
+import Calendar from "./Calendar"
 import CountdownTimer from "./CountdownTimer"
+import { useTokenURI } from "../hooks/useTokenURI"
 
 export default function Post({ postId, postPage }) {
     const { chainId, account, isWeb3Enabled } = useMoralis()
@@ -27,6 +28,9 @@ export default function Post({ postId, postPage }) {
     const [totalComments, setTotalComments] = useState(0)
     const [tipAmount, setTipAmount] = useState("")
     const [post, setPost] = useState(false)
+    const [imageURI] = useTokenURI(postId)
+    const formattedAddress = useTruncate(postCreator || "", 15)
+    const [isOpen, setIsOpen] = useState(false)
     const router = useRouter()
     const { runContractFunction } = useWeb3Contract()
 
@@ -47,7 +51,7 @@ export default function Post({ postId, postPage }) {
             setPostText(returnedPost.post)
             setDeadline(parseInt(returnedPost.likeAndCommentDeadline))
             setTotalComments(parseInt(returnedPost.totalComments))
-            setDateCreated(unixToDate(returnedPost.dateCreated))
+            setDateCreated(new Date(returnedPost.dateCreated * 1000))
         }
     }
 
@@ -73,70 +77,60 @@ export default function Post({ postId, postPage }) {
 
     useEffect(() => {
         handleTipAmount()
-    }, [])
+    }, [imageURI])
 
-    const formattedAddress = truncateStr(postCreator || "", 15)
     return (
-        <div>
-            <div onClick={() => router.push(`/${postId}`)}>
-                <div className="postContainer cursor-pointer">
-                    <div className="w-12">
-                        <div className="h-11 w-11 rounded-full ">
-                            <Jazzicon diameter={40} seed={jsNumberForAddress("" + postCreator)} />
+        <div className="trapdoor w-full">
+            <div
+                className={`flex w-max h-[50%] absolute door ${
+                    isOpen ? "top-[-50%] doorShadow" : "topslide before:top-[5px] "
+                }`}
+            >
+                <div className="flex w-full pl-4 pt-5  ">
+                    <div className="pfpContainer w-[3.1rem] h-[3.0rem] z-10">
+                        <Jazzicon diameter={80} seed={jsNumberForAddress("" + postCreator)} />
+                    </div>
+                    <div className="h-4 w-25 items-center justify-center z-3  mt-8 -ml-4">
+                        <h4 className="addressBar opacity-[2] border-indigo-500 ">
+                            {formattedAddress}
+                        </h4>
+                        <div className="cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
+                            {dateCreated < new Date() ? (
+                                <Mint postId={postId} postCreator={postCreator} />
+                            ) : null}
                         </div>
                     </div>
-                    <div className="space-y-2 w-full">
-                        <div className="flex flex-row text-[#6e767d]">
-                            <div className="inline-block">
-                                <h4 className="font-bold text-[13px] sm:text-base text-black group-hover:underline inline-block">
-                                    {formattedAddress}
-                                </h4>
-                            </div>{" "}
-                            {!postPage && (
-                                <span className="text-sm sm:text-[15px]">
-                                    · <Moment fromNow>{dateCreated}</Moment> ·
-                                </span>
-                            )}
-                            <div className="text-sm sm:text-[14px] pl-1 pr-15">
-                                post id {postId}
-                            </div>
-                        </div>
-
-                        <p className="text-black text-[15px] sm:text-base mt-0.5">{postText}</p>
-
-                        {!postPage && (
-                            <div className="flex flex-row pt-5">
-                                <div className="pr-6">
-                                    <ChatBubble color={"#A3EBB1"} size={20} strokeWidth={3} />
-                                </div>
-                                <Tooltip content="Tip" position="right">
-                                    <Tip postCreator={postCreator} tipAmount={tipAmount} />
-                                </Tooltip>
-                            </div>
-                        )}
-
-                        {postPage && (
-                            <span className="flex text-sm sm:text-[15px] text-[#6e767d] pt-3">
-                                <Moment format="h:mm A">{dateCreated}</Moment> ·{" "}
-                                <Moment format="MMM DD, YY">{dateCreated}</Moment>
-                            </span>
-                        )}
-                    </div>
-                    {/* {!postPage && (
-                    <div>
-                        {dateCreated < new Date() ? (
-                            <Mint postId={postId} postCreator={postCreator} />
-                        ) : null}
-                    </div>
-                )} */}
-                    <Calendar deadline={deadline} />
                 </div>
-                {postPage && (
-                    <div className="flex items-center justify-center  py-2 border-b border-gray-200">
-                        <CountdownTimer deadline={deadline} />
-                    </div>
-                )}
+                <Calendar className="order-last" deadline={deadline} />
             </div>
+            <div>
+                <div
+                    className={`w-[100%] h-[50%] absolute door pl-4 ${
+                        isOpen ? "top-[100%] doorShadow" : "bottomslide before:top-[-20px]"
+                    }`}
+                >
+                    <p className="text-black text-[15px] sm:text-base pt-1 ">{postText}</p>
+                    <div className="flex flex-row pt-6">
+                        <div
+                            className="pr-6 cursor-pointer"
+                            onClick={() => router.push(`/${postId}`)}
+                        >
+                            <ChatBubble color={"#A3EBB1"} size={20} strokeWidth={3} />
+                        </div>
+                        <Tooltip content="Tip" position="right">
+                            <Tip postCreator={postCreator} tipAmount={tipAmount} />
+                        </Tooltip>
+                    </div>
+                </div>
+            </div>
+            <div className="flex pl-5 items-center justify-center">
+                {imageURI ? <Image src={imageURI} height="150" width="400" /> : null}
+            </div>
+            {postPage && (
+                <div className="flex items-center justify-center  py-2 border-b border-gray-200">
+                    <CountdownTimer deadline={deadline} />
+                </div>
+            )}
         </div>
     )
 }
