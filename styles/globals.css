@@ -16,16 +16,50 @@
     }
 }
 
+@layer utilities {
+    .trapdoor {
+        box-shadow: inset -7px 0px 12px -8px rgba(0, 0, 0, 0.3),
+            inset 7px 0px 12px -8px rgba(0, 0, 0, 0.3);
+        transition: bg 400ms ease-in-out;
+        top: 50%;
+
+        height: 220px;
+        position: relative;
+        border-color: #e5e7eb;
+        border-bottom-width: 0.01em;
+    }
+
+    .topslide {
+        top: 0%;
+        left: 0px;
+    }
+
+    .bottomslide {
+        top: 50%;
+        left: 0px;
+        bottom: 10%;
+    }
+
+    .door {
+        transition: top 400ms, box-shadow 200ms, transform 300ms;
+        transition-timing-function: ease-in-out;
+        background-color: #f8fafc;
+        overflow: hidden;
+        z-index: 2;
+        width: 100%;
+    }
+}
+
 .screen {
     @apply min-h-screen flex max-w-[1500px] mx-auto;
 }
 
 .feedContainer {
-    @apply flex-grow border-l border-r border-gray-200 max-w-2xl;
+    @apply flex-grow border-x-gray-200 max-w-2xl;
 }
 
 .postContainer {
-    @apply p-2 flex border-b border-gray-200;
+    @apply pl-3 pb-3 flex border-b border-gray-200;
 }
 
 .submitButton {
@@ -54,4 +88,16 @@
 
 .coinCenter {
     @apply h-[6px] w-0.5 bg-[#e09100] shadow-[inset_33px_33px_0px_#ba7800];
+}
+
+.pfpContainer {
+    @apply flex items-center justify-center  rotate-45 overflow-hidden shadow-md;
+}
+
+.addressBar {
+    @apply font-bold text-[10px] bg-[#1b1717bf] border-t-[2px] backdrop-blur-[20px] pl-6 pr-[15px] text-white;
+}
+
+.doorShadow {
+    @apply shadow-[0_35px_60px_-15px_rgba(0,0,0,0.4)];
 }
