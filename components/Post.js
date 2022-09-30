@@ -1,8 +1,5 @@
 import Moment from "react-moment"
-import networkMapping from "../constants/networkMapping.json"
-import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 import Mint from "./Mint"
-import { ethers } from "ethers"
 import Tip from "./Tip"
 import { Tooltip } from "@web3uikit/core"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
@@ -15,69 +12,31 @@ import ChatBubble from "./ChatBubble"
 import Calendar from "./Calendar"
 import CountdownTimer from "./CountdownTimer"
 import { useTokenURI } from "../hooks/useTokenURI"
+import { usePost } from "../hooks/usePost"
+import { useTipAmount } from "../hooks/useTipAmount"
 
 export default function Post({ postId, postPage }) {
     const { chainId, account, isWeb3Enabled } = useMoralis()
-    const chainString = chainId ? parseInt(chainId).toString() : "31337"
-    const postChainAddress = networkMapping[chainString].PostChain[0]
-    const postChainAbi = PostChain.abi
-    const [postCreator, setPostCreator] = useState(null)
-    const [postText, setPostText] = useState("")
-    const [deadline, setDeadline] = useState(0)
-    const [dateCreated, setDateCreated] = useState(0)
-    const [totalComments, setTotalComments] = useState(0)
-    const [tipAmount, setTipAmount] = useState("")
-    const [post, setPost] = useState(false)
+    const [postCreator, postText, deadline, totalComments, dateCreated, totalLikes] =
+        usePost(postId)
+    const tipAmount = useTipAmount()
     const [imageURI] = useTokenURI(postId)
     const formattedAddress = useTruncate(postCreator || "", 15)
     const [isOpen, setIsOpen] = useState(false)
     const router = useRouter()
-    const { runContractFunction } = useWeb3Contract()
 
-    const { runContractFunction: getPost } = useWeb3Contract({
-        abi: PostChain.abi,
-        contractAddress: postChainAddress,
-        functionName: "getPost",
-        params: {
-            postId: postId,
-        },
-    })
+    useEffect(() => {}, [
+        isWeb3Enabled,
+        postId,
+        postCreator,
+        postText,
+        deadline,
+        totalComments,
+        dateCreated,
+        totalLikes,
+    ])
 
-    const handlePost = async () => {
-        const returnedPost = await getPost()
-
-        if (returnedPost) {
-            setPostCreator(returnedPost.creator)
-            setPostText(returnedPost.post)
-            setDeadline(parseInt(returnedPost.likeAndCommentDeadline))
-            setTotalComments(parseInt(returnedPost.totalComments))
-            setDateCreated(new Date(returnedPost.dateCreated * 1000))
-        }
-    }
-
-    const handleTipAmount = async () => {
-        const returnedAmount = await runContractFunction({
-            params: {
-                abi: PostChain.abi,
-                contractAddress: postChainAddress,
-                functionName: "getTipAmount",
-            },
-            onError: (error) => console.log(error),
-        })
-        if (returnedAmount) {
-            setTipAmount(returnedAmount.toString())
-        }
-    }
-
-    useEffect(() => {
-        if (isWeb3Enabled) {
-            handlePost()
-        }
-    }, [isWeb3Enabled, postId])
-
-    useEffect(() => {
-        handleTipAmount()
-    }, [imageURI])
+    useEffect(() => {}, [imageURI, tipAmount])
 
     return (
         <div className="trapdoor w-full">
