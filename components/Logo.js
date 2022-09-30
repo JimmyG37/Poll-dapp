@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import DollarSign from "../styles/DollarSign"
-import PostSkeleton from "../styles/PostSkeleton"
-import Heart from "../styles/Heart"
-import ChatBubble from "../styles/ChatBubble"
+import DollarSign from "./DollarSign"
+import PostSkeleton from "./PostSkeleton"
+import Heart from "./Heart"
+import ChatBubble from "./ChatBubble"
 
 export default function Logo() {
     const [hour, setHour] = useState("")
