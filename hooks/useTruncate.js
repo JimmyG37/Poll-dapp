@@ -1,4 +1,4 @@
-export function truncateStr(fullStr, strLen) {
+const useTruncate = (fullStr, strLen) => {
     if (fullStr.length <= strLen) return fullStr
 
     const seperator = "..."
@@ -6,7 +6,10 @@ export function truncateStr(fullStr, strLen) {
     const charsToShow = strLen - seperatorLength
     const frontChars = Math.ceil(charsToShow / 2)
     const backChars = Math.floor(charsToShow / 3)
-    return (
+    const formattedAddress =
         fullStr.substring(0, frontChars) + seperator + fullStr.substring(fullStr.length - backChars)
-    )
+
+    return formattedAddress
 }
+
+export { useTruncate }
