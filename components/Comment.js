@@ -8,8 +8,7 @@ import { useNotification, Tooltip } from "@web3uikit/core"
 import { useEffect, useState } from "react"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import { HeartIcon } from "@heroicons/react/24/outline"
-import { truncateStr } from "../helpers/truncateString"
-import { unixToDate } from "../helpers/unixToDate"
+import { useTruncate } from "../hooks/useTruncate"
 // import { Tooltip } from "web3uikit"
 
 export default function Comment({ id, tipAmount, totalLikes }) {
@@ -25,7 +24,7 @@ export default function Comment({ id, tipAmount, totalLikes }) {
     const [likePercent, setLikePercent] = useState(0)
     const commentId = parseInt(id)
     const { runContractFunction } = useWeb3Contract()
-    const formattedAddress = truncateStr(commenter || "", 15)
+    const formattedAddress = useTruncate(commenter || "", 15)
     const dispatch = useNotification()
 
     const handleComment = async () => {
@@ -41,7 +40,7 @@ export default function Comment({ id, tipAmount, totalLikes }) {
             onError: (error) => console.log(error),
         })
         if (returnedComment) {
-            let createdDate = unixToDate(returnedComment.timeCreated)
+            let createdDate = new Date(returnedComment.timeCreated * 1000)
             setCommenter(returnedComment.commenter)
             setComment(returnedComment.comment)
             setTimeCreated(createdDate)
