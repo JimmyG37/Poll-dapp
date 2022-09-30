@@ -38,8 +38,7 @@ export default function CreatePost() {
         setPostText("")
     }
 
-    const handlePostSuccess = async (tx) => {
-        await tx.wait(1)
+    const handlePostSuccess = async () => {
         dispatch({
             type: "success",
             message: "Post Created!",
@@ -56,9 +55,9 @@ export default function CreatePost() {
     }
 
     return (
-        <div className="border-b border-gray-200 p-3 flex space-x-3 overflow-y-scroll scrollbar-hide ">
-            <div className="h-11 w-11 rounded-full mr-4">
-                <Jazzicon diameter={40} seed={jsNumberForAddress("" + account)} />
+        <div className="border-b border-gray-200 p-3 flex space-x-3 overflow-y-scroll scrollbar-hide">
+            <div className="pfpContainer w-[3.0rem] h-[2.6rem]">
+                <Jazzicon diameter={80} seed={jsNumberForAddress("" + account)} />
             </div>
             <div className="w-full">
                 <div className="pb-7 space-y-2.5">

@@ -45,11 +45,11 @@ export default function Tip({ postCreator, tipAmount }) {
 
     return (
         <div
-            className="flex h-4 w-4 justify-center items-center cursor-pointer  hover:animate-spinning border-[#ffa500] bg-[#ffa500]  rounded-full"
+            className="coinContainer cursor-pointer  hover:animate-spinning "
             onClick={() => handleTip(postCreator)}
         >
-            <div className="h-3 w-3 rounded-full bg-[#e09100] shadow-inner flex justify-center items-center">
-                <div className="h-[6px] w-0.5 bg-[#e09100] shadow-[inset_33px_33px_0px_#ba7800]"></div>
+            <div className="innerCoinContainer">
+                <div className="coinCenter"></div>
             </div>
         </div>
     )

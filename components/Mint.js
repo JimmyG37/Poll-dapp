@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import { useNotification } from "@web3uikit/core"
+import { useTokenURI } from "../hooks/useTokenURI"
 import networkMapping from "../constants/networkMapping.json"
 import PostChainNft from "../artifacts/contracts/PostChainNft.sol/PostChainNft.json"
 
@@ -9,27 +10,9 @@ export default function Mint({ postId, postCreator }) {
     const chainString = chainId ? parseInt(chainId).toString() : "31337"
     const postChainNftAddress = networkMapping[chainString].PostChainNft[0]
     const postChainNftAbi = PostChainNft.abi
+    const [isMinted] = useTokenURI(postId)
     const { runContractFunction } = useWeb3Contract()
     const dispatch = useNotification()
-    const [minted, setMinted] = useState(false)
-
-    // const isMinted = async () => {
-    //     const tokenURI = await runContractFunction({
-    //         params: {
-    //             abi: postChainNftAbi,
-    //             contractAddress: postChainNftAddress,
-    //             functionName: "tokenURI",
-    //             params: {
-    //                 tokenId: postId,
-    //             },
-    //         },
-    //         onError: () => setMinted(false),
-    //     })
-
-    //     if (tokenURI) {
-    //         setMinted(true)
-    //     }
-    // }
 
     const handleMint = async () => {
         console.log("Mint.js -- postId:", postId)
@@ -52,7 +35,6 @@ export default function Mint({ postId, postCreator }) {
     }
 
     const handleMintSuccess = () => {
-        setMinted(true)
         dispatch({
             type: "success",
             message: "Post Minted!",
@@ -61,16 +43,12 @@ export default function Mint({ postId, postCreator }) {
         })
     }
 
-    useEffect(() => {
-        if (isWeb3Enabled) {
-            // isMinted()
-        }
-    }, [isWeb3Enabled, chainId, account, postCreator, postId, minted])
+    useEffect(() => {}, [isWeb3Enabled, chainId, account, postCreator, postId, isMinted])
 
     return (
         <div className="flex">
             {account === (postCreator || "").toLowerCase() ? (
-                minted ? null : (
+                isMinted ? null : (
                     <button
                         className="pl-1 justify-items-center rounded-[15px] bg-[#f8fafc] w-8 font-bold shadow-md hover:shadow-lg text-md md:text-[11px]"
                         onClick={() => handleMint()}
@@ -80,9 +58,9 @@ export default function Mint({ postId, postCreator }) {
                 )
             ) : null}
 
-            {minted ? (
-                <div className="flex flex-col justify-center items-center">
-                    <div className="w-4 h-2 bg-[#F07C00] flex justify-center items-center rounded-b-[2px]">
+            {isMinted ? (
+                <div className="ml-2 flex flex-col justify-center items-center">
+                    <div className="w-4 h-3 bg-[#F07C00] flex justify-center items-center rounded-b-[2px]">
                         <div className="w-[6px] h-2 bg-[#BF4800]"></div>
                     </div>
                     <div className="mt-[-1px] rounded-full bg-[#EEC600] h-4 w-4 flex justify-center items-center">

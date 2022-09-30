@@ -1,7 +1,6 @@
 import { useEffect } from "react"
 
 export const NumberBox = ({ num, unit, flip }) => {
-    // useEffect(() => {}, [num, flip])
     return (
         <div className="flex flex-col items-center px-2 pb-4">
             <div className=" relative bg-transparent flex flex-col items-center justify-center rounded-lg text-sm md:text-sm mt-4 ">

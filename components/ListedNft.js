@@ -7,27 +7,18 @@ import UpdateListingModal from "./UpdateListingModal"
 import Image from "next/image"
 import { Card, useNotification } from "@web3uikit/core"
 import { ethers } from "ethers"
-import { truncateStr } from "../helpers/truncateString"
+import { useTruncate } from "../hooks/useTruncate"
+import { useTokenURI } from "../hooks/useTokenURI"
 
 export default function ListedNft({ price, nftAddress, postId, marketAddress, seller }) {
     const { isWeb3Enabled, account } = useMoralis()
     const postChainMarketAbi = PostChainMarket.abi
     const postChainNftAbi = PostChainNft.abi
-    const [imageURI, setImageURI] = useState("")
-    const [tokenName, setTokenName] = useState("")
-    const [tokenDescription, setTokenDescription] = useState("")
+    const formattedAddress = useTruncate(seller || "", 15)
+    const [imageURI, tokenName, tokenDescription] = useTokenURI(postId)
     const [showModal, setShowModal] = useState(false)
     const hideModal = () => setShowModal(false)
     const dispatch = useNotification()
-
-    const { runContractFunction: getTokenURI } = useWeb3Contract({
-        abi: postChainNftAbi,
-        contractAddress: nftAddress,
-        functionName: "tokenURI",
-        params: {
-            tokenId: postId,
-        },
-    })
 
     const { runContractFunction: buyItem } = useWeb3Contract({
         abi: postChainMarketAbi,
@@ -40,27 +31,10 @@ export default function ListedNft({ price, nftAddress, postId, marketAddress, se
         },
     })
 
-    async function updateUI() {
-        const tokenURI = await getTokenURI()
-        if (tokenURI) {
-            const tokenData = tokenURI.replace("data:application/json;base64,", "")
-            const decodedTokenData = atob(tokenData).replace(`""image"`, `"image"`)
-            const jsonManifest = JSON.parse(decodedTokenData)
-            const { name, description, image } = jsonManifest
-            setImageURI(image)
-            setTokenName(name)
-            setTokenDescription(description)
-        }
-    }
-
-    useEffect(() => {
-        if (isWeb3Enabled) {
-            updateUI()
-        }
-    }, [isWeb3Enabled])
+    useEffect(() => {}, [isWeb3Enabled, imageURI, tokenName, tokenDescription])
 
     const isOwnedByUser = seller === account || seller === undefined
-    const formattedSellerAddress = isOwnedByUser ? "you" : truncateStr(seller || "", 15)
+    const formattedSellerAddress = isOwnedByUser ? "you" : formattedAddress
 
     const handleCardClick = () => {
         isOwnedByUser
