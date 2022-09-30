@@ -12,9 +12,11 @@ export default function Feed() {
     const { isWeb3Enabled } = useMoralis()
     const { loading, error, data: createdPosts } = useQuery(GET_POSTS)
 
+    useEffect(() => {}, [isWeb3Enabled, createdPosts])
+
     return (
-        <div className="feedContainer">
-            <div className="text-black flex items-center sm:justify-between py-2 px-3 top-0 z-50 border-gray-200 ">
+        <div className="flex-grow border-l border-r border-x-gray-200 max-w-2xl sm:ml-[73px] xl:ml-[370px] mt-10">
+            <div className="text-black flex items-center sm:justify-between py-2 px-3 top-0 z-50 border-gray-200 sticky">
                 <h2 className="text-lg sm:text-xl font-bold">Home</h2>
                 <div className="hoverAnimation w-9 h-9 flex items-center justify-center xl:px-0 ml-auto sticky">
                     <SparklesIcon className="h-5 text-black" />
@@ -24,7 +26,7 @@ export default function Feed() {
                 loading || !createdPosts ? (
                     <div>Loading...</div>
                 ) : (
-                    <div>
+                    <div className="">
                         <CreatePost />
                         <div className="pb-72">
                             {createdPosts.posts.map((post) => {
