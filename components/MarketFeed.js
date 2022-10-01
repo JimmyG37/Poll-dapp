@@ -14,9 +14,9 @@ export default function MarketFeed() {
 
     return (
         <div className="feedContainer">
-            <div className="text-black flex items-center sm:justify-between py-2 px-3 sticky top-0 z-50 border-gray-200 ">
-                <h2 className="text-lg sm:text-xl font-bold sticky">Market</h2>
-                <div className="hoverAnimation w-9 h-9 flex items-center justify-center xl:px-0 ml-auto sticky">
+            <div className="locationBar">
+                <h2 className="location">Market</h2>
+                <div className="sparkle">
                     <SparklesIcon className="h-5 text-black" />
                 </div>
             </div>
