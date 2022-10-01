@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import { useNotification } from "@web3uikit/core"
-import { useTokenURI } from "../hooks/useTokenURI"
+import { useMintStatus } from "../hooks/useMintStatus"
 import networkMapping from "../constants/networkMapping.json"
 import PostChainNft from "../artifacts/contracts/PostChainNft.sol/PostChainNft.json"
 
@@ -10,7 +10,7 @@ export default function Mint({ postId, postCreator }) {
     const chainString = chainId ? parseInt(chainId).toString() : "31337"
     const postChainNftAddress = networkMapping[chainString].PostChainNft[0]
     const postChainNftAbi = PostChainNft.abi
-    const [isMinted] = useTokenURI(postId)
+    const isMinted = useMintStatus(postId)
     const { runContractFunction } = useWeb3Contract()
     const dispatch = useNotification()
 
@@ -43,7 +43,7 @@ export default function Mint({ postId, postCreator }) {
         })
     }
 
-    useEffect(() => {}, [isWeb3Enabled, chainId, account, postCreator, postId, isMinted])
+    useEffect(() => {}, [isWeb3Enabled, chainId, account, postId, postCreator, isMinted])
 
     return (
         <div className="flex">
