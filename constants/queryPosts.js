@@ -2,7 +2,7 @@ import { gql } from "@apollo/client"
 
 const GET_POSTS = gql`
     {
-        posts(first: 10) {
+        posts(orderBy: postId, orderDirection: desc) {
             id
             creator
             postId
