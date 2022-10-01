@@ -27,13 +27,12 @@ const useTokenURI = (postId) => {
         const tokenURI = await getTokenURI()
         if (tokenURI) {
             const tokenData = tokenURI.replace("data:application/json;base64,", "")
-            const decodedTokenData = atob(tokenData).replace(`""image"`, `"image"`)
+            const decodedTokenData = atob(tokenData)
             const jsonManifest = JSON.parse(decodedTokenData)
             const { name, description, image } = jsonManifest
             setImageURI(image)
             setTokenName(name)
             setTokenDescription(description)
-            setIsMinted(true)
         }
     }
 
@@ -41,9 +40,9 @@ const useTokenURI = (postId) => {
         if (isWeb3Enabled) {
             handleTokenURI()
         }
-    }, [isWeb3Enabled, postId, imageURI, tokenName, tokenDescription, isMinted])
+    }, [isWeb3Enabled, postId, imageURI, tokenName, tokenDescription])
 
-    return [imageURI, tokenName, tokenDescription, isMinted]
+    return [imageURI, tokenName, tokenDescription]
 }
 
 export { useTokenURI }
