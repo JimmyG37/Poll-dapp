@@ -33,7 +33,7 @@ contract PostChainSvg {
 
         string memory svg = string(
             abi.encodePacked(
-                '<svg width="400" height="150" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">',
+                '<svg width="300" height="150" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">',
                 "<defs>",
                 '<path id="path1" d="M10,65 H290 M10,80 H270 M15,96 H270 M20,115"></path>'
                 "</defs>",
