@@ -1,8 +1,8 @@
 {
     "80001": {
         "PostChain": ["0xc06F3D908aaFdf95C147395971C375087c3df522"],
-        "PostChainNft": ["0x7bd22C7c3AB3C753eBf5D46b305d41D0070f3791"],
-        "PostChainMarket": ["0x5dcf5b1b4F8CFc461E64D753B75ac1A755273641"]
+        "PostChainNft": ["0x19A5D114C2095063eeFaeb9484098aFd3c9A1B69"],
+        "PostChainMarket": ["0x6A2700F5De5Ee75cC88C518EA9AEb47e3A29C657"]
     },
     "31337": {
         "PostChain": ["0x5FbDB2315678afecb367f032d93F642f64180aa3"],
