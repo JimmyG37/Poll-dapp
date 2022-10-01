@@ -30,7 +30,9 @@ contract PostChainNft is ERC721, ERC2981, PostChainSvg {
     address private i_postChainAddress;
     address private immutable i_owner;
 
-    event NFTMinted(uint256 tokenId);
+    mapping(uint256 => bool) private s_minted;
+
+    event NFTMinted(uint256 indexed tokenId);
 
     constructor(
         string memory sunglassesSVG,
@@ -51,6 +53,7 @@ contract PostChainNft is ERC721, ERC2981, PostChainSvg {
         }
         _safeMint(msg.sender, postId);
         _setTokenRoyalty(postId, msg.sender, 250); // 2.50% royalty
+        s_minted[postId] = true;
         emit NFTMinted(postId);
     }
 
@@ -78,7 +81,7 @@ contract PostChainNft is ERC721, ERC2981, PostChainSvg {
                                 '{"name":"',
                                 name,
                                 '", "description":"An NFT of a post", ',
-                                '""image":"',
+                                '"image":"',
                                 "data:image/svg+xml;base64,",
                                 image,
                                 '"}'
@@ -93,5 +96,9 @@ contract PostChainNft is ERC721, ERC2981, PostChainSvg {
         IPostChain.Post memory post = IPostChain(i_postChainAddress).getPost(tokenId);
         string memory svg = generateSVG(tokenId, post.creator, post.post, post.totalComments);
         return svg;
+    }
+
+    function getMinted(uint256 postId) public view returns (bool) {
+        return s_minted[postId];
     }
 }
