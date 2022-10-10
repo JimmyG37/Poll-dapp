@@ -6,7 +6,7 @@
 
 @layer base {
     body {
-        @apply dark:bg-slate-50;
+        @apply bg-[#1e1e1e];
     }
 }
 
@@ -16,10 +16,9 @@
             inset 7px 0px 12px -8px rgba(0, 0, 0, 0.3);
         transition: bg 400ms ease-in-out;
         top: 50%;
-
         height: 220px;
         position: relative;
-        border-color: #e5e7eb;
+        border-color: #373737;
         border-bottom-width: 0.01em;
     }
 
@@ -37,10 +36,144 @@
     .door {
         transition: top 400ms, box-shadow 200ms, transform 300ms;
         transition-timing-function: ease-in-out;
-        background-color: #f8fafc;
+        background-color: #1e1e1e;
         overflow: hidden;
         z-index: 2;
         width: 100%;
+    }
+}
+
+@layer utilities {
+    .commentsContainer {
+        background: rgba(37, 37, 38, 0.85);
+        -webkit-backdrop-filter: blur(29px);
+        backdrop-filter: blur(29px);
+        border: 1px solid rgba(37, 37, 38, 0.425);
+    }
+
+    .balanceContainer {
+        background: rgba(12, 12, 23, 0.5);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(12, 12, 23, 0.25);
+    }
+
+    .speech-bubble {
+        position: relative;
+        background: rgba(133, 133, 133, 0.5);
+        border-radius: 0.4em;
+    }
+
+    .speech-bubble:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border: 5px solid transparent;
+        border-top-color: rgba(133, 133, 133, 0.5);
+        border-bottom: 0;
+        border-left: 0;
+        margin-left: -7px;
+        margin-bottom: -19.7px;
+    }
+    .lock {
+        width: 21px;
+        height: 16px;
+        border: 1px solid rgba(133, 133, 133, 0.25);
+        border-radius: 5px;
+        background: rgba(133, 133, 133, 0.5);
+        position: relative;
+        cursor: pointer;
+        -webkit-transition: all 0.1s ease-in-out;
+        transition: all 0.1s ease-in-out;
+        box-shadow: 5px 5px 11px #131313;
+    }
+
+    .lock:after {
+        content: "";
+        display: block;
+        background: rgba(133, 133, 133, 0.5);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -3.5px 0 0 -2px;
+        -webkit-transition: all 0.1s ease-in-out;
+        transition: all 0.1s ease-in-out;
+    }
+    .lock:before {
+        content: "";
+        display: block;
+        width: 13px;
+        height: 9px;
+        bottom: 100%;
+        position: absolute;
+        left: 50%;
+        margin-left: -7px;
+        border: 3px solid rgba(133, 133, 133, 0.5);
+        border-top-right-radius: 50%;
+        border-top-left-radius: 50%;
+        border-bottom: 0;
+        -webkit-transition: all 0.1s ease-in-out;
+        transition: all 0.1s ease-in-out;
+    }
+    /* Locked Hover */
+    .lock:hover:before {
+        height: 12px;
+    }
+
+    .unlocked {
+        width: 21px;
+        height: 16px;
+        border: 1px solid rgba(133, 133, 133, 0.25);
+        border-radius: 5px;
+        background: rgba(133, 133, 133, 0.5);
+        position: relative;
+        cursor: pointer;
+        -webkit-transition: all 0.1s ease-in-out;
+        transition: all 0.1s ease-in-out;
+        transform: rotate(10deg);
+        box-shadow: 5px 5px 11px #131313;
+    }
+
+    .unlocked:after {
+        content: "";
+        display: block;
+        background: rgba(133, 133, 133, 0.5);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transition: all 0.1s ease-in-out;
+        transition: all 0.1s ease-in-out;
+    }
+    .unlocked:before {
+        content: "";
+        display: block;
+        width: 13px;
+        height: 10px;
+        position: absolute;
+        border: 3px solid rgba(133, 133, 133, 0.5);
+        border-top-right-radius: 50%;
+        border-top-left-radius: 50%;
+        border-bottom: 0;
+        -webkit-transition: all 0.1s ease-in-out;
+        transition: all 0.1s ease-in-out;
+        bottom: 115%;
+        left: 50%;
+        margin-left: -8.5px;
+        transform: rotate(-45deg);
+    }
+    /* Locked Hover */
+    .unlocked:hover {
+        transform: rotate(3deg);
+    }
+
+    .unlocked:hover:before {
+        height: 10px;
+        left: 47%;
+        bottom: 110%;
+        transform: rotate(-30deg);
     }
 }
 
@@ -49,11 +182,11 @@
 }
 
 .feedContainer {
-    @apply flex-grow border-l border-r border-x-gray-200 max-w-2xl sm:ml-[73px] xl:ml-[370px];
+    @apply flex-grow border-l border-r border-[#373737] max-w-2xl sm:ml-[73px] xl:ml-[370px];
 }
 
 .postContainer {
-    @apply pl-3 pb-3 flex border-b border-gray-200;
+    @apply pl-3 pb-3 flex border-b border-[#373737];
 }
 
 .submitButton {
@@ -85,7 +218,7 @@
 }
 
 .pfpContainer {
-    @apply flex items-center justify-center  rotate-45 overflow-hidden shadow-md;
+    @apply flex items-center justify-center rotate-45 overflow-hidden shadow-md rounded;
 }
 
 .addressBar {
