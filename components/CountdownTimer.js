@@ -67,12 +67,12 @@ export default function CountdownTimer({ deadline }) {
     }
 
     return (
-        <div>
+        <div className="relative">
             <div className="grid md:flex items-center px-10 h-10 ">
-                <NumberBox num={days} unit="Days" flip={daysFlip} />·
-                <NumberBox num={hours} unit="Hours" flip={hoursFlip} />·
-                <NumberBox num={minutes} unit="M" flip={minutesFlip} />·
-                <NumberBox num={seconds} unit="S" flip={secondsFlip} />
+                <NumberBox num={days} unit="DAYS" flip={daysFlip} />
+                <NumberBox num={hours} unit="HOURS" flip={hoursFlip} />
+                <NumberBox num={minutes} unit="MINUTES" flip={minutesFlip} />
+                <NumberBox num={seconds} unit="SECONDS" flip={secondsFlip} />
             </div>
         </div>
     )
