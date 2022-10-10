@@ -55,7 +55,7 @@ export default function CreatePost() {
     }
 
     return (
-        <div className="border-b border-gray-200 p-3 flex space-x-3 overflow-y-scroll scrollbar-hide">
+        <div className="border-b border-[#373737] p-3 flex space-x-3 overflow-y-scroll scrollbar-hide">
             <div className="pfpContainer w-[3.0rem] h-[2.6rem]">
                 <Jazzicon diameter={80} seed={jsNumberForAddress("" + account)} />
             </div>
