@@ -1,59 +1,29 @@
 import Tip from "../components/Tip"
 import Moment from "react-moment"
-import BarGraph from "./BarGraph"
 import networkMapping from "../constants/networkMapping.json"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { useNotification, Tooltip } from "@web3uikit/core"
 import { useEffect, useState } from "react"
 import { useMoralis, useWeb3Contract } from "react-moralis"
-import { HeartIcon } from "@heroicons/react/24/outline"
+import { useComment } from "../hooks/useComment"
 import { useTruncate } from "../hooks/useTruncate"
-// import { Tooltip } from "web3uikit"
+import { HeartIcon } from "@heroicons/react/24/outline"
+import HeartFill from "./HeartFill"
 
-export default function Comment({ id, tipAmount, totalLikes }) {
+export default function Comment({ commentId, tipAmount, totalLikes, totalComments }) {
     const { chainId, account, isWeb3Enabled } = useMoralis()
+    const [commenter, comment, timeCreated, commentLikes, likePercent] = useComment(
+        commentId,
+        totalLikes
+    )
     const chainString = chainId ? parseInt(chainId).toString() : "31337"
     const postChainAddress = networkMapping[chainString].PostChain[0]
     const postChainAbi = PostChain.abi
-    const [commenter, setCommenter] = useState(null)
-    const [comment, setComment] = useState("")
-    const [timeCreated, setTimeCreated] = useState(0)
-    const [commentLikes, setCommentLikes] = useState(0)
-    const [postId, setPostId] = useState(0)
-    const [likePercent, setLikePercent] = useState(0)
-    const commentId = parseInt(id)
+
     const { runContractFunction } = useWeb3Contract()
     const formattedAddress = useTruncate(commenter || "", 15)
     const dispatch = useNotification()
-
-    const handleComment = async () => {
-        const returnedComment = await runContractFunction({
-            params: {
-                abi: PostChain.abi,
-                contractAddress: postChainAddress,
-                functionName: "getComment",
-                params: {
-                    commentId: commentId,
-                },
-            },
-            onError: (error) => console.log(error),
-        })
-        if (returnedComment) {
-            let createdDate = new Date(returnedComment.timeCreated * 1000)
-            setCommenter(returnedComment.commenter)
-            setComment(returnedComment.comment)
-            setTimeCreated(createdDate)
-            setCommentLikes(parseInt(returnedComment.likes))
-            setPostId(returnedComment.postId.toNumber())
-            let percentage = calculatePercent(commentLikes, totalLikes)
-            setLikePercent(Math.floor(percentage))
-        }
-    }
-
-    const calculatePercent = (partialValue, totalValue) => {
-        return (100 * partialValue) / totalValue
-    }
 
     const likeComment = async (postId, commentId) => {
         const likeOptions = {
@@ -85,48 +55,54 @@ export default function Comment({ id, tipAmount, totalLikes }) {
         })
     }
 
-    useEffect(() => {
-        if (isWeb3Enabled) {
-            handleComment()
-        }
-    }, [isWeb3Enabled, id, commentId, likePercent])
+    useEffect(() => {}, [isWeb3Enabled, commentId, totalLikes, totalComments])
+
+    useEffect(() => {}, [commenter, comment, timeCreated, commentLikes, likePercent])
+
     return (
-        <div className="border-b border-gray-200 flex relative">
-            <BarGraph likePercent={likePercent} />
-            <div className="p-3 flex relative">
-                <div className="h-11 w-11 rounded-full mr-5">
-                    <Jazzicon diameter={40} seed={jsNumberForAddress("" + commenter)} />
-                </div>
-                <div className="flex flex-col space-y-2 w-full">
-                    <div className="flex justify-between">
-                        <div className="text-[#6e767d]">
-                            <div className="inline-block group">
-                                <span className="ml-1.5 text-sm sm:text-[15px] group-hover:underline">
-                                    @{formattedAddress}
-                                </span>
-                            </div>{" "}
-                            ·{" "}
-                            <span className="text-sm sm:text-[15px]">
-                                <Moment fromNow>{timeCreated}</Moment>
-                            </span>
-                            <p className="text-black mt-0.5 max-w-lg overflow-scroll text-[15px] sm:text-base">
-                                {comment}
-                            </p>
+        <div className="border-b border-[#373737] h-[12rem] ">
+            <div className="flex flex-col items-center justify-center absolute space-y-[1rem] z-50">
+                <div className="flex pl-4  mt-6">
+                    <div className="pfpContainer w-[3.0rem] h-[3.0rem] z-10 mr-5">
+                        <Jazzicon diameter={80} seed={jsNumberForAddress("" + commenter)} />
+                    </div>
+                    <div className="flex pl-2 text-white text-3xl italic font-bold z-10 shadow-md">
+                        {likePercent || 0}%
+                    </div>
+                    <HeartFill />
+                    <div className="h-4 w-25 items-center justify-center z-3  mt-8 ml-[1.5rem] absolute">
+                        <h4
+                            className="addressBar"
+                            style={{
+                                border: "1px solid rgba(0,0,0,0.25)",
+                                borderTop: "2px solid #f43f5E",
+                            }}
+                        >
+                            {formattedAddress}
+                        </h4>
+                        <div className="pl-2 text-sm sm:text-[12px] text-slate-50	">
+                            <Moment fromNow>{timeCreated}</Moment>
                         </div>
                     </div>
-                    <div className="flex items-center space-x-1">
-                        <div className="flex pr-5" onClick={() => likeComment(postId, commentId)}>
-                            <HeartIcon className="h-4 mt-1 cursor-pointer hover:text-red-600" />
-                            <span className="pl-2 text-[#6e767d] sm:text-[14px]">
-                                {likePercent}%
-                            </span>
+                </div>
+                <p className="text-white text-[15px] sm:text-base pt-5 pb-3">{comment}</p>
+                <div className="flex flex-col">
+                    <div className="flex flex-row items-center space-x-1 space-y-1">
+                        <div className="flex pr-5 å" onClick={() => likeComment(postId, commentId)}>
+                            <HeartIcon className="h-4  cursor-pointer text-[#f43f5E] hover:text-red-800" />
                         </div>
-                        <Tooltip content="Tip" position="right">
-                            <Tip postCreator={commenter} tipAmount={tipAmount} />
-                        </Tooltip>
+                        <Tip postCreator={commenter} tipAmount={tipAmount} />
                     </div>
                 </div>
             </div>
+            <div
+                className="h-full -ml-5 bg-[#ff638480] backdrop-blur-[10px] bg-opacity-20 drop-shadow-lg"
+                style={{
+                    width: `${likePercent}%`,
+                    border: "1px solid rgba(255,99,132,0.25)",
+                    transition: "width 1s ease-in-out",
+                }}
+            ></div>
         </div>
     )
 }
