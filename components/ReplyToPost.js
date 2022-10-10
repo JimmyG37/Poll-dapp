@@ -47,12 +47,12 @@ export default function ReplyToPost({ postId }) {
     }
 
     return (
-        <div className="border-b border-gray-200 overflow-hidden">
+        <div className="border-b border-[#373737] overflow-hidden">
             <div className="flex px-4 pt-5 pb-2.5 ">
                 <div className="w-full">
                     <div className="text-[#6e767d] flex flex-row ">
-                        <div className="h-11 w-11 rounded-full mr-5">
-                            <Jazzicon diameter={40} seed={jsNumberForAddress("" + account)} />
+                        <div className="pfpContainer w-[2.7rem] h-[2.0rem] mr-5">
+                            <Jazzicon diameter={80} seed={jsNumberForAddress("" + account)} />
                         </div>
 
                         <textarea
@@ -60,7 +60,7 @@ export default function ReplyToPost({ postId }) {
                             onChange={(e) => setCommentText(e.target.value)}
                             placeholder="Reply to post"
                             rows="2"
-                            className="bg-transparent outline-none text-black text-lg placeholder-gray-500 tracking-wide w-full min-h-[50px] pt-1.5"
+                            className="bg-transparent outline-none text-white text-lg placeholder-gray-500 tracking-wide w-full min-h-[50px] pt-1.5"
                         />
 
                         <div className="pt-1">
