@@ -96,7 +96,7 @@ export default function Balances() {
 
     return (
         <div className="hidden lg:inline ml-[68rem] mt-[3rem] xl:w-[430px] py-1 space-y-5 fixed ">
-            <div className="text-[#d9d9d9] space-y-3 bg-[#15181c] pt-2 rounded-xl w-11/12 xl:w-9/12">
+            <div className="text-[#d9d9d9] space-y-3 balanceContainer pt-2 rounded-xl w-11/12 xl:w-9/12">
                 <div className="fundsContainer">
                     <h4 className="font-bold text-xl px-4">Balances</h4>
                     <div className="relative flex ml-auto py-1.5 px-3.5">
