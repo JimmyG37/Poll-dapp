@@ -1,6 +1,6 @@
 import { useMoralisQuery, useMoralis } from "react-moralis"
 import ListedNft from "./ListedNft"
-import SellNft from "./SellNft"
+import ListNft from "./ListNft"
 import networkMapping from "../constants/networkMapping.json"
 import GET_ACTIVE_ITEMs from "../constants/queryActiveItems"
 import { SparklesIcon } from "@heroicons/react/24/outline"
@@ -25,7 +25,7 @@ export default function MarketFeed() {
                     <div>Loading...</div>
                 ) : (
                     <div>
-                        <SellNft />
+                        <ListNft />
                         <div className="pb-72">
                             {listedNfts.activeItems.map((nft) => {
                                 return (
