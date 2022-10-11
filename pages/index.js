@@ -1,5 +1,6 @@
 import Feed from "../components/Feed"
 import Balances from "../components/Balances"
+import Widgets from "../components/Widgets"
 import Sidebar from "../components/Sidebar"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import { useEffect, useState, useMemo } from "react"
@@ -20,7 +21,7 @@ export default function Home() {
                 <div className="screen">
                     <Sidebar />
                     <Feed tipAmount={tipAmount} />
-                    <Balances />
+                    <Widgets />
                 </div>
             </PostContext.Provider>
         </>
