@@ -17,7 +17,6 @@ export default function CreatePost() {
     const { runContractFunction } = useWeb3Contract()
 
     const createPost = async (e) => {
-        e.preventDefault()
         const postOptions = {
             abi: postChainAbi,
             contractAddress: postChainAddress,
@@ -36,6 +35,7 @@ export default function CreatePost() {
             },
         })
         setPostText("")
+        e.preventDefault()
     }
 
     const handlePostSuccess = async () => {

@@ -6,7 +6,7 @@
 
 @layer base {
     body {
-        @apply bg-[#1e1e1e];
+        @apply bg-[#0d1117];
     }
 }
 
@@ -18,7 +18,7 @@
         top: 50%;
         height: 220px;
         position: relative;
-        border-color: #373737;
+        border-color: #30363d;
         border-bottom-width: 0.01em;
     }
 
@@ -36,7 +36,7 @@
     .door {
         transition: top 400ms, box-shadow 200ms, transform 300ms;
         transition-timing-function: ease-in-out;
-        background-color: #1e1e1e;
+        background-color: #0d1117;
         overflow: hidden;
         z-index: 2;
         width: 100%;
@@ -45,10 +45,10 @@
 
 @layer utilities {
     .commentsContainer {
-        background: rgba(37, 37, 38, 0.85);
-        -webkit-backdrop-filter: blur(29px);
-        backdrop-filter: blur(29px);
-        border: 1px solid rgba(37, 37, 38, 0.425);
+        background: rgba(22, 27, 34, 0.9);
+        -webkit-backdrop-filter: blur(11px);
+        backdrop-filter: blur(11px);
+        border: 1px solid rgba(22, 27, 34, 0.45);
     }
 
     .balanceContainer {
@@ -60,7 +60,7 @@
 
     .speech-bubble {
         position: relative;
-        background: rgba(133, 133, 133, 0.5);
+        background: #374151;
         border-radius: 0.4em;
     }
 
@@ -71,30 +71,30 @@
         left: 50%;
         width: 0;
         height: 0;
-        border: 5px solid transparent;
-        border-top-color: rgba(133, 133, 133, 0.5);
+        border: 7px solid transparent;
+        border-top-color: #374151;
         border-bottom: 0;
         border-left: 0;
         margin-left: -7px;
-        margin-bottom: -19.7px;
+        margin-bottom: -20px;
     }
     .lock {
         width: 21px;
         height: 16px;
-        border: 1px solid rgba(133, 133, 133, 0.25);
+        border: 1px solid #374151;
         border-radius: 5px;
-        background: rgba(133, 133, 133, 0.5);
+        background: #374151;
         position: relative;
         cursor: pointer;
         -webkit-transition: all 0.1s ease-in-out;
         transition: all 0.1s ease-in-out;
-        box-shadow: 5px 5px 11px #131313;
+        box-shadow: 5px 5px 4px #050709;
     }
 
     .lock:after {
         content: "";
         display: block;
-        background: rgba(133, 133, 133, 0.5);
+        background: #374151;
         position: absolute;
         top: 50%;
         left: 50%;
@@ -111,14 +111,14 @@
         position: absolute;
         left: 50%;
         margin-left: -7px;
-        border: 3px solid rgba(133, 133, 133, 0.5);
+        border: 3px solid #374151;
         border-top-right-radius: 50%;
         border-top-left-radius: 50%;
         border-bottom: 0;
         -webkit-transition: all 0.1s ease-in-out;
         transition: all 0.1s ease-in-out;
     }
-    /* Locked Hover */
+
     .lock:hover:before {
         height: 12px;
     }
@@ -126,21 +126,21 @@
     .unlocked {
         width: 21px;
         height: 16px;
-        border: 1px solid rgba(133, 133, 133, 0.25);
+        border: 1px solid #374151;
         border-radius: 5px;
-        background: rgba(133, 133, 133, 0.5);
+        background: #374151;
         position: relative;
         cursor: pointer;
         -webkit-transition: all 0.1s ease-in-out;
         transition: all 0.1s ease-in-out;
         transform: rotate(10deg);
-        box-shadow: 5px 5px 11px #131313;
+        box-shadow: 5px 5px 4px #050709;
     }
 
     .unlocked:after {
         content: "";
         display: block;
-        background: rgba(133, 133, 133, 0.5);
+        background: #374151;
         position: absolute;
         top: 50%;
         left: 50%;
@@ -153,7 +153,7 @@
         width: 13px;
         height: 10px;
         position: absolute;
-        border: 3px solid rgba(133, 133, 133, 0.5);
+        border: 3px solid #374151;
         border-top-right-radius: 50%;
         border-top-left-radius: 50%;
         border-bottom: 0;
@@ -164,7 +164,6 @@
         margin-left: -8.5px;
         transform: rotate(-45deg);
     }
-    /* Locked Hover */
     .unlocked:hover {
         transform: rotate(3deg);
     }
@@ -175,6 +174,10 @@
         bottom: 110%;
         transform: rotate(-30deg);
     }
+
+    .widget {
+        box-shadow: 20px 20px 60px #1a1a1a, -20px -20px 60px #232323;
+    }
 }
 
 .screen {
@@ -182,15 +185,15 @@
 }
 
 .feedContainer {
-    @apply flex-grow border-l border-r border-[#373737] max-w-2xl sm:ml-[73px] xl:ml-[370px];
+    @apply flex-grow border-l border-r border-[#30363D] max-w-2xl sm:ml-[73px] xl:ml-[370px];
 }
 
 .postContainer {
-    @apply pl-3 pb-3 flex border-b border-[#373737];
+    @apply pl-3 pb-3 flex border-b border-[#30363D];
 }
 
 .submitButton {
-    @apply bg-[#1d9bf0] text-slate-50 rounded-full px-14 py-2 font-bold shadow-md hover:bg-[#1a8cd8] disabled:hover:bg-[#1d9bf0] disabled:opacity-50 disabled:cursor-default;
+    @apply bg-blue-700 text-slate-50 rounded-full px-14 py-2 font-bold shadow-md hover:bg-[#1a8cd8] disabled:hover:bg-[#1d9bf0] disabled:opacity-50 disabled:cursor-default;
 }
 
 .withdrawButton {
@@ -198,7 +201,11 @@
 }
 
 .grayedOutWithdraw {
-    @apply ml-auto bg-[#AAAFB4] rounded font-bold text-sm py-1.5 px-3.5;
+    @apply ml-auto bg-[#9ca3af] text-[#7d848a] rounded font-bold text-sm py-1.5 px-3.5 cursor-not-allowed;
+}
+
+.widgetContainer {
+    @apply text-[#d9d9d9] space-y-3 bg-[#161b22] pt-2 rounded-xl w-11/12 xl:w-9/12 shadow-[5px_5px_11px_#131313];
 }
 
 .fundsContainer {
@@ -218,11 +225,11 @@
 }
 
 .pfpContainer {
-    @apply flex items-center justify-center rotate-45 overflow-hidden shadow-md rounded;
+    @apply flex items-center justify-center rotate-45 overflow-hidden shadow-lg rounded;
 }
 
 .addressBar {
-    @apply font-bold text-[10px] bg-[#1b1717bf] border-t-[3px] backdrop-blur-[20px] pl-6 pr-[15px] text-white;
+    @apply font-bold text-[10px] bg-[#1b1717bf] border-t-[3px] pl-6 pr-[15px] text-white shadow-[5px_5px_19px_#131313];
 }
 
 .doorShadow {
@@ -243,4 +250,16 @@
 
 .sparkle {
     @apply w-9 h-9 flex items-center justify-center xl:px-0 ml-auto sticky;
+}
+
+.widgetInput {
+    @apply border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-[#0d1117] dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500;
+}
+
+.widgetButton {
+    @apply mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800;
+}
+
+.calendar {
+    @apply flex flex-col justify-center items-center rounded-md h-10 w-11 shadow-[4px_4px_8px_#0b0e13] text-white bg-[#21262d] mr-2 mt-2;
 }

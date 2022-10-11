@@ -95,147 +95,145 @@ export default function Balances() {
     }, [isWeb3Enabled, proceedsBalance, royaltyBalance])
 
     return (
-        <div className="hidden lg:inline ml-[68rem] mt-[3rem] xl:w-[430px] py-1 space-y-5 fixed ">
-            <div className="text-[#d9d9d9] space-y-3 balanceContainer pt-2 rounded-xl w-11/12 xl:w-9/12">
-                <div className="fundsContainer">
-                    <h4 className="font-bold text-xl px-4">Balances</h4>
-                    <div className="relative flex ml-auto py-1.5 px-3.5">
-                        {tipBalance != "0.0" ? (
-                            <div className="animate-spinning">
-                                <div className="coinContainer animate-bounce">
-                                    <div className="innerCoinContainer">
-                                        <div className="coinCenter"></div>
-                                    </div>
+        <div className="widgetContainer widget">
+            <div className="fundsContainer">
+                <h4 className="font-bold text-xl px-4">Balances</h4>
+                <div className="relative flex ml-auto py-1.5 px-3.5">
+                    {tipBalance != "0.0" ? (
+                        <div className="animate-spinning">
+                            <div className="coinContainer animate-bounce">
+                                <div className="innerCoinContainer">
+                                    <div className="coinCenter"></div>
                                 </div>
                             </div>
-                        ) : null}
+                        </div>
+                    ) : null}
 
-                        {proceedsBalance != "0.0" ? (
-                            <div className="animate-spinning px-1">
-                                <div className="coinContainer animate-bounce">
-                                    <div className="innerCoinContainer">
-                                        <div className="coinCenter"></div>
-                                    </div>
+                    {proceedsBalance != "0.0" ? (
+                        <div className="animate-spinning px-1">
+                            <div className="coinContainer animate-bounce">
+                                <div className="innerCoinContainer">
+                                    <div className="coinCenter"></div>
                                 </div>
                             </div>
-                        ) : null}
+                        </div>
+                    ) : null}
 
-                        {royaltyBalance != "0.0" ? (
-                            <div className="animate-spinning">
-                                <div className="coinContainer animate-bounce">
-                                    <div className="innerCoinContainer">
-                                        <div className="coinCenter"></div>
-                                    </div>
+                    {royaltyBalance != "0.0" ? (
+                        <div className="animate-spinning">
+                            <div className="coinContainer animate-bounce">
+                                <div className="innerCoinContainer">
+                                    <div className="coinCenter"></div>
                                 </div>
                             </div>
-                        ) : null}
-                    </div>
+                        </div>
+                    ) : null}
                 </div>
-
-                {tipBalance != "0.0" ? (
-                    <div className="fundsContainer">
-                        <div className="ml-4 leading-5 flex">
-                            <h4 className="mr-2">Tips:</h4>
-                            <h5 className="text-[15px]">{tipBalance}</h5>
-                        </div>
-                        <button
-                            className="withdrawButton"
-                            onClick={() => {
-                                runContractFunction({
-                                    params: {
-                                        abi: PostChain.abi,
-                                        contractAddress: postChainAddress,
-                                        functionName: "withdrawBalances",
-                                        params: {},
-                                    },
-                                    onError: (error) => console.log(error),
-                                    onSuccess: handleWithdrawSuccess,
-                                })
-                            }}
-                        >
-                            Withdraw
-                        </button>
-                    </div>
-                ) : (
-                    <div className="text-[#848D94] fundsContainer">
-                        <div className="ml-4 leading-5 flex ">
-                            <h4 className="mr-2">Tips:</h4>
-                            <h5 className="text-[15px]">{tipBalance}</h5>
-                        </div>
-                        <div className="grayedOutWithdraw">Withdraw</div>
-                    </div>
-                )}
-
-                {proceedsBalance != "0.0" ? (
-                    <div className="fundsContainer">
-                        <div className="ml-4 leading-5 flex">
-                            <h4 className="mr-2">Proceeds:</h4>
-                            <h5 className="text-[15px]">{proceedsBalance}</h5>
-                        </div>
-                        <button
-                            className="withdrawButton"
-                            onClick={() => {
-                                runContractFunction({
-                                    params: {
-                                        abi: PostChainMarket.abi,
-                                        contractAddress: marketAddress,
-                                        functionName: "withdrawProceeds",
-                                        params: {},
-                                    },
-                                    onError: (error) => console.log(error),
-                                    onSuccess: handleWithdrawSuccess,
-                                })
-                            }}
-                        >
-                            Withdraw
-                        </button>
-                    </div>
-                ) : (
-                    <div className="text-[#848D94] fundsContainer">
-                        <div className="ml-4 leading-5 flex">
-                            <h4 className="mr-2">Proceeds:</h4>
-                            <h5 className="text-[15px]">{proceedsBalance}</h5>
-                        </div>
-                        <div className="grayedOutWithdraw">Withdraw</div>
-                    </div>
-                )}
-
-                {royaltyBalance != "0.0" ? (
-                    <div className="fundsContainer">
-                        <div className="ml-4 leading-5 flex">
-                            <h4 className="mr-2">Royalties:</h4>
-                            <h5 className="text-[15px]">{royaltyBalance}</h5>
-                        </div>
-                        <button
-                            className="withdrawButton"
-                            onClick={() => {
-                                runContractFunction({
-                                    params: {
-                                        abi: PostChainMarket.abi,
-                                        contractAddress: marketAddress,
-                                        functionName: "withdrawRoyalties",
-                                        params: {},
-                                    },
-                                    onError: (error) => console.log(error),
-                                    onSuccess: handleWithdrawSuccess,
-                                })
-                            }}
-                        >
-                            Withdraw
-                        </button>
-                    </div>
-                ) : (
-                    <div className="text-[#848D94] fundsContainer">
-                        <div className="ml-4 leading-5 flex">
-                            <h4 className="mr-2">Royalties:</h4>
-                            <h5 className="text-[15px]">{royaltyBalance}</h5>
-                        </div>
-                        <div className="grayedOutWithdraw">Withdraw</div>
-                    </div>
-                )}
-
-                <h4 className="text-[#6e767d] px-4">{chainName}</h4>
             </div>
+
+            {tipBalance != "0.0" ? (
+                <div className="fundsContainer">
+                    <div className="ml-4 leading-5 flex">
+                        <h4 className="mr-2">Tips:</h4>
+                        <h5 className="text-[15px]">{tipBalance}</h5>
+                    </div>
+                    <button
+                        className="withdrawButton"
+                        onClick={() => {
+                            runContractFunction({
+                                params: {
+                                    abi: PostChain.abi,
+                                    contractAddress: postChainAddress,
+                                    functionName: "withdrawBalances",
+                                    params: {},
+                                },
+                                onError: (error) => console.log(error),
+                                onSuccess: handleWithdrawSuccess,
+                            })
+                        }}
+                    >
+                        Withdraw
+                    </button>
+                </div>
+            ) : (
+                <div className="fundsContainer">
+                    <div className="ml-4 leading-5 flex text-[#9ca3af]">
+                        <h4 className="mr-2">Tips:</h4>
+                        <h5 className="text-[15px]">{tipBalance}</h5>
+                    </div>
+                    <div className="grayedOutWithdraw">Withdraw</div>
+                </div>
+            )}
+
+            {proceedsBalance != "0.0" ? (
+                <div className="fundsContainer">
+                    <div className="ml-4 leading-5 flex">
+                        <h4 className="mr-2">Proceeds:</h4>
+                        <h5 className="text-[15px]">{proceedsBalance}</h5>
+                    </div>
+                    <button
+                        className="withdrawButton"
+                        onClick={() => {
+                            runContractFunction({
+                                params: {
+                                    abi: PostChainMarket.abi,
+                                    contractAddress: marketAddress,
+                                    functionName: "withdrawProceeds",
+                                    params: {},
+                                },
+                                onError: (error) => console.log(error),
+                                onSuccess: handleWithdrawSuccess,
+                            })
+                        }}
+                    >
+                        Withdraw
+                    </button>
+                </div>
+            ) : (
+                <div className="text-[#9ca3af] fundsContainer">
+                    <div className="ml-4 leading-5 flex">
+                        <h4 className="mr-2">Proceeds:</h4>
+                        <h5 className="text-[15px]">{proceedsBalance}</h5>
+                    </div>
+                    <div className="grayedOutWithdraw">Withdraw</div>
+                </div>
+            )}
+
+            {royaltyBalance != "0.0" ? (
+                <div className="fundsContainer">
+                    <div className="ml-4 leading-5 flex">
+                        <h4 className="mr-2">Royalties:</h4>
+                        <h5 className="text-[15px]">{royaltyBalance}</h5>
+                    </div>
+                    <button
+                        className="withdrawButton"
+                        onClick={() => {
+                            runContractFunction({
+                                params: {
+                                    abi: PostChainMarket.abi,
+                                    contractAddress: marketAddress,
+                                    functionName: "withdrawRoyalties",
+                                    params: {},
+                                },
+                                onError: (error) => console.log(error),
+                                onSuccess: handleWithdrawSuccess,
+                            })
+                        }}
+                    >
+                        Withdraw
+                    </button>
+                </div>
+            ) : (
+                <div className="text-[#9ca3af] fundsContainer">
+                    <div className="ml-4 leading-5 flex">
+                        <h4 className="mr-2">Royalties:</h4>
+                        <h5 className="text-[15px]">{royaltyBalance}</h5>
+                    </div>
+                    <div className="grayedOutWithdraw">Withdraw</div>
+                </div>
+            )}
+
+            <h4 className="text-[#9ca3af] flex justify-center items-center pb-1">{chainName}</h4>
         </div>
     )
 }

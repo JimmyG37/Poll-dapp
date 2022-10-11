@@ -5,7 +5,7 @@ import Link from "next/link"
 
 export default function Header() {
     return (
-        <nav className="flex h-30 justify-between w-full bg-[#1e1e1e] border-[#373737] px-5 lg:px-6  z-50 fixed mb-5">
+        <nav className="flex h-30 justify-between w-full bg-[#161b22] border-[#373737] px-5 lg:px-6  z-50 fixed mb-5">
             <div className="flex order-first">
                 <div className="flex items-center">
                     {/* <Logo /> */}

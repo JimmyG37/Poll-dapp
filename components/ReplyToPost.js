@@ -65,7 +65,7 @@ export default function ReplyToPost({ postId }) {
 
                         <div className="pt-1">
                             <button
-                                className="bg-[#1d9bf0] text-white rounded-full w-20 h-11 font-bold shadow-md hover:bg-[#1a8cd8] disabled:hover:bg-[#1d9bf0] disabled:opacity-50 disabled:cursor-default"
+                                className="bg-blue-700 text-white rounded-full w-20 h-11 font-bold shadow-md hover:bg-[#1a8cd8] disabled:hover:bg-[#1d9bf0] disabled:opacity-50 disabled:cursor-default"
                                 type="submit"
                                 onClick={(e) => handleComment(e)}
                             >

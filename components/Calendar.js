@@ -5,7 +5,7 @@ import Moment from "react-moment"
 export default function Calendar({ deadline }) {
     useEffect(() => {}, [deadline])
     return (
-        <div className="flex flex-col justify-center items-center rounded-lg h-10 w-11 shadow-lg text-white bg-[#2D2D2D]">
+        <div className="calendar">
             <div className="flex h-3 w-full pt-2 pb-1 justify-center items-center  text-rose-500 text-[10px] font-bold ">
                 <Moment unix format="MMM">
                     {deadline}

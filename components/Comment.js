@@ -60,7 +60,7 @@ export default function Comment({ commentId, tipAmount, totalLikes, totalComment
     useEffect(() => {}, [commenter, comment, timeCreated, commentLikes, likePercent])
 
     return (
-        <div className="border-b border-[#373737] h-[12rem] ">
+        <div className="border-b border-[#30363D] h-[12rem] ">
             <div className="flex flex-col items-center justify-center absolute space-y-[1rem] z-50">
                 <div className="flex pl-4  mt-6">
                     <div className="pfpContainer w-[3.0rem] h-[3.0rem] z-10 mr-5">
