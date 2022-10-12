@@ -120,7 +120,7 @@ export default function ListNft() {
                         onClick={(e) => approveAndList(e)}
                         className="widgetButton"
                     >
-                        Submit
+                        List
                     </button>
                 </form>
             </div>
