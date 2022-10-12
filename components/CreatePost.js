@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { DatePicker, useNotification } from "@web3uikit/core"
+import { useNotification } from "@web3uikit/core"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import networkMapping from "../constants/networkMapping.json"
@@ -13,6 +13,7 @@ export default function CreatePost() {
     const dispatch = useNotification()
     const [postText, setPostText] = useState("")
     const [deadline, setDeadline] = useState(0)
+    const [datePicker, setDatePicker] = useState("")
 
     const { runContractFunction } = useWeb3Contract()
 
@@ -47,9 +48,9 @@ export default function CreatePost() {
         })
     }
 
-    const handleDeadline = ({ event }) => {
-        const date = event.target.value
-        const formattedDate = new Date(date.replace(/-/g, "/"))
+    const handleDeadline = (e) => {
+        setDatePicker(e.target.value)
+        const formattedDate = new Date(e.target.value.replace(/-/g, "/"))
         const dateToUnix = Math.floor(new Date(formattedDate).getTime() / 1000)
         setDeadline(dateToUnix)
     }
@@ -66,16 +67,19 @@ export default function CreatePost() {
                         onChange={(e) => setPostText(e.target.value)}
                         placeholder="What's Gucci?"
                         rows="2"
-                        className="bg-transparent outline-none text-black text-lg placeholder-gray-500 tracking-wide w-full min-h-[50px]"
+                        className="bg-transparent outline-none text-white text-lg placeholder-gray-500 tracking-wide w-full min-h-[50px]"
                     />
                 </div>
-                <div className="flex space-x-3 pt-2.5">
-                    <DatePicker
-                        id="date-picker"
-                        label="Set Deadline"
-                        onChange={(data) => handleDeadline(data)}
-                        value=""
+                <div className="flex space-x-3 pt-2.5 z-[-50]">
+                    <div className="text-gray-400 text-sm font-semibold z-50 mr-[-100px] h-5 bg-[#0d1117]">
+                        Set Deadline
+                    </div>
+                    <input
                         type="date"
+                        id="deadline"
+                        value={datePicker}
+                        onChange={(e) => handleDeadline(e)}
+                        className="datePicker mt-[10px]"
                     />
                     <button className="submitButton" onClick={(e) => createPost(e)}>
                         Post
