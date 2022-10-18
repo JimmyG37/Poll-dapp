@@ -30,7 +30,7 @@ export default function CreatePost() {
 
         await runContractFunction({
             params: postOptions,
-            onSuccess: () => handlePostSuccess,
+            onSuccess: handlePostSuccess,
             onError: (error) => {
                 console.log(error)
             },
@@ -39,7 +39,8 @@ export default function CreatePost() {
         e.preventDefault()
     }
 
-    const handlePostSuccess = async () => {
+    const handlePostSuccess = async (tx) => {
+        await tx.wait(1)
         dispatch({
             type: "success",
             message: "Post Created!",
