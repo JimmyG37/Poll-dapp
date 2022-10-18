@@ -13,8 +13,6 @@ export default function Home() {
     const value = useMemo(() => ({ post, setPost }), [post, setPost])
     const tipAmount = useTipAmount()
 
-    useEffect(() => {}, [])
-
     return (
         <>
             <PostContext.Provider value={value}>
