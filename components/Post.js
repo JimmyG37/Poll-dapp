@@ -15,28 +15,39 @@ import { useTokenURI } from "../hooks/useTokenURI"
 import { usePost } from "../hooks/usePost"
 import { useMintStatus } from "../hooks/useMintStatus"
 import { PostContext } from "../hooks/PostContext"
+import ActiveItem from "./ActiveItem"
+import ListedNft from "./ListedNft"
 
 export default function Post({ postId, tipAmount, showComments }) {
     const { chainId, account, isWeb3Enabled } = useMoralis()
     const [postCreator, postText, deadline, totalComments, dateCreated, totalLikes] =
         usePost(postId)
     const { post, setPost } = useContext(PostContext)
-    // const [imageURI] = useTokenURI(postId)
     const isMinted = useMintStatus(postId)
+    const [imageURI] = useTokenURI(postId)
     const formattedAddress = useTruncate(postCreator || "", 15)
     const [isOpen, setIsOpen] = useState(false)
 
     const topDoor = isOpen ? "top-[-50%] doorShadow" : "topslide before:top-[5px]"
     const bottomDoor = isOpen ? "top-[100%] doorShadow" : "bottomslide before:top-[-20px]"
 
+    const handleOpen = () => {
+        setIsOpen(!isOpen)
+    }
+
     const mint =
-        dateCreated > new Date() ? <Mint postId={postId} postCreator={postCreator} /> : null
+        new Date(deadline * 1000) <= new Date() ? (
+            <Mint postId={postId} postCreator={postCreator} handleOpen={handleOpen} />
+        ) : null
 
     const lockStatus = new Date(deadline * 1000) <= new Date() ? "lock" : "unlocked"
-    // const showNft = isMinted && imageURI ? <Image src={imageURI} height="150" width="300" /> : null
+
+    const showNft = imageURI && <Image src={imageURI} height="150" width="300" />
+
+    const buyOptions =
+        isMinted && imageURI ? <ActiveItem tokenId={postId} imageURI={imageURI} /> : null
 
     useEffect(() => {}, [
-        isWeb3Enabled,
         postId,
         postCreator,
         postText,
@@ -65,13 +76,11 @@ export default function Post({ postId, tipAmount, showComments }) {
                         >
                             {formattedAddress}
                         </h4>
-                        <div
-                            className="cursor-pointer"
-                            onClick={() => {
-                                setIsOpen(!isOpen)
-                            }}
-                        >
+                        <div className="flex">
                             {mint}
+                            <span className="text-sm sm:text-[12px] text-[#9aa1ad] pl-2">
+                                {postId}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -101,7 +110,10 @@ export default function Post({ postId, tipAmount, showComments }) {
                     </Tooltip>
                 </div>
             </div>
-            {/* <div className="flex pl-5 items-center justify-center">{showNft}</div> */}
+            <div className="flex w-full h-auto max-w-2xl justify-center items-center gap-5">
+                {showNft}
+                {buyOptions}
+            </div>
         </div>
     )
 }
