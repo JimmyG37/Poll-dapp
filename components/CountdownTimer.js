@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useCountdown } from "../hooks/useCountdown"
+import { useCountdown } from "../hooks/useCountDown"
 import { NumberBox } from "./NumberBox"
 
 export default function CountdownTimer({ deadline }) {
