@@ -8,7 +8,6 @@ import { useRouter } from "next/router"
 import { useTruncate } from "../hooks/useTruncate"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import Image from "next/image"
-import ChatBubble from "./ChatBubble"
 import Calendar from "./Calendar"
 import CountdownTimer from "./CountdownTimer"
 import { useTokenURI } from "../hooks/useTokenURI"
@@ -61,12 +60,12 @@ export default function Post({ postId, tipAmount, showComments }) {
 
     return (
         <div className="trapdoor w-full">
-            <div className={`flex w-max h-[50%] absolute door ${topDoor}`}>
-                <div className="flex w-full pl-4 pt-5">
+            <div className={`postTop door ${topDoor}`}>
+                <div className="postHeader">
                     <div className="pfpContainer w-[3.1rem] h-[3.0rem] z-10">
                         <Jazzicon diameter={80} seed={jsNumberForAddress("" + postCreator)} />
                     </div>
-                    <div className="h-4 w-25 items-center justify-center z-3  mt-8 -ml-4">
+                    <div className="postInfo">
                         <h4
                             className="addressBar"
                             style={{
@@ -78,17 +77,15 @@ export default function Post({ postId, tipAmount, showComments }) {
                         </h4>
                         <div className="flex">
                             {mint}
-                            <span className="text-sm sm:text-[12px] text-[#9aa1ad] pl-2">
-                                {postId}
-                            </span>
+                            <span className="postId">{postId}</span>
                         </div>
                     </div>
                 </div>
                 <Calendar className="order-last" deadline={deadline} />
             </div>
-            <div className={`w-[100%] h-[50%] absolute door pl-4 ${bottomDoor}`}>
-                <p className="text-white text-[15px] sm:text-base pt-1">{postText}</p>
-                <div className="flex flex-row pt-6">
+            <div className={`postBottom door ${bottomDoor}`}>
+                <p className="postText">{postText}</p>
+                <div className="postFooter">
                     <div
                         className="pr-6 cursor-pointer"
                         onClick={() => {
@@ -102,7 +99,7 @@ export default function Post({ postId, tipAmount, showComments }) {
                         }}
                     >
                         <div className={`${lockStatus}`}>
-                            <div className="speech-bubble drop-shadow-2xl"></div>
+                            <div className="speech-bubble"></div>
                         </div>
                     </div>
                     <Tooltip content="Tip" position="right">
@@ -110,7 +107,7 @@ export default function Post({ postId, tipAmount, showComments }) {
                     </Tooltip>
                 </div>
             </div>
-            <div className="flex w-full h-auto max-w-2xl justify-center items-center gap-5">
+            <div className="nftContainer">
                 {showNft}
                 {buyOptions}
             </div>

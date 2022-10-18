@@ -60,17 +60,15 @@ export default function Comment({ commentId, tipAmount, totalLikes, totalComment
     useEffect(() => {}, [commenter, comment, timeCreated, commentLikes, likePercent])
 
     return (
-        <div className="relative border-b border-[#30363D] h-[12rem] ">
-            <div className="flex flex-col items-center justify-center absolute space-y-[1rem] z-50">
+        <div className="commentContainer">
+            <div className="commentFields">
                 <div className="flex pl-4  mt-6">
                     <div className="pfpContainer w-[3.0rem] h-[3.0rem] z-10 mr-5">
                         <Jazzicon diameter={80} seed={jsNumberForAddress("" + commenter)} />
                     </div>
-                    <div className="flex pl-2 text-white text-3xl italic font-bold z-10 shadow-md">
-                        {likePercent || 0}%
-                    </div>
+                    <div className="likePercentage">{likePercent || 0}%</div>
                     <HeartFill />
-                    <div className="h-4 w-25 items-center justify-center z-3  mt-8 ml-[1.5rem] absolute">
+                    <div className="commentInfo">
                         <h4
                             className="addressBar"
                             style={{
@@ -80,23 +78,21 @@ export default function Comment({ commentId, tipAmount, totalLikes, totalComment
                         >
                             {formattedAddress}
                         </h4>
-                        <div className="pl-2 text-sm sm:text-[12px] text-slate-50	">
+                        <div className="commentTime">
                             <Moment fromNow>{timeCreated}</Moment>
                         </div>
                     </div>
                 </div>
-                <p className="text-white text-[15px] sm:text-base pt-5 pb-3">{comment}</p>
-                <div className="flex flex-col">
-                    <div className="flex flex-row items-center space-x-1 space-y-1">
-                        <div className="flex pr-5 å" onClick={() => likeComment(postId, commentId)}>
-                            <HeartIcon className="h-4  cursor-pointer text-[#f43f5E] hover:text-red-800" />
-                        </div>
-                        <Tip postCreator={commenter} tipAmount={tipAmount} />
+                <p className="comment">{comment}</p>
+                <div className="commentFooter">
+                    <div className="flex pr-5" onClick={() => likeComment(postId, commentId)}>
+                        <HeartIcon className="h-4  cursor-pointer text-[#f43f5E] hover:text-red-800" />
                     </div>
+                    <Tip postCreator={commenter} tipAmount={tipAmount} />
                 </div>
             </div>
             <div
-                className="h-full -ml-5 bg-[#ff638480] backdrop-blur-[10px] bg-opacity-20 drop-shadow-lg"
+                className="barGraph"
                 style={{
                     width: `${likePercent}%`,
                     border: "1px solid rgba(255,99,132,0.25)",

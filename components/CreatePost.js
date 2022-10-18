@@ -57,7 +57,7 @@ export default function CreatePost() {
     }
 
     return (
-        <div className="border-b border-[#373737] p-3 flex space-x-3 overflow-y-scroll scrollbar-hide">
+        <div className="createPost">
             <div className="pfpContainer w-[3.0rem] h-[2.6rem]">
                 <Jazzicon diameter={80} seed={jsNumberForAddress("" + account)} />
             </div>
@@ -68,13 +68,11 @@ export default function CreatePost() {
                         onChange={(e) => setPostText(e.target.value)}
                         placeholder="What's Gucci?"
                         rows="2"
-                        className="bg-transparent outline-none text-white text-lg placeholder-gray-500 tracking-wide w-full min-h-[50px]"
+                        className="postInput"
                     />
                 </div>
-                <div className="flex space-x-3 pt-2.5 z-[-50]">
-                    <div className="text-gray-400 text-sm font-semibold z-50 mr-[-100px] h-5 bg-[#0d1117]">
-                        Set Deadline
-                    </div>
+                <div className="deadline">
+                    <div className="setDeadline">Set Deadline</div>
                     <input
                         type="date"
                         id="deadline"

@@ -44,10 +44,7 @@ export default function Tip({ postCreator, tipAmount }) {
     }
 
     return (
-        <div
-            className="coinContainer cursor-pointer  hover:animate-spinning shadow-[5px_5px_11px_#131313]"
-            onClick={() => handleTip(postCreator)}
-        >
+        <div className="coinContainer coinAnimation" onClick={() => handleTip(postCreator)}>
             <div className="innerCoinContainer">
                 <div className="coinCenter"></div>
             </div>

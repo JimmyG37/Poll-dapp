@@ -64,7 +64,7 @@ export default function Feed({ tipAmount }) {
                             })}
                         </div>
                         <div
-                            className={` w-full max-w-2xl text-white rounded-t-[12px] z-50 commentsContainer drop-shadow-2xl ${
+                            className={` w-full max-w-2xl text-white rounded-t-[12px] z-50 commentShadow ${
                                 isOpen
                                     ? ` flex flex-col-reverse fixed bottom-0 top-[${coords.y}] overflow-hidden pt-5 `
                                     : "absolute"

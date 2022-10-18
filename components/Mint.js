@@ -51,10 +51,7 @@ export default function Mint({ postId, postCreator, handleOpen }) {
         <div className="flex">
             {account === (postCreator || "").toLowerCase() ? (
                 isMinted ? null : (
-                    <button
-                        className="pl-1 flex justify-items items-center-center rounded-[15px] bg-[#f8fafc] w-8 py-[0.5px] font-bold shadow-md hover:shadow-lg text-md md:text-[11px]"
-                        onClick={() => handleMint()}
-                    >
+                    <button className="mintButton" onClick={() => handleMint()}>
                         Mint
                     </button>
                 )
@@ -62,15 +59,15 @@ export default function Mint({ postId, postCreator, handleOpen }) {
 
             {isMinted ? (
                 <div
-                    className="ml-2 flex flex-col justify-center items-center cursor-pointer"
+                    className="mintVerified"
                     onClick={() => {
                         handleOpen()
                     }}
                 >
-                    <div className="w-4 h-3 bg-[#F07C00] flex justify-center items-center rounded-b-[2px]">
-                        <div className="w-[6px] h-2 bg-[#BF4800]"></div>
+                    <div className="ribbon">
+                        <div className="innerRibbon"></div>
                     </div>
-                    <div className="mt-[-1px] rounded-full bg-[#EEC600] h-4 w-4 flex justify-center items-center">
+                    <div className="medal">
                         <svg
                             width="10"
                             height="10"

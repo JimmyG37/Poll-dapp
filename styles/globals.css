@@ -44,7 +44,7 @@
 }
 
 @layer utilities {
-    .commentsContainer {
+    .commentShadow {
         background: rgba(22, 27, 34, 0.9);
         -webkit-backdrop-filter: blur(11px);
         backdrop-filter: blur(11px);
@@ -272,6 +272,182 @@
     @apply flex flex-col justify-center items-center rounded-md h-10 w-11 shadow-[4px_4px_8px_#0b0e13] text-white bg-[#21262d] mr-2 mt-2;
 }
 
+.calendarDate {
+    @apply flex h-3 w-full pt-2 pb-1 justify-center items-center  text-rose-500 text-[10px] font-bold;
+}
+
 .marketButton {
     @apply text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-5 h-10 sm:w-auto px-9 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 left-0;
+}
+
+.widgetSidebar {
+    @apply hidden lg:inline ml-[68rem] mt-[3rem] xl:w-[430px] py-1 space-y-5 fixed;
+}
+
+.coinAnimation {
+    @apply cursor-pointer  hover:animate-spinning shadow-[5px_5px_11px_#131313];
+}
+
+.sidebarPosition {
+    @apply text-black flex items-center justify-center xl:justify-start text-xl space-x-3;
+}
+
+.sidebarSpacing {
+    @apply space-y-2.5 mt-4 mb-2.5 xl:ml-24;
+}
+
+.replyContainer {
+    @apply border-b border-[#373737] overflow-hidden;
+}
+
+.nftContainer {
+    @apply flex w-full h-auto max-w-2xl justify-center items-center gap-5;
+}
+
+.postText {
+    @apply text-white text-[15px] sm:text-base pt-1;
+}
+
+.postFooter {
+    @apply flex flex-row pt-6;
+}
+
+.postId {
+    @apply text-sm sm:text-[12px] text-[#9aa1ad] pl-2;
+}
+
+.postHeader {
+    @apply flex w-full pl-4 pt-5;
+}
+
+.postInfo {
+    @apply h-4 items-center justify-center mt-8 -ml-4;
+}
+
+.postTop {
+    @apply flex w-[100%] h-[50%] absolute;
+}
+
+.postBottom {
+    @apply w-[100%] h-[50%] absolute pl-4;
+}
+
+.mintButton {
+    @apply ml-2 mt-[2px] rounded-[4px] ring-2 ring-[#30363D] bg-[#21262d] w-7 h-4 font-bold shadow-[5px_5px_7px_#050709] hover:shadow-[inset_5px_5px_10px_#050709] md:text-[9px] text-[#9aa1a9];
+}
+
+.mintVerified {
+    @apply ml-2 flex flex-col justify-center items-center cursor-pointer;
+}
+
+.ribbon {
+    @apply w-4 h-3 bg-[#F07C00] flex justify-center items-center rounded-b-[2px];
+}
+
+.innerRibbon {
+    @apply w-[6px] h-2 bg-[#BF4800];
+}
+
+.medal {
+    @apply mt-[-1px] rounded-full bg-[#EEC600] h-4 w-4 flex justify-center items-center;
+}
+
+.headerContainer {
+    @apply flex justify-between w-full bg-[#161b22] border-[#373737] px-5 lg:px-6  z-50 fixed mb-5;
+}
+
+.headerTitle {
+    @apply self-center whitespace-nowrap text-xl font-semibold dark:text-[#1d9bf0] ml-5;
+}
+
+.createPost {
+    @apply border-b border-[#373737] p-3 flex space-x-3 overflow-y-scroll;
+}
+
+.postInput {
+    @apply bg-transparent outline-none text-white text-lg placeholder-gray-500 tracking-wide w-full min-h-[50px];
+}
+
+.setDeadline {
+    @apply text-gray-400 text-sm font-semibold z-50 mr-[-100px] h-5 bg-[#0d1117];
+}
+
+.deadline {
+    @apply flex space-x-3 pt-2.5 z-[-50];
+}
+
+.commentSection {
+    @apply bottom-0 w-full max-w-2xl overflow-auto pb-2 mb-[5rem] mt-[2rem];
+}
+
+.commentCountdown {
+    @apply cursor-pointer fixed top-0 flex items-center justify-center pt-3 w-full z-[99];
+}
+
+.commentPost {
+    @apply fixed bottom-0 overflow-visible w-full z-[99];
+}
+
+.commentContainer {
+    @apply relative border-b border-[#30363D] h-[12rem];
+}
+
+.commentFields {
+    @apply flex flex-col items-center justify-center absolute space-y-[1rem] z-50;
+}
+
+.likePercentage {
+    @apply flex pl-2 text-white text-3xl italic font-bold z-10 shadow-md;
+}
+
+.commentInfo {
+    @apply h-4 items-center justify-center mt-8 ml-[1.5rem] absolute;
+}
+
+.commentTime {
+    @apply pl-2 text-sm sm:text-[12px] text-slate-50;
+}
+
+.comment {
+    @apply text-white text-[15px] sm:text-base pt-5 pb-3;
+}
+
+.commentFooter {
+    @apply flex flex-row items-center space-x-1 space-y-1;
+}
+
+.barGraph {
+    @apply h-full -ml-5 bg-[#ff638480] backdrop-blur-[10px] bg-opacity-20 drop-shadow-lg;
+}
+
+.countDownContainer {
+    @apply flex flex-col items-center px-2 pb-4;
+}
+
+.numberBox {
+    @apply relative bg-transparent flex flex-col items-center justify-center rounded-lg text-sm md:text-sm mt-4;
+}
+
+.innerNumberBox {
+    @apply rounded-t-[4px] rounded-b-[4px] bg-[#21262d] w-8 h-8;
+}
+
+.numberTime {
+    @apply text-sm absolute text-rose-500 z-10 font-bold  md:text-sm;
+}
+
+.flipper {
+    @apply absolute w-full h-1/2 top-0 rounded-t-[4px];
+}
+
+.rightIndent {
+    @apply absolute right-[-3px] top-[14px] rounded-full w-[5px] h-[5px] bg-[#161b22e6];
+}
+
+.leftIndent {
+    @apply absolute left-[-3px] top-[14px] rounded-full w-[5px] h-[5px] bg-[#161b22e6];
+}
+
+.timeLabel {
+    @apply text-sm sm:text-[7px] font-bold text-[#6e767d];
 }
