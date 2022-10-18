@@ -14,6 +14,9 @@ export default function CommentSection({ isOpen, showComments, tipAmount, coords
 
     useEffect(() => {}, [isWeb3Enabled, isOpen, post])
 
+    if (loading) return null
+    if (error) return `Error! ${error}`
+
     return (
         <>
             {isOpen && isWeb3Enabled ? (
@@ -40,6 +43,7 @@ export default function CommentSection({ isOpen, showComments, tipAmount, coords
                                             tipAmount={tipAmount}
                                             totalLikes={post.totalLikes}
                                             totalComments={post.totalComments}
+                                            postId={post.postId}
                                         />
                                     )
                                 }

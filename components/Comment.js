@@ -11,7 +11,7 @@ import { useTruncate } from "../hooks/useTruncate"
 import { HeartIcon } from "@heroicons/react/24/outline"
 import HeartFill from "./HeartFill"
 
-export default function Comment({ commentId, tipAmount, totalLikes, totalComments }) {
+export default function Comment({ commentId, tipAmount, totalLikes, totalComments, postId }) {
     const { chainId, account, isWeb3Enabled } = useMoralis()
     const [commenter, comment, timeCreated, commentLikes, likePercent] = useComment(
         commentId,
@@ -38,7 +38,7 @@ export default function Comment({ commentId, tipAmount, totalLikes, totalComment
 
         await runContractFunction({
             params: likeOptions,
-            onSuccess: () => handleLikeSuccess,
+            onSuccess: handleLikeSuccess,
             onError: (error) => {
                 console.log(error)
             },
@@ -60,7 +60,7 @@ export default function Comment({ commentId, tipAmount, totalLikes, totalComment
     useEffect(() => {}, [commenter, comment, timeCreated, commentLikes, likePercent])
 
     return (
-        <div className="border-b border-[#30363D] h-[12rem] ">
+        <div className="relative border-b border-[#30363D] h-[12rem] ">
             <div className="flex flex-col items-center justify-center absolute space-y-[1rem] z-50">
                 <div className="flex pl-4  mt-6">
                     <div className="pfpContainer w-[3.0rem] h-[3.0rem] z-10 mr-5">
