@@ -12,14 +12,14 @@
 
 @layer utilities {
     .trapdoor {
-        box-shadow: inset -7px 0px 12px -8px rgba(0, 0, 0, 0.3),
-            inset 7px 0px 12px -8px rgba(0, 0, 0, 0.3);
+        box-shadow: inset 7px 7px 14px #050709, inset -7px -7px 14px #151b25;
         transition: bg 400ms ease-in-out;
         top: 50%;
         height: 220px;
         position: relative;
         border-color: #30363d;
         border-bottom-width: 0.01em;
+        background-color: #0d1117;
     }
 
     .topslide {
@@ -201,7 +201,7 @@
 }
 
 .withdrawButton {
-    @apply ml-auto bg-white text-white rounded font-bold text-sm py-1.5 px-3.5;
+    @apply ml-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm py-1.5 px-3.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800;
 }
 
 .grayedOutWithdraw {
@@ -270,4 +270,8 @@
 
 .calendar {
     @apply flex flex-col justify-center items-center rounded-md h-10 w-11 shadow-[4px_4px_8px_#0b0e13] text-white bg-[#21262d] mr-2 mt-2;
+}
+
+.marketButton {
+    @apply text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-5 h-10 sm:w-auto px-9 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 left-0;
 }
