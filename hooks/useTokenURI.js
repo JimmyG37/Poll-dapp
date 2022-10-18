@@ -2,17 +2,18 @@ import { useEffect, useState } from "react"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import networkMapping from "../constants/networkMapping.json"
 import PostChainNft from "../artifacts/contracts/PostChainNft.sol/PostChainNft.json"
+import { useMintStatus } from "./useMintStatus"
 
 const useTokenURI = (postId) => {
     const { chainId, account, isWeb3Enabled } = useMoralis()
     const chainString = chainId ? parseInt(chainId).toString() : "31337"
     const postChainNftAddress = networkMapping[chainString].PostChainNft[0]
     const postChainNftAbi = PostChainNft.abi
+    const isMinted = useMintStatus(postId)
     const { runContractFunction } = useWeb3Contract()
     const [imageURI, setImageURI] = useState("")
     const [tokenName, setTokenName] = useState("")
     const [tokenDescription, setTokenDescription] = useState("")
-    const [isMinted, setIsMinted] = useState(false)
 
     const { runContractFunction: getTokenURI } = useWeb3Contract({
         abi: postChainNftAbi,
@@ -37,10 +38,10 @@ const useTokenURI = (postId) => {
     }
 
     useEffect(() => {
-        if (isWeb3Enabled) {
+        if (isWeb3Enabled && isMinted) {
             handleTokenURI()
         }
-    }, [isWeb3Enabled, postId, imageURI, tokenName, tokenDescription])
+    }, [isWeb3Enabled, postId, isMinted, imageURI, tokenName, tokenDescription])
 
     return [imageURI, tokenName, tokenDescription]
 }
