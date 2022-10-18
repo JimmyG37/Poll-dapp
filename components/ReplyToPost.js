@@ -28,7 +28,7 @@ export default function ReplyToPost({ postId }) {
 
         await runContractFunction({
             params: commentOptions,
-            onSuccess: () => handleCommentSuccess,
+            onSuccess: handleCommentSuccess,
             onError: (error) => {
                 console.log(error)
             },
@@ -40,7 +40,7 @@ export default function ReplyToPost({ postId }) {
         await tx.wait(1)
         dispatch({
             type: "success",
-            message: "Comment Created!",
+            message: "Replied to post!",
             title: "Success",
             position: "topR",
         })
