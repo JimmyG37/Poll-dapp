@@ -1,0 +1,67 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IPostChain",
+  "sourceName": "contracts/PostChainNft.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "postId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPost",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "creator",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "post",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "postId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "dateCreated",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "likeAndCommentDeadline",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "totalComments",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "totalLikes",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct IPostChain.Post",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

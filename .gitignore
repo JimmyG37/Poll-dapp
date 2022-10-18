@@ -38,7 +38,7 @@ yarn-error.log*
 
 #Hardhat files
 cache
-artifacts
+artifacts/build-info
 .DS_Store
 gas-report.txt
 deployments
