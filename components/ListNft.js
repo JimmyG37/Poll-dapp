@@ -14,13 +14,16 @@ export default function ListNft() {
     const marketAddress = networkMapping[chainString].PostChainMarket[0]
     const nftAddress = networkMapping[chainString].PostChainNft[0]
     const [postId, setPostId] = useState("")
-    const [price, setPrice] = useState("")
+    const [priceInput, setPriceInput] = useState("")
 
     const dispatch = useNotification()
     const { runContractFunction } = useWeb3Contract()
 
-    const approveAndList = async (e) => {
+    const approveAndList = async () => {
         console.log("Approving...")
+
+        const price = ethers.utils.parseUnits(priceInput, "ether").toString()
+
         const approveOptions = {
             abi: postChainNftAbi,
             contractAddress: nftAddress,
@@ -38,7 +41,6 @@ export default function ListNft() {
                 console.log(error)
             },
         })
-        e.preventDefault()
     }
 
     const handleApproveSuccess = async (nftAddress, postId, price) => {
@@ -63,9 +65,10 @@ export default function ListNft() {
         })
     }
 
-    const handleListSuccess = async () => {
+    const handleListSuccess = async (tx) => {
+        await tx.wait(1)
         setPostId("")
-        setPrice("")
+        setPriceInput("")
         dispatch({
             type: "success",
             message: "NFT listing",
@@ -79,7 +82,7 @@ export default function ListNft() {
     return (
         <div className="widgetContainer widget">
             <div className="fundsContainer">
-                <form className="ml-4 w-full">
+                <div className="ml-4 w-full">
                     <h4 className="font-bold text-xl pb-4">List Your NFT</h4>
                     <div className="">
                         <label
@@ -108,21 +111,17 @@ export default function ListNft() {
                         <input
                             type="number"
                             id="price"
-                            value={price}
-                            onChange={(e) => setPrice(e.target.value)}
+                            value={priceInput}
+                            onChange={(e) => setPriceInput(e.target.value)}
                             className="widgetInput"
                             placeholder="Price (in ETH)"
                             required
                         />
                     </div>
-                    <button
-                        type="submit"
-                        onClick={(e) => approveAndList(e)}
-                        className="widgetButton"
-                    >
+                    <button onClick={approveAndList} className="widgetButton">
                         List
                     </button>
-                </form>
+                </div>
             </div>
         </div>
     )
