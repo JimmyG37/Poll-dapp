@@ -35,7 +35,7 @@ export default function UpdateListingModal({
         functionName: "updateListing",
         params: {
             nftAddress: nftAddress,
-            tokenId: tokenId,
+            postId: tokenId,
             newPrice: ethers.utils.parseEther(priceToUpdateListingWith || "0"),
         },
     })
@@ -51,9 +51,10 @@ export default function UpdateListingModal({
                     onSuccess: handleUpdateListingSuccess,
                 })
             }}
+            title={<div className="text-2xl font-bold">Price</div>}
         >
             <Input
-                label="Update listing price in L2 Currency"
+                label="Update listing price"
                 name="New listing price"
                 type="number"
                 onChange={(event) => {
