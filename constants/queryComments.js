@@ -2,7 +2,7 @@ import { gql } from "@apollo/client"
 
 const GET_COMMENTS = gql`
     {
-        comments(first: 5) {
+        comments(orderBy: commentId, orderDirection: desc) {
             id
             commenter
             postId
