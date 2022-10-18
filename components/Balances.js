@@ -37,14 +37,6 @@ export default function Balances() {
             setTipBalance(ethers.utils.formatEther(returnedTipBalance))
         }
     }
-    const handleWithdrawSuccess = async (tx) => {
-        await tx.wait(1)
-        dispatch({
-            type: "success",
-            message: "Withdrawing funds",
-            position: "topR",
-        })
-    }
 
     const handleProceedsBalance = async () => {
         const returnedProceedsBalance = await runContractFunction({
@@ -78,6 +70,15 @@ export default function Balances() {
         if (returnedRoyaltyBalance) {
             setRoyaltyBalance(ethers.utils.formatEther(returnedRoyaltyBalance))
         }
+    }
+
+    const handleWithdrawSuccess = async (tx) => {
+        await tx.wait(1)
+        dispatch({
+            type: "success",
+            message: "Withdrawing funds",
+            position: "topR",
+        })
     }
 
     useEffect(() => {
