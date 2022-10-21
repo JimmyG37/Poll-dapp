@@ -1,62 +1,62 @@
+import React, { useEffect, useState, useContext, useCallback } from "react"
+import { useMoralis, useWeb3Contract } from "react-moralis"
 import Moment from "react-moment"
-import Mint from "./Mint"
 import Tip from "./Tip"
 import { Tooltip } from "@web3uikit/core"
-import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
-import { useEffect, useState, useContext } from "react"
-import { useRouter } from "next/router"
-import { useTruncate } from "../hooks/useTruncate"
-import { useMoralis, useWeb3Contract } from "react-moralis"
-import Image from "next/image"
-import Calendar from "./Calendar"
 import CountdownTimer from "./CountdownTimer"
-import { useTokenURI } from "../hooks/useTokenURI"
 import { usePost } from "../hooks/usePost"
+import { useTruncate } from "../hooks/useTruncate"
+import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
+import Calendar from "./Calendar"
 import { useMintStatus } from "../hooks/useMintStatus"
+import { useOwnerOf } from "../hooks/useOwnerOf"
+import { Mint } from "./Mint"
+import { useTokenURI } from "../hooks/useTokenURI"
+import Image from "next/image"
 import { PostContext } from "../hooks/PostContext"
-import ActiveItem from "./ActiveItem"
+import { ActiveItem } from "./ActiveItem"
 import ListedNft from "./ListedNft"
 
-export default function Post({ postId, tipAmount, showComments }) {
+export const Post = React.memo(({ postId, tipAmount, showComments }) => {
     const { chainId, account, isWeb3Enabled } = useMoralis()
-    const [postCreator, postText, deadline, totalComments, dateCreated, totalLikes] =
+    const { postCreator, postText, deadline, totalComments, dateCreated, totalLikes } =
         usePost(postId)
     const { post, setPost } = useContext(PostContext)
     const isMinted = useMintStatus(postId)
-    const [imageURI] = useTokenURI(postId)
+    const imageURI = useTokenURI(postId, isMinted)
+    const nftOwner = useOwnerOf(postId, isMinted)
     const formattedAddress = useTruncate(postCreator || "", 15)
     const [isOpen, setIsOpen] = useState(false)
 
     const topDoor = isOpen ? "top-[-50%] doorShadow" : "topslide before:top-[5px]"
     const bottomDoor = isOpen ? "top-[100%] doorShadow" : "bottomslide before:top-[-20px]"
 
-    const handleOpen = () => {
-        setIsOpen(!isOpen)
-    }
-
-    const mint =
-        new Date(deadline * 1000) <= new Date() ? (
-            <Mint postId={postId} postCreator={postCreator} handleOpen={handleOpen} />
-        ) : null
-
     const lockStatus = new Date(deadline * 1000) <= new Date() ? "lock" : "unlocked"
 
-    const showNft = imageURI && <Image src={imageURI} height="150" width="300" />
+    const showNft = imageURI && (
+        <Image loader={() => imageURI} src={imageURI} height="150" width="300" />
+    )
+
+    const owner = account.toLowerCase() == nftOwner.toLowerCase() ? "you" : nftOwner
 
     const buyOptions =
         isMinted && imageURI ? <ActiveItem tokenId={postId} imageURI={imageURI} /> : null
 
-    useEffect(() => {}, [
-        postId,
-        postCreator,
-        postText,
-        deadline,
-        totalComments,
-        dateCreated,
-        totalLikes,
-    ])
+    const showCase = useCallback(() => {
+        setIsOpen((isOpen) => !isOpen)
+    }, [setIsOpen])
 
-    useEffect(() => {}, [isMinted, post])
+    const mint =
+        new Date(deadline * 1000) <= new Date() ? (
+            <Mint
+                postId={postId}
+                postCreator={postCreator}
+                isMinted={isMinted}
+                showCase={showCase}
+            />
+        ) : null
+
+    useEffect(() => {}, [account, postId, isOpen])
 
     return (
         <div className="trapdoor w-full">
@@ -107,10 +107,13 @@ export default function Post({ postId, tipAmount, showComments }) {
                     </Tooltip>
                 </div>
             </div>
-            <div className="nftContainer">
-                {showNft}
-                {buyOptions}
+            <div className="flex flex-col gap-4 items-center justify-center">
+                <div className="nftContainer">
+                    {showNft}
+                    {buyOptions}
+                </div>
+                <div className="italic text-sm text-white">Owned by {owner}</div>
             </div>
         </div>
     )
-}
+})
