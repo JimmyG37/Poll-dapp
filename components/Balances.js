@@ -21,7 +21,7 @@ export default function Balances() {
     const [royaltyBalance, setRoyaltyBalance] = useState(0.0)
     const [chainName, setChainName] = useState("")
 
-    const handleTipBalance = async () => {
+    const handleTipBalance = async (account) => {
         const returnedTipBalance = await runContractFunction({
             params: {
                 abi: PostChain.abi,
@@ -31,14 +31,15 @@ export default function Balances() {
                     user: account,
                 },
             },
-            onError: (error) => console.log(error),
+            onSuccess: () => handleProceedsBalance(account),
+            onError: (error) => console.log("Balances.js -- TipBalance:", error),
         })
         if (returnedTipBalance) {
             setTipBalance(ethers.utils.formatEther(returnedTipBalance))
         }
     }
 
-    const handleProceedsBalance = async () => {
+    const handleProceedsBalance = async (account) => {
         const returnedProceedsBalance = await runContractFunction({
             params: {
                 abi: PostChainMarket.abi,
@@ -48,14 +49,15 @@ export default function Balances() {
                     seller: account,
                 },
             },
-            onError: (error) => console.log(error),
+            onSuccess: () => handleRoyaltyBalance(account),
+            onError: (error) => console.log("Balances.js -- ProceedsBalance:", error),
         })
         if (returnedProceedsBalance) {
             setProceedsBalance(ethers.utils.formatEther(returnedProceedsBalance))
         }
     }
 
-    const handleRoyaltyBalance = async () => {
+    const handleRoyaltyBalance = async (account) => {
         const returnedRoyaltyBalance = await runContractFunction({
             params: {
                 abi: PostChainMarket.abi,
@@ -65,35 +67,54 @@ export default function Balances() {
                     nftCreator: account,
                 },
             },
-            onError: (error) => console.log(error),
+            onError: (error) => console.log("Balances.js -- RoyaltyBalance:", error),
         })
         if (returnedRoyaltyBalance) {
             setRoyaltyBalance(ethers.utils.formatEther(returnedRoyaltyBalance))
         }
     }
 
-    const handleWithdrawSuccess = async (tx) => {
+    const handleWithdrawTipsSuccess = async (tx) => {
         await tx.wait(1)
         dispatch({
             type: "success",
-            message: "Withdrawing funds",
+            message: "Tips Withdrawn",
             position: "topR",
         })
+        setTipBalance(0.0)
+    }
+
+    const handleWithdrawProceedsSuccess = async (tx) => {
+        await tx.wait(1)
+        dispatch({
+            type: "success",
+            message: "Proceeds Withdrawn",
+            position: "topR",
+        })
+        setProceedsBalance(0.0)
+    }
+
+    const handleWithdrawRoyaltiesSuccess = async (tx) => {
+        await tx.wait(1)
+        dispatch({
+            type: "success",
+            message: "Royalties Withdrawn",
+            position: "topR",
+        })
+        setRoyaltyBalance(0.0)
     }
 
     useEffect(() => {
-        if (chain && isWeb3Enabled) {
-            handleTipBalance()
+        if (chain) {
             setChainName(chain.name)
         }
-    }, [isWeb3Enabled, chain, account, tipBalance])
+    }, [chain])
 
     useEffect(() => {
         if (isWeb3Enabled) {
-            handleProceedsBalance()
-            handleRoyaltyBalance()
+            handleTipBalance(account)
         }
-    }, [isWeb3Enabled, proceedsBalance, royaltyBalance])
+    }, [isWeb3Enabled, account, tipBalance, proceedsBalance, royaltyBalance])
 
     return (
         <div className="widgetContainer widget">
@@ -148,8 +169,9 @@ export default function Balances() {
                                     functionName: "withdrawBalances",
                                     params: {},
                                 },
-                                onError: (error) => console.log(error),
-                                onSuccess: handleWithdrawSuccess,
+                                onError: (error) =>
+                                    console.log("Balances.js -- Withdraw Tips:", error),
+                                onSuccess: handleWithdrawTipsSuccess,
                             })
                         }}
                     >
@@ -182,8 +204,9 @@ export default function Balances() {
                                     functionName: "withdrawProceeds",
                                     params: {},
                                 },
-                                onError: (error) => console.log(error),
-                                onSuccess: handleWithdrawSuccess,
+                                onError: (error) =>
+                                    console.log("Balances.js -- Withdraw Proceeds:", error),
+                                onSuccess: handleWithdrawProceedsSuccess,
                             })
                         }}
                     >
@@ -216,8 +239,9 @@ export default function Balances() {
                                     functionName: "withdrawRoyalties",
                                     params: {},
                                 },
-                                onError: (error) => console.log(error),
-                                onSuccess: handleWithdrawSuccess,
+                                onError: (error) =>
+                                    console.log("Balances.js -- Withdraw Royalties:", error),
+                                onSuccess: handleWithdrawRoyaltiesSuccess,
                             })
                         }}
                     >
