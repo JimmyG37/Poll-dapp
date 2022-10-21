@@ -1,4 +1,4 @@
-import Feed from "../components/Feed"
+import { Feed } from "../components/Feed"
 import Balances from "../components/Balances"
 import Widgets from "../components/Widgets"
 import Sidebar from "../components/Sidebar"
