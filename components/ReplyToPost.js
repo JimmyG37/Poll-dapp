@@ -15,7 +15,6 @@ export default function ReplyToPost({ postId }) {
     const { runContractFunction } = useWeb3Contract()
 
     const handleComment = async (e) => {
-        e.preventDefault()
         const commentOptions = {
             abi: postChainAbi,
             contractAddress: postChainAddress,
@@ -30,14 +29,14 @@ export default function ReplyToPost({ postId }) {
             params: commentOptions,
             onSuccess: handleCommentSuccess,
             onError: (error) => {
-                console.log(error)
+                console.log("ReplyToPost.js -- error:", error)
             },
         })
-        setCommentText("")
     }
 
     const handleCommentSuccess = async (tx) => {
         await tx.wait(1)
+        setCommentText("")
         dispatch({
             type: "success",
             message: "Replied to post!",
@@ -45,6 +44,8 @@ export default function ReplyToPost({ postId }) {
             position: "topR",
         })
     }
+
+    useEffect(() => {}, [postId, commentText])
 
     return (
         <div className="replyContainer">
@@ -67,7 +68,7 @@ export default function ReplyToPost({ postId }) {
                             <button
                                 className="widgetButton"
                                 type="submit"
-                                onClick={(e) => handleComment(e)}
+                                onClick={() => handleComment()}
                             >
                                 Reply
                             </button>
