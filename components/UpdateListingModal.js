@@ -40,6 +40,10 @@ export default function UpdateListingModal({
         },
     })
 
+    useEffect(() => {}, [nftAddress, tokenId, isVisible, marketAddress, onClose])
+
+    useEffect(() => {}, [priceToUpdateListingWith, setPriceToUpdateListingWith])
+
     return (
         <Modal
             isVisible={isVisible}
@@ -51,7 +55,6 @@ export default function UpdateListingModal({
                     onSuccess: handleUpdateListingSuccess,
                 })
             }}
-            title={<div className="text-2xl font-bold">Price</div>}
         >
             <Input
                 label="Update listing price"
