@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { useWeb3Contract, useMoralis } from "react-moralis"
 import networkMapping from "../constants/networkMapping.json"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
@@ -8,14 +8,9 @@ import UpdateListingModal from "./UpdateListingModal"
 import Image from "next/image"
 import { Card, useNotification } from "@web3uikit/core"
 import { ethers } from "ethers"
-import { useMintStatus } from "../hooks/useMintStatus"
-import { useTruncate } from "../hooks/useTruncate"
-import { useTokenURI } from "../hooks/useTokenURI"
 
-export default function ListedNft({ price, postId, seller, imageURI }) {
+export const ListedNft = React.memo(({ price, postId, seller, imageURI }) => {
     const { isWeb3Enabled, account, chainId } = useMoralis()
-    const isMinted = useMintStatus(postId)
-    const formattedAddress = useTruncate(seller || "", 15)
     const [showModal, setShowModal] = useState(false)
 
     const chainString = chainId ? parseInt(chainId).toString() : "31337"
@@ -37,10 +32,7 @@ export default function ListedNft({ price, postId, seller, imageURI }) {
         },
     })
 
-    useEffect(() => {}, [isWeb3Enabled, postId, imageURI, isMinted])
-
     const isOwnedByUser = seller === account || seller === undefined
-    const formattedSellerAddress = isOwnedByUser ? "you" : formattedAddress
 
     const buttonStatus = isOwnedByUser ? (
         <button onClick={() => setShowModal(true)} className="marketButton">
@@ -50,7 +42,7 @@ export default function ListedNft({ price, postId, seller, imageURI }) {
         <button
             onClick={() =>
                 buyItem({
-                    onError: (error) => console.log(error),
+                    onError: (error) => console.log("ListedNft.js -- error:", error),
                     onSuccess: handleBuyItemSuccess,
                 })
             }
@@ -70,8 +62,10 @@ export default function ListedNft({ price, postId, seller, imageURI }) {
         })
     }
 
+    useEffect(() => {}, [isWeb3Enabled, postId, imageURI])
+
     return (
-        <>
+        <div>
             {imageURI ? (
                 <div className="relative">
                     <UpdateListingModal
@@ -81,8 +75,7 @@ export default function ListedNft({ price, postId, seller, imageURI }) {
                         nftAddress={nftAddress}
                         onClose={hideModal}
                     />
-                    <div className="flex flex-col justify-center items-center gap-2 text-white">
-                        <div className="italic text-sm">Owned by {formattedSellerAddress}</div>
+                    <div className="flex flex-col justify-center items-center gap-2 pl-4 text-white">
                         <div className="font-bold">
                             {ethers.utils.formatUnits(price, "ether")} ETH
                         </div>
@@ -92,6 +85,6 @@ export default function ListedNft({ price, postId, seller, imageURI }) {
             ) : (
                 <div>Loading...</div>
             )}
-        </>
+        </div>
     )
-}
+})
