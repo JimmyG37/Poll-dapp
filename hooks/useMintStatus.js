@@ -11,27 +11,30 @@ const useMintStatus = (postId) => {
     const [isMinted, setIsMinted] = useState(null)
     const { runContractFunction } = useWeb3Contract()
 
-    const { runContractFunction: getMinted } = useWeb3Contract({
-        abi: postChainNftAbi,
-        contractAddress: postChainNftAddress,
-        functionName: "getMinted",
-        params: {
-            postId: postId,
-        },
-    })
-
-    const handleMintStatus = async () => {
-        const mintStatus = await getMinted(postId)
-        if (mintStatus) {
-            setIsMinted(mintStatus)
-        }
+    const handleMintStatus = async (postId) => {
+        const mintStatus = await runContractFunction({
+            params: {
+                abi: postChainNftAbi,
+                contractAddress: postChainNftAddress,
+                functionName: "getMinted",
+                params: {
+                    postId: postId,
+                },
+            },
+            onError: (error) => {
+                console.log("useMintStatus.js -- error:", error)
+            },
+        })
+        setIsMinted(mintStatus)
     }
 
     useEffect(() => {
         if (isWeb3Enabled) {
-            handleMintStatus()
+            handleMintStatus(postId)
         }
-    }, [isWeb3Enabled, postId, isMinted])
+    }, [isWeb3Enabled, postId])
+
+    useEffect(() => {}, [setIsMinted])
 
     return isMinted
 }
