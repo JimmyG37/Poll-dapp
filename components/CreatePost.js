@@ -32,15 +32,14 @@ export default function CreatePost() {
             params: postOptions,
             onSuccess: handlePostSuccess,
             onError: (error) => {
-                console.log(error)
+                console.log("CreatePost.js -- error:", error)
             },
         })
-        setPostText("")
-        e.preventDefault()
     }
 
     const handlePostSuccess = async (tx) => {
         await tx.wait(1)
+        setPostText("")
         dispatch({
             type: "success",
             message: "Post Created!",
@@ -55,6 +54,8 @@ export default function CreatePost() {
         const dateToUnix = Math.floor(new Date(formattedDate).getTime() / 1000)
         setDeadline(dateToUnix)
     }
+
+    useEffect(() => {}, [postText])
 
     return (
         <div className="createPost">
