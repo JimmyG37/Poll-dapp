@@ -71,13 +71,13 @@ export default function ListNft() {
         setPriceInput("")
         dispatch({
             type: "success",
-            message: "NFT listing",
-            title: "NFT listed",
+            message: "NFT listed!",
+            title: "Yay",
             position: "topR",
         })
     }
 
-    useEffect(() => {}, [account, isWeb3Enabled, chainId])
+    useEffect(() => {}, [account, isWeb3Enabled, postId, priceInput])
 
     return (
         <div className="widgetContainer widget">
