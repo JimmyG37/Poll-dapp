@@ -7,15 +7,21 @@ import Comment from "./Comment"
 import CountdownTimer from "./CountdownTimer"
 import GET_COMMENTS from "../constants/queryComments"
 
-export default function CommentSection({ isOpen, showComments, tipAmount, coords }) {
+export default function CommentSection({ isOpen, showComments, tipAmount }) {
     const { chainId, account, isWeb3Enabled } = useMoralis()
-    const { loading, error, data } = useQuery(GET_COMMENTS)
+    const { loading, error, data, startPolling, stopPolling } = useQuery(GET_COMMENTS)
     const { post } = useContext(PostContext)
 
-    useEffect(() => {}, [isWeb3Enabled, isOpen, post])
+    useEffect(() => {}, [isWeb3Enabled, isOpen])
 
-    if (loading) return null
-    if (error) return `Error! ${error}`
+    useEffect(() => {}, [post])
+
+    useEffect(() => {
+        startPolling(2000)
+        return () => {
+            stopPolling()
+        }
+    }, [startPolling, stopPolling])
 
     return (
         <>
