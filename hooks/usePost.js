@@ -1,58 +1,59 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import networkMapping from "../constants/networkMapping.json"
 import PostChain from "../artifacts/contracts/PostChain.sol/PostChain.json"
 
 const usePost = (postId) => {
     const { chainId, account, isWeb3Enabled } = useMoralis()
+    const { runContractFunction } = useWeb3Contract()
     const chainString = chainId ? parseInt(chainId).toString() : "31337"
     const postChainAddress = networkMapping[chainString].PostChain[0]
     const postChainAbi = PostChain.abi
-    const [postCreator, setPostCreator] = useState(null)
-    const [postText, setPostText] = useState("")
-    const [deadline, setDeadline] = useState(0)
-    const [dateCreated, setDateCreated] = useState(0)
-    const [totalComments, setTotalComments] = useState(0)
-    const [totalLikes, setTotalLikes] = useState(0)
-
-    const { runContractFunction: getPost } = useWeb3Contract({
-        abi: PostChain.abi,
-        contractAddress: postChainAddress,
-        functionName: "getPost",
-        params: {
-            postId: postId,
-        },
+    const [postData, setPostData] = useState({
+        postCreator: null,
+        postText: "",
+        deadline: 0,
+        dateCreated: "",
+        totalComments: 0,
+        totalLikes: 0,
     })
 
-    const handlePost = async () => {
-        const returnedPost = await getPost()
+    const handlePost = async (postId) => {
+        const returnedPost = await runContractFunction({
+            params: {
+                abi: PostChain.abi,
+                contractAddress: postChainAddress,
+                functionName: "getPost",
+                params: {
+                    postId: postId,
+                },
+            },
+            onError: (error) => {
+                console.log("usePost.js -- error:", error)
+            },
+        })
 
         if (returnedPost) {
-            setPostCreator(returnedPost.creator)
-            setPostText(returnedPost.post)
-            setDeadline(parseInt(returnedPost.likeAndCommentDeadline))
-            setTotalComments(parseInt(returnedPost.totalComments))
-            setDateCreated(new Date(returnedPost.dateCreated * 1000))
-            setTotalLikes(parseInt(returnedPost.totalLikes))
+            setPostData({
+                postCreator: returnedPost.creator,
+                postText: returnedPost.post,
+                deadline: parseInt(returnedPost.likeAndCommentDeadline),
+                dateCreated: new Date(returnedPost.dateCreated * 1000),
+                totalComments: parseInt(returnedPost.totalComments),
+                totalLikes: parseInt(returnedPost.totalLikes),
+            })
         }
     }
 
     useEffect(() => {
         if (isWeb3Enabled) {
-            handlePost()
+            handlePost(postId)
         }
-    }, [
-        isWeb3Enabled,
-        postId,
-        postCreator,
-        postText,
-        deadline,
-        totalComments,
-        dateCreated,
-        totalLikes,
-    ])
+    }, [isWeb3Enabled, postId])
 
-    return [postCreator, postText, deadline, totalComments, dateCreated, totalLikes]
+    useEffect(() => {}, [setPostData])
+
+    return { ...postData }
 }
 
 export { usePost }
