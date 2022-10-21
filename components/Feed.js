@@ -1,16 +1,16 @@
-import Post from "./Post"
+import { Post } from "./Post"
 import GET_POSTS from "../constants/queryPosts"
 import CreatePost from "./CreatePost"
 import { useQuery } from "@apollo/client"
 import { SparklesIcon } from "@heroicons/react/24/outline"
-import { useEffect, useState, useContext } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import { PostContext } from "../hooks/PostContext"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import CommentSection from "./CommentSection"
 
-export default function Feed({ tipAmount }) {
+export const Feed = React.memo(({ tipAmount }) => {
     const { isWeb3Enabled } = useMoralis()
-    const { loading, error, data: createdPosts } = useQuery(GET_POSTS)
+    const { loading, error, data: createdPosts, startPolling, stopPolling } = useQuery(GET_POSTS)
     const { post } = useContext(PostContext)
     const [coords, setCoords] = useState({ x: 0, y: 0, h: 0 })
     const [isOpen, setIsOpen] = useState(false)
@@ -35,7 +35,14 @@ export default function Feed({ tipAmount }) {
         setIsOpen(!isOpen)
     }
 
-    useEffect(() => {}, [isWeb3Enabled, createdPosts, isOpen, coords, height, post])
+    useEffect(() => {}, [isWeb3Enabled, isOpen, coords, height])
+
+    useEffect(() => {
+        startPolling(5000)
+        return () => {
+            stopPolling()
+        }
+    }, [startPolling, stopPolling])
 
     return (
         <div className="feedContainer relative" onClick={(e) => handleMouseClick(e)}>
@@ -45,12 +52,12 @@ export default function Feed({ tipAmount }) {
                     <SparklesIcon className="h-5 text-black" />
                 </div>
             </div>
+            <CreatePost />
             {isWeb3Enabled ? (
-                !createdPosts ? (
+                loading || !createdPosts ? (
                     <div>Loading...</div>
                 ) : (
-                    <div>
-                        <CreatePost />
+                    <>
                         <div className="pb-72 z-[-999] ">
                             {createdPosts.posts.map((post) => {
                                 return (
@@ -78,14 +85,13 @@ export default function Feed({ tipAmount }) {
                                 isOpen={isOpen}
                                 showComments={showComments}
                                 tipAmount={tipAmount}
-                                coords={coords}
                             />
                         </div>
-                    </div>
+                    </>
                 )
             ) : (
                 <div>Web3 Not Enabled</div>
             )}
         </div>
     )
-}
+})
