@@ -11,7 +11,14 @@ import { useTruncate } from "../hooks/useTruncate"
 import { HeartIcon } from "@heroicons/react/24/outline"
 import HeartFill from "./HeartFill"
 
-export default function Comment({ commentId, tipAmount, totalLikes, totalComments, postId }) {
+export default function Comment({
+    commentId,
+    tipAmount,
+    totalLikes,
+    totalComments,
+    deadline,
+    postId,
+}) {
     const { chainId, account, isWeb3Enabled } = useMoralis()
     const [commenter, comment, timeCreated, commentLikes, likePercent] = useComment(
         commentId,
@@ -24,6 +31,13 @@ export default function Comment({ commentId, tipAmount, totalLikes, totalComment
     const { runContractFunction } = useWeb3Contract()
     const formattedAddress = useTruncate(commenter || "", 15)
     const dispatch = useNotification()
+
+    const likeDeadline =
+        new Date(deadline * 1000) <= new Date() ? null : (
+            <div className="flex pr-5" onClick={() => likeComment(postId, commentId)}>
+                <HeartIcon className="h-4  cursor-pointer text-[#f43f5E] hover:text-red-800" />
+            </div>
+        )
 
     const likeComment = async (postId, commentId) => {
         const likeOptions = {
@@ -55,7 +69,7 @@ export default function Comment({ commentId, tipAmount, totalLikes, totalComment
         })
     }
 
-    useEffect(() => {}, [isWeb3Enabled, commentId, totalLikes, totalComments])
+    useEffect(() => {}, [isWeb3Enabled, commentId, totalLikes, totalComments, deadline])
 
     useEffect(() => {}, [commenter, comment, timeCreated, commentLikes, likePercent])
 
@@ -85,9 +99,7 @@ export default function Comment({ commentId, tipAmount, totalLikes, totalComment
                 </div>
                 <p className="comment">{comment}</p>
                 <div className="commentFooter">
-                    <div className="flex pr-5" onClick={() => likeComment(postId, commentId)}>
-                        <HeartIcon className="h-4  cursor-pointer text-[#f43f5E] hover:text-red-800" />
-                    </div>
+                    {likeDeadline}
                     <Tip postCreator={commenter} tipAmount={tipAmount} />
                 </div>
             </div>
