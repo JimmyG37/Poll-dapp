@@ -46,6 +46,7 @@ export default function CommentSection({ isOpen, showComments, tipAmount }) {
                                             tipAmount={tipAmount}
                                             totalLikes={post.totalLikes}
                                             totalComments={post.totalComments}
+                                            deadline={post.deadline}
                                             postId={post.postId}
                                         />
                                     )
