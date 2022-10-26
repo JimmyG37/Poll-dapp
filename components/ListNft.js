@@ -82,46 +82,48 @@ export default function ListNft() {
     return (
         <div className="widgetContainer widget">
             <div className="fundsContainer">
-                <div className="ml-4 w-full">
-                    <h4 className="font-bold text-xl pb-4">List Your NFT</h4>
-                    <div className="">
-                        <label
-                            htmlFor="post_id"
-                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                        >
-                            Post ID
-                        </label>
-                        <input
-                            type="number"
-                            id="post_id"
-                            value={postId}
-                            onChange={(e) => setPostId(e.target.value)}
-                            className="widgetInput"
-                            placeholder="Post ID"
-                            required
-                        />
+                {isWeb3Enabled ? (
+                    <div className="ml-4 w-full">
+                        <h4 className="font-bold text-xl pb-4">List Your NFT</h4>
+                        <div className="">
+                            <label
+                                htmlFor="post_id"
+                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                            >
+                                Post ID
+                            </label>
+                            <input
+                                type="number"
+                                id="post_id"
+                                value={postId}
+                                onChange={(e) => setPostId(e.target.value)}
+                                className="widgetInput"
+                                placeholder="Post ID"
+                                required
+                            />
+                        </div>
+                        <div className="py-4">
+                            <label
+                                htmlFor="price"
+                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                            >
+                                Price
+                            </label>
+                            <input
+                                type="number"
+                                id="price"
+                                value={priceInput}
+                                onChange={(e) => setPriceInput(e.target.value)}
+                                className="widgetInput"
+                                placeholder="Price (in ETH)"
+                                required
+                            />
+                        </div>
+                        <button onClick={approveAndList} className="widgetButton">
+                            List
+                        </button>
                     </div>
-                    <div className="py-4">
-                        <label
-                            htmlFor="price"
-                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                        >
-                            Price
-                        </label>
-                        <input
-                            type="number"
-                            id="price"
-                            value={priceInput}
-                            onChange={(e) => setPriceInput(e.target.value)}
-                            className="widgetInput"
-                            placeholder="Price (in ETH)"
-                            required
-                        />
-                    </div>
-                    <button onClick={approveAndList} className="widgetButton">
-                        List
-                    </button>
-                </div>
+                ) : null}
             </div>
         </div>
     )

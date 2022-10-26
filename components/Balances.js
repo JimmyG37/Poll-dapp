@@ -118,147 +118,156 @@ export default function Balances() {
 
     return (
         <div className="widgetContainer widget">
-            <div className="fundsContainer">
-                <h4 className="font-bold text-xl px-4">Balances</h4>
-                <div className="relative flex ml-auto py-1.5 px-3.5">
-                    {tipBalance != "0.0" ? (
-                        <div className="animate-spinning">
-                            <div className="coinContainer animate-bounce">
-                                <div className="innerCoinContainer">
-                                    <div className="coinCenter"></div>
+            {isWeb3Enabled ? (
+                <>
+                    <div className="fundsContainer">
+                        <h4 className="font-bold text-xl px-4">Balances</h4>
+                        <div className="relative flex ml-auto py-1.5 px-3.5">
+                            {tipBalance != "0.0" ? (
+                                <div className="animate-spinning">
+                                    <div className="coinContainer animate-bounce">
+                                        <div className="innerCoinContainer">
+                                            <div className="coinCenter"></div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : null}
+
+                            {proceedsBalance != "0.0" ? (
+                                <div className="animate-spinning px-1">
+                                    <div className="coinContainer animate-bounce">
+                                        <div className="innerCoinContainer">
+                                            <div className="coinCenter"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : null}
+
+                            {royaltyBalance != "0.0" ? (
+                                <div className="animate-spinning">
+                                    <div className="coinContainer animate-bounce">
+                                        <div className="innerCoinContainer">
+                                            <div className="coinCenter"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : null}
                         </div>
-                    ) : null}
+                    </div>
+
+                    {tipBalance != "0.0" ? (
+                        <div className="fundsContainer">
+                            <div className="ml-4 leading-5 flex">
+                                <h4 className="mr-2">Tips:</h4>
+                                <h5 className="text-[15px]">{tipBalance}</h5>
+                            </div>
+                            <button
+                                className="withdrawButton"
+                                onClick={() => {
+                                    runContractFunction({
+                                        params: {
+                                            abi: PostChain.abi,
+                                            contractAddress: postChainAddress,
+                                            functionName: "withdrawBalances",
+                                            params: {},
+                                        },
+                                        onError: (error) =>
+                                            console.log("Balances.js -- Withdraw Tips:", error),
+                                        onSuccess: handleWithdrawTipsSuccess,
+                                    })
+                                }}
+                            >
+                                Withdraw
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="fundsContainer">
+                            <div className="ml-4 leading-5 flex text-[#9ca3af]">
+                                <h4 className="mr-2">Tips:</h4>
+                                <h5 className="text-[15px]">{tipBalance}</h5>
+                            </div>
+                            <div className="grayedOutWithdraw">Withdraw</div>
+                        </div>
+                    )}
 
                     {proceedsBalance != "0.0" ? (
-                        <div className="animate-spinning px-1">
-                            <div className="coinContainer animate-bounce">
-                                <div className="innerCoinContainer">
-                                    <div className="coinCenter"></div>
-                                </div>
+                        <div className="fundsContainer">
+                            <div className="ml-4 leading-5 flex">
+                                <h4 className="mr-2">Proceeds:</h4>
+                                <h5 className="text-[15px]">{proceedsBalance}</h5>
                             </div>
+                            <button
+                                className="withdrawButton"
+                                onClick={() => {
+                                    runContractFunction({
+                                        params: {
+                                            abi: PostChainMarket.abi,
+                                            contractAddress: marketAddress,
+                                            functionName: "withdrawProceeds",
+                                            params: {},
+                                        },
+                                        onError: (error) =>
+                                            console.log("Balances.js -- Withdraw Proceeds:", error),
+                                        onSuccess: handleWithdrawProceedsSuccess,
+                                    })
+                                }}
+                            >
+                                Withdraw
+                            </button>
                         </div>
-                    ) : null}
+                    ) : (
+                        <div className="text-[#9ca3af] fundsContainer">
+                            <div className="ml-4 leading-5 flex">
+                                <h4 className="mr-2">Proceeds:</h4>
+                                <h5 className="text-[15px]">{proceedsBalance}</h5>
+                            </div>
+                            <div className="grayedOutWithdraw">Withdraw</div>
+                        </div>
+                    )}
 
                     {royaltyBalance != "0.0" ? (
-                        <div className="animate-spinning">
-                            <div className="coinContainer animate-bounce">
-                                <div className="innerCoinContainer">
-                                    <div className="coinCenter"></div>
-                                </div>
+                        <div className="fundsContainer">
+                            <div className="ml-4 leading-5 flex">
+                                <h4 className="mr-2">Royalties:</h4>
+                                <h5 className="text-[15px]">{royaltyBalance}</h5>
                             </div>
+                            <button
+                                className="withdrawButton"
+                                onClick={() => {
+                                    runContractFunction({
+                                        params: {
+                                            abi: PostChainMarket.abi,
+                                            contractAddress: marketAddress,
+                                            functionName: "withdrawRoyalties",
+                                            params: {},
+                                        },
+                                        onError: (error) =>
+                                            console.log(
+                                                "Balances.js -- Withdraw Royalties:",
+                                                error
+                                            ),
+                                        onSuccess: handleWithdrawRoyaltiesSuccess,
+                                    })
+                                }}
+                            >
+                                Withdraw
+                            </button>
                         </div>
-                    ) : null}
-                </div>
-            </div>
+                    ) : (
+                        <div className="text-[#9ca3af] fundsContainer">
+                            <div className="ml-4 leading-5 flex">
+                                <h4 className="mr-2">Royalties:</h4>
+                                <h5 className="text-[15px]">{royaltyBalance}</h5>
+                            </div>
+                            <div className="grayedOutWithdraw">Withdraw</div>
+                        </div>
+                    )}
 
-            {tipBalance != "0.0" ? (
-                <div className="fundsContainer">
-                    <div className="ml-4 leading-5 flex">
-                        <h4 className="mr-2">Tips:</h4>
-                        <h5 className="text-[15px]">{tipBalance}</h5>
-                    </div>
-                    <button
-                        className="withdrawButton"
-                        onClick={() => {
-                            runContractFunction({
-                                params: {
-                                    abi: PostChain.abi,
-                                    contractAddress: postChainAddress,
-                                    functionName: "withdrawBalances",
-                                    params: {},
-                                },
-                                onError: (error) =>
-                                    console.log("Balances.js -- Withdraw Tips:", error),
-                                onSuccess: handleWithdrawTipsSuccess,
-                            })
-                        }}
-                    >
-                        Withdraw
-                    </button>
-                </div>
-            ) : (
-                <div className="fundsContainer">
-                    <div className="ml-4 leading-5 flex text-[#9ca3af]">
-                        <h4 className="mr-2">Tips:</h4>
-                        <h5 className="text-[15px]">{tipBalance}</h5>
-                    </div>
-                    <div className="grayedOutWithdraw">Withdraw</div>
-                </div>
-            )}
-
-            {proceedsBalance != "0.0" ? (
-                <div className="fundsContainer">
-                    <div className="ml-4 leading-5 flex">
-                        <h4 className="mr-2">Proceeds:</h4>
-                        <h5 className="text-[15px]">{proceedsBalance}</h5>
-                    </div>
-                    <button
-                        className="withdrawButton"
-                        onClick={() => {
-                            runContractFunction({
-                                params: {
-                                    abi: PostChainMarket.abi,
-                                    contractAddress: marketAddress,
-                                    functionName: "withdrawProceeds",
-                                    params: {},
-                                },
-                                onError: (error) =>
-                                    console.log("Balances.js -- Withdraw Proceeds:", error),
-                                onSuccess: handleWithdrawProceedsSuccess,
-                            })
-                        }}
-                    >
-                        Withdraw
-                    </button>
-                </div>
-            ) : (
-                <div className="text-[#9ca3af] fundsContainer">
-                    <div className="ml-4 leading-5 flex">
-                        <h4 className="mr-2">Proceeds:</h4>
-                        <h5 className="text-[15px]">{proceedsBalance}</h5>
-                    </div>
-                    <div className="grayedOutWithdraw">Withdraw</div>
-                </div>
-            )}
-
-            {royaltyBalance != "0.0" ? (
-                <div className="fundsContainer">
-                    <div className="ml-4 leading-5 flex">
-                        <h4 className="mr-2">Royalties:</h4>
-                        <h5 className="text-[15px]">{royaltyBalance}</h5>
-                    </div>
-                    <button
-                        className="withdrawButton"
-                        onClick={() => {
-                            runContractFunction({
-                                params: {
-                                    abi: PostChainMarket.abi,
-                                    contractAddress: marketAddress,
-                                    functionName: "withdrawRoyalties",
-                                    params: {},
-                                },
-                                onError: (error) =>
-                                    console.log("Balances.js -- Withdraw Royalties:", error),
-                                onSuccess: handleWithdrawRoyaltiesSuccess,
-                            })
-                        }}
-                    >
-                        Withdraw
-                    </button>
-                </div>
-            ) : (
-                <div className="text-[#9ca3af] fundsContainer">
-                    <div className="ml-4 leading-5 flex">
-                        <h4 className="mr-2">Royalties:</h4>
-                        <h5 className="text-[15px]">{royaltyBalance}</h5>
-                    </div>
-                    <div className="grayedOutWithdraw">Withdraw</div>
-                </div>
-            )}
-
-            <h4 className="text-[#9ca3af] flex justify-center items-center pb-1">{chainName}</h4>
+                    <h4 className="text-[#9ca3af] flex justify-center items-center pb-1">
+                        {chainName}
+                    </h4>
+                </>
+            ) : null}
         </div>
     )
 }

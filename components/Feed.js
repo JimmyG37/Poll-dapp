@@ -52,12 +52,12 @@ export const Feed = React.memo(({ tipAmount }) => {
                     <SparklesIcon className="h-5 text-black" />
                 </div>
             </div>
-            <CreatePost />
             {isWeb3Enabled ? (
                 loading || !createdPosts ? (
                     <div>Loading...</div>
                 ) : (
                     <>
+                        <CreatePost />
                         <div className="pb-72 z-[-999] ">
                             {createdPosts.posts.map((post) => {
                                 return (
@@ -90,7 +90,7 @@ export const Feed = React.memo(({ tipAmount }) => {
                     </>
                 )
             ) : (
-                <div>Web3 Not Enabled</div>
+                <div className="text-white">Web3 Not Enabled</div>
             )}
         </div>
     )
