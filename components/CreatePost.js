@@ -69,8 +69,12 @@ export default function CreatePost() {
                         onChange={(e) => setPostText(e.target.value)}
                         placeholder="What's Gucci?"
                         rows="2"
+                        maxLength="130"
                         className="postInput"
                     />
+                    <span className="text-gray-400 text-sm text-[11px] float-right">
+                        {postText.length}/130
+                    </span>
                 </div>
                 <div className="deadline">
                     <div className="setDeadline">Set Deadline</div>
