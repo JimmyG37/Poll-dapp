@@ -394,7 +394,7 @@
 }
 
 .commentFields {
-    @apply flex flex-col items-center justify-center absolute space-y-[1rem] z-50;
+    @apply flex flex-col  absolute space-y-[1rem] z-50;
 }
 
 .likePercentage {

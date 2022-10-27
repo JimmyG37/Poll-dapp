@@ -76,7 +76,7 @@ export default function Comment({
     return (
         <div className="commentContainer">
             <div className="commentFields">
-                <div className="flex pl-4  mt-6">
+                <div className="flex pl-4 mt-6">
                     <div className="pfpContainer w-[3.0rem] h-[3.0rem] z-10 mr-5">
                         <Jazzicon diameter={80} seed={jsNumberForAddress("" + commenter)} />
                     </div>
@@ -97,10 +97,12 @@ export default function Comment({
                         </div>
                     </div>
                 </div>
-                <p className="comment">{comment}</p>
-                <div className="commentFooter">
-                    {likeDeadline}
-                    <Tip postCreator={commenter} tipAmount={tipAmount} />
+                <div className="pl-4">
+                    <p className="comment">{comment}</p>
+                    <div className="commentFooter">
+                        {likeDeadline}
+                        <Tip postCreator={commenter} tipAmount={tipAmount} />
+                    </div>
                 </div>
             </div>
             <div
