@@ -326,7 +326,7 @@
 }
 
 .postTop {
-    @apply flex w-[100%] h-[50%] absolute;
+    @apply flex w-[100%] h-[50%] absolute z-50;
 }
 
 .postBottom {
@@ -370,7 +370,7 @@
 }
 
 .setDeadline {
-    @apply text-gray-400 text-sm font-semibold z-50 mr-[-100px] h-5 bg-[#0d1117];
+    @apply text-gray-400 text-sm font-semibold z-10 mr-[-100px] h-5 bg-[#0d1117];
 }
 
 .deadline {
