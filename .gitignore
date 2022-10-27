@@ -33,6 +33,8 @@ yarn-error.log*
 .env*.local
 .env
 createPost.gif
+replyToPost.gif
+mintPost.gif
 
 # vercel
 .vercel
