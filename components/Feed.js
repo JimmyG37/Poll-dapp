@@ -2,7 +2,6 @@ import { Post } from "./Post"
 import GET_POSTS from "../constants/queryPosts"
 import CreatePost from "./CreatePost"
 import { useQuery } from "@apollo/client"
-import { SparklesIcon } from "@heroicons/react/24/outline"
 import React, { useEffect, useState, useContext } from "react"
 import { PostContext } from "../hooks/PostContext"
 import { useMoralis, useWeb3Contract } from "react-moralis"
@@ -45,13 +44,7 @@ export const Feed = React.memo(({ tipAmount }) => {
     }, [startPolling, stopPolling])
 
     return (
-        <div className="feedContainer relative" onClick={(e) => handleMouseClick(e)}>
-            <div className="locationBar">
-                <h2 className="location">Home</h2>
-                <div className="sparkle">
-                    <SparklesIcon className="h-5 text-black" />
-                </div>
-            </div>
+        <div className="feedContainer relative pt-[3rem]" onClick={(e) => handleMouseClick(e)}>
             {isWeb3Enabled ? (
                 loading || !createdPosts ? (
                     <div>Loading...</div>
