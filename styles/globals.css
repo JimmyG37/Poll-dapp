@@ -290,7 +290,7 @@
 }
 
 .sidebarPosition {
-    @apply text-black flex items-center justify-center xl:justify-start text-xl space-x-3;
+    @apply text-black flex items-center justify-center xl:justify-start text-xl;
 }
 
 .sidebarSpacing {
@@ -326,7 +326,7 @@
 }
 
 .postTop {
-    @apply flex w-[100%] h-[50%] absolute z-50;
+    @apply flex w-[100%] h-[50%] absolute;
 }
 
 .postBottom {
@@ -354,7 +354,7 @@
 }
 
 .headerContainer {
-    @apply flex justify-between w-full bg-[#161b22] border-[#373737] px-5 lg:px-6  z-50 fixed mb-5;
+    @apply flex justify-between w-full bg-[#161b22] border-[#373737] px-5 lg:px-6  z-[5] fixed mb-5;
 }
 
 .headerTitle {
@@ -370,7 +370,7 @@
 }
 
 .setDeadline {
-    @apply text-gray-400 text-sm font-semibold z-10 mr-[-100px] h-5 bg-[#0d1117];
+    @apply text-gray-400 text-sm font-semibold z-[2] mr-[-100px] h-5 bg-[#0d1117];
 }
 
 .deadline {
