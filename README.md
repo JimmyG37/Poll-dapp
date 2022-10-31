@@ -1,3 +1,10 @@
+## Built with
+
+* NextJS - Frontend framework
+* Tailwind CSS - CSS framework
+* The Graph - a decentralized protocol used to index and query data from the Ethereum blockchain
+* Hardhat - an environment developers use to test, compile, deploy and debug dApps based on the Ethereum blockchain
+
 ## Requirements
 
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
@@ -20,7 +27,29 @@
 yarn
 ```
 
+### Frontend
+
 > run the [Next.js](https://nextjs.org/) development server
 ```
 yarn dev
+```
+
+### Smart Contracts
+
+Deploy:
+
+```
+yarn hardhat deploy
+```
+
+## Testing
+
+```
+yarn hardhat test
+```
+
+### Test Coverage
+
+```
+yarn hardhat coverage
 ```
