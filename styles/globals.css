@@ -258,11 +258,11 @@
 }
 
 .widgetInput {
-    @apply border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-[#0d1117] dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500;
+    @apply border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-[#0d1117] dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500;
 }
 
 .datePicker {
-    @apply border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 bg-[#0d1117] dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500;
+    @apply border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 bg-[#0d1117] dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500;
 }
 
 .widgetButton {
@@ -358,7 +358,7 @@
 }
 
 .headerTitle {
-    @apply self-center whitespace-nowrap text-xl font-semibold dark:text-[#1d9bf0] ml-5;
+    @apply self-center whitespace-nowrap text-xl font-semibold text-[#1d9bf0] ml-5;
 }
 
 .createPost {
