@@ -32,9 +32,7 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
-createPost.gif
-replyToPost.gif
-mintPost.gif
+
 
 # vercel
 .vercel
