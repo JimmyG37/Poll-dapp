@@ -1,103 +1,76 @@
-# PostChain
+# **PostChain**
 
-## About
+[PostChain](https://postchain-jimmyg37.vercel.app/) is a decentralized application (dApp) built on the Polygon (Matic) Mumbai test network that empowers content creators to take ownership of their creations. With PostChain, users can write a post with a selected deadline and watch as other users engage with their content by commenting.
 
-[PostChain](https://postchain-jimmyg37.vercel.app/) is a decentralized application (dApp), built on Polygon (Matic) Mumbai test network. Need funds?
+Once the deadline has passed, the post creator can mint their post into a unique non-fungible token (NFT) based on the level of engagement. The NFT can then be displayed or listed on the built-in marketplace, where users can earn crypto through tips, NFT proceeds, and royalties. The creator of an NFT will receive a percentage (2.50%) of any re-sale, providing ongoing income for their content.
 
-- https://mumbaifaucet.com/
-- https://testmatic.vercel.app/
+PostChain offers a user-friendly interface and a seamless experience for transitioning to Web3. Join the growing community of content creators on PostChain and take control of your creations today.
 
-Users can write a post with a selected date as a deadline
+## **Key Features**
 
-<img src="https://github.com/JimmyG37/demo-assets/blob/main/createPostv2.gif" width="800" />
+- User-friendly platform for creating and sharing content
+- Minting of posts into unique NFTs based on engagement, with customizable profile pictures
+- Built-in marketplace for displaying and selling NFTs
+- Earn crypto through tips, NFT proceeds, and royalties
 
----
+## **Technologies Used**
 
-Within the set deadline of a post, other users can comment
+- Next.js: frontend framework for building server-rendered React applications
+- Tailwind CSS: CSS framework for quickly creating custom designs
+- The Graph: a decentralized protocol for indexing and querying data from the Ethereum blockchain
+- Hardhat: an environment for testing, compiling, deploying, and debugging dApps based on the Ethereum blockchain
+- Solidity: the leading programming language for writing smart contracts on Ethereum
+- ERC2981 royalty standard: a smart contract standard for tracking and distributing royalties on Ethereum
 
-<img src="https://github.com/JimmyG37/demo-assets/blob/main/replyToPost.gif" width="800" />
+## **Getting Started**
 
+To run PostChain, you will need to have the following dependencies installed:
 
----
+- Git: a version control system for tracking changes in source code
+- Node.js: a JavaScript runtime for building server-side applications
+- Yarn: a package manager for installing project dependencies
 
-  After a post dealine is over, the creator has an option to mint their post
-
-
-<img src="https://github.com/JimmyG37/demo-assets/blob/main/mintPost.gif" width="800" />
-
-
-Depending on how many users had commented on the post, will determine what kind of profile picture the nft will get.
-
----
-
-Once an nft has been created it can then be shown off or listed to sell, all in the same place!
-
-<img src="https://github.com/JimmyG37/demo-assets/blob/main/listPost.gif" width="800" />
-
----
-
-
-PostChain offers 3 streams of crypto earnings
-* Tips - Posts and Comments can be tipped, even passed the deadline.
-* Nft Proceeds - Earnings received when an nft has been sold.
-* Royalties - The post creator of the nft will receive a percentage (2.50%) every time the nft gets re-sold
-
-## Motivation
-
-I'm highly inspired to give content creators ownership of what they create! Starting off with what they write. I see this as a perfect opportunity to help bridge the gap to Web3. One of my main objectives was to provide a familiar user interface to support the transition to the new user experience.
-
-## Built with
-
-* NextJS - Frontend framework
-* Tailwind CSS - CSS framework
-* The Graph - a decentralized protocol used to index and query data from the Ethereum blockchain
-* Hardhat - an environment developers use to test, compile, deploy and debug dApps based on the Ethereum blockchain
-
-## Requirements
-
-- [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-  - You'll know you did it right if you can run `git --version` and you see a response like `git version x.x.x`
-- [Nodejs](https://nodejs.org/en/)
-  - You'll know you've installed nodejs right if you can run:
-    - `node --version` and get an ouput like: `vx.x.x`
-- [Yarn](https://yarnpkg.com/getting-started/install) instead of `npm`
-  - You'll know you've installed yarn right if you can run:
-    - `yarn --version` and get an output like: `x.x.x`
-    - You might need to [install it with `npm`](https://classic.yarnpkg.com/lang/en/docs/install/) or `corepack`
-
-
-
-## Getting Started
-
-> Install dependencies
+Once these dependencies are installed you can clone the PostChain repository and install the project dependencies using the following commands:
 
 ```
-yarn
+git clone https://github.com/JimmyG37/PostChain.git
+
+cd PostChain
+
+yarn install
+
 ```
 
-### Frontend
+To run the Next.js development server and start using PostChain, run the following command:
 
-> run the [Next.js](https://nextjs.org/) development server
 ```
 yarn dev
 ```
-
-### Smart Contracts
-
-Deploy:
+To deploy the smart contracts for PostChain, run the following command:
 
 ```
 yarn hardhat deploy
 ```
 
-## Testing
+To run unit tests on the smart contracts, use the following command:
 
 ```
 yarn hardhat test
 ```
 
-### Test Coverage
+To generate a coverage report for the smart contracts, use the following command:
 
 ```
 yarn hardhat coverage
 ```
+
+For more information on configuring and using PostChain, please see the package.json and hardhat.config.js files in the repository.
+
+## **Contributing**
+We welcome contributions to PostChain from the community. To submit a contribution, please fork the repository and create a pull request with your changes. Before submitting your pull request, please make sure to run the unit tests and generate a coverage report to ensure that your changes do not break existing functionality.
+
+## **License**
+PostChain is released under the MIT License.
+
+
+
