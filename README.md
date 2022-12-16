@@ -2,6 +2,8 @@
 
 [PostChain](https://postchain-jimmyg37.vercel.app/) is a decentralized application (dApp) built on the Polygon (Matic) Mumbai test network that empowers content creators to take ownership of their creations. With PostChain, users can write a post with a selected deadline and watch as other users engage with their content by commenting.
 
+<img src="https://github.com/JimmyG37/demo-assets/blob/main/createPostv2.gif" width="800" />
+
 Once the deadline has passed, the post creator can mint their post into a unique non-fungible token (NFT) based on the level of engagement. The NFT can then be displayed or listed on the built-in marketplace, where users can earn crypto through tips, NFT proceeds, and royalties. The creator of an NFT will receive a percentage (2.50%) of any re-sale, providing ongoing income for their content.
 
 PostChain offers a user-friendly interface and a seamless experience for transitioning to Web3. Join the growing community of content creators on PostChain and take control of your creations today.
